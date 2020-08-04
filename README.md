@@ -15,9 +15,9 @@
 
 <br />
 ---
-<img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api?username=aaronjoseph&show_icons=true&hide_border=true&count_private=true&theme=dracula" />
+<img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api?username=aaronjoseph&show_icons=true&hide_border=true&count_private=true&theme=dracula"/>
 
-[![ReadMe Card](https://github-readme-stats.vercel.app/api/pin/?username=aaronjoseph&repo=github-readme-stats)](https://github.com/aaronjoseph/github-readme-stats)
+<img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api/pin/?username=aaronjoseph&repo=github-readme-stats"/>
 
 [twitter]: https://twitter.com/aaronjosephmath
 [instagram]: https://www.instagram.com/aaronjosephmathew/
