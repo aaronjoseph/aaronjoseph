@@ -4,7 +4,7 @@
 - 🔭 I’m currently working with Kaleidofin !
 - 🌱 I’m currently learning everything related to Game Theory 🤣
 - 👯 I’m looking to collaborate with other Kagglers
-- 🥅 2020 Goals: Work on more Kaggle projects
+- 🥅 2020 Goals: Write more Medium Articles
 - ⚡ Fun fact: I love to play speed chess, forces me to think faster
 
 ### Connect with me:
@@ -14,9 +14,9 @@
 [<img align="left" alt="codeSTACKr | Instagram" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/instagram.svg" />][instagram]
 
 <br />
+---
+<img align="left" alt="codeSTACKr's Github Stats" src="https://github-readme-stats.vercel.app/api?username=aaronjoseph&show_icons=true&hide_border=true" />
 
-
-<img align="left" alt="codeSTACKr's Github Stats" src="https://github-readme-stats.vercel.app/api?username=codeSTACKr&show_icons=true&hide_border=true" />
 
 [twitter]: https://twitter.com/aaronjosephmath
 [instagram]: https://www.instagram.com/aaronjosephmathew/
