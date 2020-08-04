@@ -17,8 +17,6 @@
 ---
 <img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api?username=aaronjoseph&show_icons=true&hide_border=true&count_private=true&theme=dracula"/>
 
-<img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api/pin/?username=aaronjoseph&repo=github-readme-stats"/>
-
 [twitter]: https://twitter.com/aaronjosephmath
 [instagram]: https://www.instagram.com/aaronjosephmathew/
 [linkedin]: https://www.linkedin.com/in/aaron-joseph-mathew-4b425b71/
