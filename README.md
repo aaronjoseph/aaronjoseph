@@ -2,7 +2,7 @@
 
 ## I'm a Data Scientist!
 - 🔭 I’m currently working with Kaleidofin !
-- 🌱 I’m currently learning everything related to Game Theory 🤣
+- 🌱 I’m currently learning everything related to Game Theory & RL 🤣
 - 👯 I’m looking to collaborate with other Kagglers
 - 🥅 2020 Goals: Write more Medium Articles
 - ⚡ Fun fact: I love to play speed chess, forces me to think faster
