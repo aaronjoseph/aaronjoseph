@@ -16,9 +16,6 @@
 [<img align="left" alt="AaronJoseph | Instagram" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/instagram.svg" />][instagram]
 
 <br />
-
-<img align="left" alt="Github Stats" src="https://github-readme-stats.vercel.app/api?username=aaronjoseph&show_icons=true&hide_border=true&count_private=true&theme=dracula"/>
-
 [twitter]: https://twitter.com/aaronjosephmath
 [instagram]: https://www.instagram.com/aaronjosephmathew/
 [linkedin]: https://www.linkedin.com/in/aaron-joseph-mathew-4b425b71/
