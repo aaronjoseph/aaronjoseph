@@ -15,8 +15,8 @@
 [<img align="left" alt="AaronJoseph | Twitter" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/twitter.svg" />][twitter]
 [<img align="left" alt="AaronJoseph | Instagram" width="22px" src="https://cdn.jsdelivr.net/npm/simple-icons@v3/icons/instagram.svg" />][instagram]
 
-<br />
 [twitter]: https://twitter.com/aaronjosephmath
 [instagram]: https://www.instagram.com/aaronjosephmathew/
 [linkedin]: https://www.linkedin.com/in/aaron-joseph-mathew-4b425b71/
 [medium]: https://medium.com/@aaron_76023/
+<br/>
