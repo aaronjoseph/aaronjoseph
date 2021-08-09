@@ -2,7 +2,6 @@
 
 ## I'm a Data Scientist!
 - 🔭 I’m currently working with Accenture AI !
-- 🌱 I’m currently learning everything related to NLP 🤣
 - 👯 I’m looking to collaborate with other Kagglers
 
 ### Connect with me:
