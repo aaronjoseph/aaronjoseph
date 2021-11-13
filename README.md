@@ -41,6 +41,7 @@ Don't ask me how I circumvented the 3 year bond, or maybe do ask, at a coffee sh
 
 * [Deep Learning Specilization - Coursera](https://www.coursera.org/account/accomplishments/specialization/GLDSULWYE2H4)
 * [Machine Learning (Standford Online - Coursera)](https://www.coursera.org/account/accomplishments/verify/4P6GMFBUTRSD)
+* [GCP Professional Data Engineering Certification](https://www.credential.net/5a158b5b-5b95-4e79-868a-2cf6a4959512?key=c4a40ba808cb312664a87fb1f5ae292c984bcd3eafd3db40d07c5427e4b3752f)
 
 ### My most relevant technical skills
 
