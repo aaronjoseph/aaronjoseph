@@ -4,7 +4,7 @@ I'm a **Data Scientist** focusing on applied **Machine Learning**. I have more t
 
 Bonus points if I can collaborate with a team of like-minded Data Scientists!
 
-### This is where I've worked during the last 4.5 years
+### This is where I've worked during the last 5 years
 
 **Analyst - Data Science | Accenture AI**
 
