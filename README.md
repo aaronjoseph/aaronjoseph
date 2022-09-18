@@ -12,7 +12,7 @@ Bonus points if I can collaborate with a team of like-minded Data Scientists!
 
 _[Accenture AI](https://www.linkedin.com/company/accentureai/mycompany/). Dec 2020 - Present_
 
-Joined as an Analyst, within the Applied Intelligence practice group.
+Working within Applied Intelligence practice group with keen focus in ML Engineering.
 
 > Need Referral ? Email me at aaron.joseph.mathew@accenture.com
 
@@ -20,7 +20,7 @@ Joined as an Analyst, within the Applied Intelligence practice group.
 
 _[Kaleidofin](https://kaleidofin.com/). Jun 2019 – Dec 2020._
 
-I joined Kaleidofin as employee number 70, at Seed stage. Worked crazy hours working on providing financial solution for the underbanked customers in India. Developed end-to-end system from Data Engineering (Postgres, Indexing Data, Sharding) to Modeling (Financial Optimization). Had real fun and made significant impact to the rural customers of India and leant a lot about personal finance.
+I joined Kaleidofin as employee number 70, at Seed stage. Worked on providing financial solution for the underbanked customers in India. Delightful work, wherin I was able to impact the financial well-being of the Rural India customer
 
 **Data Analyst**
 
