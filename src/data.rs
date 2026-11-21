@@ -166,6 +166,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
                     ("−30% ARM C4A latency", MetricTone::Signal),
                     ("700 → 350 ms P50", MetricTone::Signal),
                     ("−95% CPU · −98% RAM", MetricTone::Accent),
+                    ("−8.5% agent cost/turn", MetricTone::Signal),
                     ("~$180K/yr (~$500/day)", MetricTone::Default),
                 ],
             },
@@ -309,6 +310,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                 items: &[
                     "−95% CPU & −98% RAM usage",
                     "~$180K/yr saved (~$500/day)",
+                    "~8.5% lower cost/turn for the agentic shopping assistant",
                     "700 ms → 350 ms P50 (>1 s max cut)",
                 ],
             },
@@ -339,7 +341,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             DeepDiveSection {
                 heading: "2 · Microservices → Hexagonal Rust Monolith + Bulkheads",
                 points: &[
-                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings.",
+                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings — which directly reduced the end-to-end cost per turn of the agentic shopping assistant (AskBlue) by roughly 8.5%.",
                     "Collapsed separate Python search/recall/reranker microservices into a single in-process Rust binary to remove internal HTTP serialization overhead while preserving distinct OpenTelemetry spans per stage.",
                     "Designed per-service bulkhead connection pools (isolating product-search, ESCI cache, reranker metadata, and LTR Redis managers) so large metadata batches never head-of-line-block small LTR lookups, paired with order-preserving concurrent fan-out for multi-tier recall.",
                 ],
