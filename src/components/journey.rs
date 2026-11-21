@@ -365,7 +365,8 @@ pub fn JourneySection() -> Element {
     });
 
     let current_role = &ROLES[active_idx()];
-    let progress_pct = ((current_role.chapter as f32) / (ROLES.len() as f32) * 100.0).round() as u32;
+    let chrono_step = ROLES.len().saturating_sub(active_idx());
+    let progress_pct = ((chrono_step as f32) / (ROLES.len() as f32) * 100.0).round() as u32;
 
     // Jump cleanly to the exact runway slice for chapter `idx`
     fn select_role(mut active_idx: Signal<usize>, idx: usize, sync_scroll: bool) {
@@ -471,7 +472,7 @@ pub fn JourneySection() -> Element {
                                                     r#type: "button",
                                                     role: "tab",
                                                     aria_selected: "{is_cur}",
-                                                    title: "Chapter {role.chapter}: {role.company}",
+                                                    title: "{role.company} ({role.period})",
                                                     onclick: move |_| select_role(active_idx, rev_i, true),
                                                     CompanyLogo { company_id: role.id, size: 18 }
                                                 }
@@ -527,7 +528,6 @@ pub fn JourneySection() -> Element {
                                                         },
                                                         div {
                                                             div { class: "role-meta",
-                                                                span { class: "role-ch-pill", "Ch. {role.chapter}" }
                                                                 if let Some(badge) = role.badge {
                                                                     span { class: "role-now", "{badge}" }
                                                                 }
