@@ -365,9 +365,24 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                                         }
                                     },
                                     ArticleBlock::Bullets(items) => rsx! {
-                                        ul { key: "b-{idx}", class: "article-bullets",
-                                            for item in *items {
-                                                li { "{item}" }
+                                        div { key: "b-{idx}", class: "article-point-grid",
+                                            for (pi, (label, body)) in items.iter().enumerate() {
+                                                {
+                                                    let tone_cls = match pi % 4 {
+                                                        0 => "article-point-card pt-sage",
+                                                        1 => "article-point-card pt-lavender",
+                                                        2 => "article-point-card pt-peach",
+                                                        _ => "article-point-card pt-butter",
+                                                    };
+                                                    rsx! {
+                                                        div { key: "{label}", class: "{tone_cls}",
+                                                            div { class: "article-point-head",
+                                                                span { class: "article-point-badge", "{label}" }
+                                                            }
+                                                            p { class: "article-point-body", "{body}" }
+                                                        }
+                                                    }
+                                                }
                                             }
                                         }
                                     },

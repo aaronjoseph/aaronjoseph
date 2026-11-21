@@ -107,7 +107,7 @@ pub enum ArticleBlock {
     Paragraph(&'static str),
     ArchitectureFlow(&'static str),
     HexagonalSketch,
-    Bullets(&'static [&'static str]),
+    Bullets(&'static [(&'static str, &'static str)]),
     FieldNotes {
         stamp: &'static str,
         comparisons: &'static [NotebookComparison],
@@ -923,10 +923,22 @@ pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
             "To keep a single binary modular as the codebase grows, we leaned on Cargo workspace boundaries so compile-time dependencies only ever flow inward (api → domain ← infra):",
         ),
         ArticleBlock::Bullets(&[
-            "domain owns business types, orchestration logic, typed errors, and async port traits — completely unaware of HTTP clients, caches, or databases.",
-            "infra implements those domain ports and keeps wire-format JSON, database rows, and SDK clients strictly at the edges.",
-            "api stays thin: validate request DTOs, invoke a domain service, and map typed outputs back into the API contract — with zero unwrap() or expect() on request paths.",
-            "Observability stays microservice-clear: keeping distinct OpenTelemetry span prefixes per logical stage (query parsing, recall, reranking, and downstream I/O) preserves readable trace waterfalls inside one process.",
+            (
+                "domain",
+                "Owns business types, orchestration logic, typed errors, and async port traits — completely unaware of HTTP clients, caches, or databases.",
+            ),
+            (
+                "infra",
+                "Implements those domain ports and keeps wire-format JSON, database rows, and SDK clients strictly isolated at the edges.",
+            ),
+            (
+                "api",
+                "Stays paper-thin: validate request DTOs, invoke a domain service, and map typed outputs back into the API contract — with zero unwrap() or expect() on request paths.",
+            ),
+            (
+                "Observability",
+                "Keeps microservice-clear visibility: distinct OpenTelemetry span prefixes per logical stage (query parsing, recall, reranking, and downstream I/O) preserve readable trace waterfalls inside one process.",
+            ),
         ]),
         ArticleBlock::Heading("3. Isolating Workloads with Bulkheads & Async-Safe Inference"),
         ArticleBlock::Paragraph(
@@ -975,9 +987,18 @@ pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
             "The last mile of any migration is building confidence that the new binary behaves identically under real traffic and scales cleanly when clusters expand:",
         ),
         ArticleBlock::Bullets(&[
-            "Automated parity comparison: replay curated queries side-by-side against FastAPI and Rust, diffing ranked outputs, response envelopes, and structured stage logs before shifting live traffic.",
-            "Scale-out startup safety: when many pods start together during traffic spikes, racing ahead of the service-mesh proxy or cloud metadata server causes avoidable boot crashes. Holding app startup until the proxy is ready — paired with a bounded startup readiness wait — keeps autoscaling smooth.",
-            "Revisit your node shapes after cutover: once a compiled binary dramatically lowers memory requirements compared to Python workers, memory-heavy node pools are often over-provisioned. Shifting toward leaner, CPU-focused ARM profiles lets autoscaling stay light during quiet hours while scaling smoothly for peak events.",
+            (
+                "Automated Parity Checks",
+                "Replay curated queries side-by-side against FastAPI and Rust, diffing ranked outputs, response envelopes, and structured stage logs before shifting live traffic.",
+            ),
+            (
+                "Scale-Out Startup Safety",
+                "When many pods start together during spikes, racing ahead of the service-mesh proxy or cloud metadata server causes avoidable boot crashes. Holding startup until the proxy is ready — paired with a bounded metadata readiness wait — keeps autoscaling smooth.",
+            ),
+            (
+                "Right-Sizing Node Shapes",
+                "Once a compiled binary dramatically lowers memory requirements compared to Python workers, memory-heavy node pools are often over-provisioned. Shifting toward leaner, CPU-focused ARM profiles keeps clusters light off-peak while scaling cleanly for peak events.",
+            ),
         ]),
     ],
 }];
