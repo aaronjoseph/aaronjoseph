@@ -630,41 +630,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         ],
     },
     DeepDiveProject {
-        id: "ac-telecom-3g",
-        company: "Accenture AI",
-        company_id: "accenture",
-        period: "Dec 2020 – Apr 2023",
-        category: "Applied ML",
-        title: "3G Telecom Tower Decommissioning (Vertex AI)",
-        tech_steps: &[],
-        one_liner: "Built a Vertex AI data-driven workflow streamlining 3G infrastructure sunsetting across the London outskirts.",
-        headline_badges: &[
-            ("150+ towers removed", MetricTone::Signal),
-            ("Vertex AI · GCP", MetricTone::Default),
-        ],
-        flow: "Telecom Network & Traffic Data → BigQuery Feature Layer → Vertex AI Decommissioning Scoring → Rollout Schedule",
-        comparisons: &[],
-        callouts: &[],
-        sticky_notes: &[],
-        key_outcomes: &[
-            ("150+", "3G towers decommissioned", MetricTone::Signal),
-            ("London", "Outskirts rollout scope", MetricTone::Default),
-        ],
-        sections: &[DeepDiveSection {
-            heading: "Overview & Impact",
-            points: &[
-                "Crafted a data-driven decision workflow on GCP Vertex AI to prioritize and streamline the 3G telecommunications decommissioning lifecycle.",
-                "Directly enabled the successful removal of over 150 legacy 3G towers in the London outskirts.",
-            ],
-        }],
-        stack: &[
-            ("Vertex AI", true),
-            ("Google Cloud (GCP)", true),
-            ("BigQuery", true),
-            ("Python", false),
-        ],
-    },
-    DeepDiveProject {
         id: "ac-gcp-terraform",
         company: "Accenture AI",
         company_id: "accenture",
