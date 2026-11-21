@@ -16,10 +16,10 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
         section { id: "systems",
             div { class: "wrap",
                 div { class: "sec-head",
-                    div { class: "eyebrow", "Architecture & Outcomes" }
-                    h2 { "Systems I've designed & shipped" }
+                    div { class: "eyebrow", "Selected Work" }
+                    h2 { "Things I've built (and why they mattered)" }
                     p { class: "sec-sub",
-                        "Click any project from Best Buy, Falabella, or Accenture AI to inspect its measured before/after deltas, architecture flow, and technical deep-dive notes."
+                        "A quiet engineering log from Best Buy, Falabella, and Accenture AI. Pick any project to open the full breakdown on the side."
                     }
                 }
 

@@ -11,7 +11,6 @@ enum CmdAction {
     ResumeStyled,
     ResumeAts,
     CopyEmail,
-    ToggleTheme,
 }
 
 struct CmdItem {
@@ -27,7 +26,6 @@ pub fn CommandPalette(
     resume_style: Signal<ResumeStyle>,
     selected_project: Signal<Option<&'static str>>,
     on_copy_email: EventHandler<()>,
-    on_toggle_theme: EventHandler<()>,
 ) -> Element {
     let mut query = use_signal(String::new);
 
@@ -36,22 +34,21 @@ pub fn CommandPalette(
     }
 
     let mut items = vec![
-        CmdItem { label: "Open Writing / Blog Page".into(), hint: "Page", action: CmdAction::Blog },
-        CmdItem { label: "Jump to Architecture & Outcomes".into(), hint: "#systems", action: CmdAction::Section("#systems") },
-        CmdItem { label: "Jump to Experience Timeline".into(), hint: "#journey", action: CmdAction::Section("#journey") },
-        CmdItem { label: "Jump to Technical Stack".into(), hint: "#stack", action: CmdAction::Section("#stack") },
-        CmdItem { label: "Jump to Education & Certifications".into(), hint: "#credentials", action: CmdAction::Section("#credentials") },
-        CmdItem { label: "Jump to Say Hello / Contact".into(), hint: "#contact", action: CmdAction::Section("#contact") },
+        CmdItem { label: "Open Blog & Notes Page".into(), hint: "Page", action: CmdAction::Blog },
+        CmdItem { label: "Jump to Selected Work".into(), hint: "#systems", action: CmdAction::Section("#systems") },
+        CmdItem { label: "Jump to The Story So Far".into(), hint: "#journey", action: CmdAction::Section("#journey") },
+        CmdItem { label: "Jump to Toolbox".into(), hint: "#stack", action: CmdAction::Section("#stack") },
+        CmdItem { label: "Jump to School & Certifications".into(), hint: "#credentials", action: CmdAction::Section("#credentials") },
+        CmdItem { label: "Jump to Say Hello".into(), hint: "#contact", action: CmdAction::Section("#contact") },
         CmdItem { label: "Open Styled Résumé".into(), hint: "Styled", action: CmdAction::ResumeStyled },
         CmdItem { label: "Open Plain / ATS-Compliant Résumé".into(), hint: "ATS", action: CmdAction::ResumeAts },
         CmdItem { label: "Copy Email Address".into(), hint: "Clipboard", action: CmdAction::CopyEmail },
-        CmdItem { label: "Toggle Light / Dark Theme".into(), hint: "Theme", action: CmdAction::ToggleTheme },
     ];
 
     for p in DEEP_DIVE_PROJECTS {
         items.push(CmdItem {
-            label: format!("Inspect: {} ({})", p.title, p.company),
-            hint: "Deep Dive",
+            label: format!("Read deep dive: {} ({})", p.title, p.company),
+            hint: "Project",
             action: CmdAction::Project(p.id),
         });
     }
@@ -104,7 +101,6 @@ pub fn CommandPalette(
                 document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
             }
             CmdAction::CopyEmail => on_copy_email.call(()),
-            CmdAction::ToggleTheme => on_toggle_theme.call(()),
         }
     };
 
@@ -119,7 +115,7 @@ pub fn CommandPalette(
                 class: "cmd-dialog",
                 role: "dialog",
                 aria_modal: "true",
-                aria_label: "Quick navigation",
+                aria_label: "Quick search",
                 onclick: move |evt| evt.stop_propagation(),
                 div { class: "cmd-input-wrap",
                     svg {
@@ -139,7 +135,7 @@ pub fn CommandPalette(
                         class: "cmd-input",
                         r#type: "text",
                         autofocus: true,
-                        placeholder: "Jump to section, open blog, inspect a project, styled/ATS résumé...",
+                        placeholder: "Jump to a section, project deep dive, blog, or résumé...",
                         value: "{query}",
                         oninput: move |evt| query.set(evt.value()),
                         onkeydown: move |evt| {
@@ -163,7 +159,7 @@ pub fn CommandPalette(
                     if filtered.is_empty() {
                         div {
                             style: "padding: 14px 12px; color: var(--text-3); font-size: 0.88rem;",
-                            "No matching actions."
+                            "Nothing matching that — try 'blog', 'resume', or 'Rust'."
                         }
                     } else {
                         for item in filtered {

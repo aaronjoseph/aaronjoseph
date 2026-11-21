@@ -10,10 +10,10 @@ pub fn StackSection() -> Element {
         section { id: "stack",
             div { class: "wrap",
                 div { class: "sec-head",
-                    div { class: "eyebrow", "Technical Stack" }
-                    h2 { "Tools across the full ML systems lifecycle" }
+                    div { class: "eyebrow", "Toolbox" }
+                    h2 { "What I reach for day to day" }
                     p { class: "sec-sub",
-                        "Filter by layer to highlight search modeling, Rust/Python serving, cloud MLOps, or observability."
+                        "The languages, frameworks, and cloud tools I spend the most time with — filter by area if you're looking for something specific."
                     }
                 }
 

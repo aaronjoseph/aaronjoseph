@@ -18,19 +18,19 @@ This repository serves two roles:
 .
 ├── Cargo.toml                       # Dioxus 0.7 ("web" feature), release profile tuned for WASM size
 ├── Dioxus.toml                      # App title, watcher paths, web.resource + web.resource.dev
-├── index.html                       # Custom HTML shell with instant "AJM" monogram splash loader & theme pre-init
+├── index.html                       # Custom HTML shell with instant warm-paper "AJM" monogram splash loader
 ├── README.md                        # GitHub Profile README + quick start
 ├── AGENTS.md                        # This guide
 ├── .github/workflows/deploy.yml     # CI build (dx build --release) & GitHub Pages deployment
 ├── assets/
 │   ├── favicon.svg                  # Custom geometric "AJM" monogram icon
-│   └── main.css                     # Full design system (Dark + Light theme + @media print résumé CSS)
+│   └── main.css                     # Full warm editorial light-only design system + @media print résumé CSS
 └── src/
-    ├── main.rs                      # App shell, theme state (ajm-theme-v2), Portfolio/Blog/Résumé view switch, Cmd+K, Toast
+    ├── main.rs                      # App shell, Portfolio/Blog/Résumé view switch, Cmd+K, Toast
     ├── data.rs                      # Single source of truth for all resume, telemetry, deep-dives, blog, career & cert data
     └── components/
         ├── mod.rs
-        ├── navbar.rs                # Sticky warm editorial navbar, theme toggle, Cmd+K button, mobile drawer
+        ├── navbar.rs                # Sticky warm editorial navbar, Cmd+K button, mobile drawer
         ├── hero.rs                  # Warm editorial intro (evanyou/eugeneyan style) + Search System / Agentic AI telemetry card
         ├── systems.rs               # Unified Architecture & Outcomes list (Best Buy → Falabella → Accenture AI) + slide-over Deep-Dive Drawer
         ├── journey.rs               # Narrative + interactive expandable 6-role Career Timeline
@@ -52,11 +52,11 @@ This repository serves two roles:
 ## 3. Design System
 
 - **Aesthetic:** *Warm Editorial & Engineering Notebook* — inspired by `eugeneyan.com` (typography & marker highlights), `evanyou.me` & `aliabdaal.com` (warm, approachable intro & contact), `iamtrask.github.io` (left-timestamp chronological blog), and `mccormickml.com` (clean distraction-free clarity).
-- **Themes:** Warm Paper Light mode default (`#faf8f3` cream paper, `#1c1917` warm ink) + Warm Espresso Dark mode (`#141311`), persisted in `localStorage` under key `ajm-theme-v2`.
+- **Theme:** Warm Paper Light-only (`#faf8f3` cream paper, `#1c1917` warm ink) — no dark mode toggle.
 - **Palette:**
-  - Highlighter Wash: Sunlit Yellow (`#fef08a` light / `rgba(250, 204, 21, 0.22)` dark)
-  - Primary Accent: Warm Terracotta Amber (`#c2410c` light / `#fb923c` dark)
-  - Signal Accent: Sage Emerald (`#15803d` light / `#34d399` dark)
+  - Highlighter Wash: Sunlit Yellow (`#fef08a`)
+  - Primary Accent: Warm Terracotta Amber (`#c2410c`)
+  - Signal Accent: Sage Emerald (`#15803d`)
 - **Typography:** `Plus Jakarta Sans` (crisp bold display/headings & UI), `Newsreader` (warm literary optical serif for intro prose & blog reading), `IBM Plex Mono` (blog timestamps, telemetry, chips, dates).
 - **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 

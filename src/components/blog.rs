@@ -16,17 +16,17 @@ pub fn WritingPreviewSection(on_open_blog: EventHandler<()>) -> Element {
             div { class: "wrap",
                 div { class: "latest-header",
                     div {
-                        div { class: "eyebrow", "Writing & Notes" }
-                        h2 { "Latest from the blog" }
+                        div { class: "eyebrow", "Notebook" }
+                        h2 { "Notes I'm working on" }
                     }
                     button {
                         class: "latest-all-btn",
                         r#type: "button",
                         onclick: move |_| on_open_blog.call(()),
                         if BLOG_POSTS.is_empty() {
-                            "Open Writing page →"
+                            "Visit the blog →"
                         } else {
-                            "All {BLOG_POSTS.len()} posts →"
+                            "Read all {BLOG_POSTS.len()} posts →"
                         }
                     }
                 }
@@ -160,11 +160,11 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
 
                     header { class: "blog-header",
                         h1 {
-                            "Writing & "
-                            span { class: "hl-mark", "Engineering Notes" }
+                            span { class: "hl-mark", "Notes" }
+                            " & Essays"
                         }
                         p { class: "blog-intro",
-                            "A quiet notebook on production search, Rust for ML serving, learning-to-rank performance, and evaluating agentic AI systems. New posts land at the top with their timestamp on the left."
+                            "A quiet place to write down what I'm learning — mostly about production search, Rust for ML, latency mysteries, and evaluating AI systems. Newer posts sit at the top with their date on the left."
                         }
                     }
 
@@ -172,16 +172,16 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                         div { class: "blog-draft-banner",
                             div { class: "blog-draft-badge",
                                 span { class: "pulse-dot", aria_hidden: "true" }
-                                span { "Just getting started · 0 published posts yet" }
+                                span { "Just getting this notebook off the ground · first essays in progress" }
                             }
                             p {
-                                "First write-ups are in progress. Below is the exact layout where new posts will appear as they go live — feel free to connect on "
+                                "Nothing published just yet, though a few drafts are taking shape below. If any of these topics sound interesting — or you'd like to swap notes on them — feel free to say hi on "
                                 a { href: "{LINKEDIN_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "LinkedIn" }
                                 ", "
                                 a { href: "{GITHUB_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "GitHub" }
                                 ", or "
                                 a { href: "{X_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "X" }
-                                " in the meantime."
+                                "."
                             }
                         }
 

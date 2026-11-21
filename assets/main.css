@@ -4,8 +4,7 @@
    Inspired by eugeneyan.com, evanyou.me, aliabdaal.com, iamtrask.github.io, mccormickml.com
    ========================================================================== */
 
-:root,
-[data-theme="light"] {
+:root {
   --bg: #faf8f3;
   --bg-elev: #f2eee4;
   --surface: #ffffff;
@@ -47,39 +46,6 @@
   --bar-track: rgba(28, 25, 23, 0.08);
 }
 
-[data-theme="dark"] {
-  --bg: #141311;
-  --bg-elev: #1c1a17;
-  --surface: rgba(31, 29, 25, 0.88);
-  --surface-solid: #1e1c18;
-  --surface-hover: #26231e;
-  --border: rgba(244, 241, 234, 0.09);
-  --border-strong: rgba(244, 241, 234, 0.19);
-
-  --text: #f4f1ea;
-  --text-2: #b8b2a6;
-  --text-3: #898377;
-
-  --highlight: rgba(250, 204, 21, 0.25);
-  --highlight-soft: rgba(250, 204, 21, 0.18);
-
-  --accent: #ea580c;
-  --accent-bright: #fb923c;
-  --accent-dim: rgba(245, 158, 11, 0.14);
-  --accent-border: rgba(251, 146, 60, 0.34);
-
-  --signal: #34d399;
-  --signal-dim: rgba(52, 211, 153, 0.12);
-  --signal-border: rgba(52, 211, 153, 0.30);
-
-  --grad: linear-gradient(115deg, #f59e0b 0%, #fb923c 52%, #34d399 100%);
-  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.48);
-  --shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.28);
-
-  --nav-bg: rgba(20, 19, 17, 0.86);
-  --bar-track: rgba(244, 241, 234, 0.09);
-}
-
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -118,12 +84,6 @@ body {
   background-image:
     radial-gradient(ellipse 72% 40% at 14% -8%, rgba(251, 191, 36, 0.12), transparent 68%),
     radial-gradient(ellipse 58% 36% at 88% 4%, rgba(21, 128, 61, 0.055), transparent 64%);
-}
-
-[data-theme="dark"] .bg-canvas {
-  background-image:
-    radial-gradient(ellipse 72% 42% at 15% -6%, rgba(245, 158, 11, 0.11), transparent 65%),
-    radial-gradient(ellipse 58% 36% at 88% 6%, rgba(52, 211, 153, 0.07), transparent 62%);
 }
 
 a {
@@ -244,12 +204,6 @@ code {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #1c1917;
-}
-
-[data-theme="dark"] .brand-mark {
-  background: var(--accent-dim);
-  border-color: var(--accent-border);
-  color: var(--accent-bright);
 }
 
 .brand-sub {
@@ -924,10 +878,6 @@ section h2 {
   display: flex;
   justify-content: flex-end;
   animation: fadeIn 0.18s ease;
-}
-
-[data-theme="dark"] .drawer-backdrop {
-  background: rgba(0, 0, 0, 0.62);
 }
 
 .drawer-panel {
@@ -2025,10 +1975,6 @@ footer {
   align-items: flex-start;
   justify-content: center;
   padding: 12vh 16px 24px;
-}
-
-[data-theme="dark"] .cmd-backdrop {
-  background: rgba(0, 0, 0, 0.65);
 }
 
 .cmd-dialog {

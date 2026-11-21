@@ -17,7 +17,7 @@ pub fn Hero(
                 div { class: "hero-intro",
                     div { class: "status-pill",
                         span { class: "pulse-dot", aria_hidden: "true" }
-                        span { "Senior AI Engineer @ Best Buy · Bengaluru" }
+                        span { "Currently at Best Buy · Bengaluru, India" }
                     }
 
                     h1 {
@@ -26,33 +26,31 @@ pub fn Hero(
                     }
 
                     p { class: "hero-serif-lead",
-                        "I build production search, ranking, and AI systems engineered for "
-                        strong { "high throughput (up to 12,000 RPS)" }
-                        " and "
-                        strong { "low latency" }
-                        ". Over 9+ years across analytics, ML, and systems engineering, I've focused on making complex models fast, observable, and cost-effective in Python and Rust."
+                        "I'm an AI & search engineer who enjoys taking slow, expensive ML systems and making them feel effortless — whether that means rewriting a search path in Rust, tracking down a stubborn 5-second GPU spike, or keeping things steady at "
+                        strong { "12,000 requests a second" }
+                        "."
                     }
 
                     p { class: "hero-inline-nav",
-                        "Explore my "
-                        a { href: "#systems", class: "inline-hl", "architecture deep dives" }
-                        ", read my "
+                        "Over the last nine years, I've gone from rural fintech and risk analytics to high-scale search, ranking, and agentic AI. Feel free to browse "
+                        a { href: "#systems", class: "inline-hl", "what I've built" }
+                        ", read "
                         button {
                             class: "inline-hl-btn",
                             r#type: "button",
                             onclick: move |_| on_open_blog.call(()),
-                            "engineering notes"
+                            "my notebook"
                         }
-                        ", browse my "
+                        ", grab "
                         button {
                             class: "inline-hl-btn",
                             r#type: "button",
                             onclick: move |_| on_open_resume.call(()),
-                            "styled or ATS résumé"
+                            "my résumé"
                         }
-                        ", or just "
-                        a { href: "#contact", class: "inline-hl", "say hello" }
-                        "."
+                        ", or "
+                        a { href: "#contact", class: "inline-hl", "write to me" }
+                        " anytime."
                     }
 
                     div { class: "hero-cta-row",
@@ -142,9 +140,9 @@ pub fn Hero(
                                 stroke_linejoin: "round",
                                 path { d: "M3 12h4l3-9 4 18 3-9h4" }
                             }
-                            span { "production-telemetry.log" }
+                            span { "What I've been working on" }
                         }
-                        span { class: "telemetry-badge", "VERIFIED IMPACT" }
+                        span { class: "telemetry-badge", "RECENT WORK" }
                     }
 
                     div { class: "telemetry-tabs", role: "tablist", aria_label: "Production projects",

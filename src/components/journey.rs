@@ -20,24 +20,24 @@ pub fn JourneySection() -> Element {
         section { id: "journey",
             div { class: "wrap",
                 div { class: "sec-head",
-                    div { class: "eyebrow", "Career Trajectory" }
-                    h2 { "From decision science to Rust-powered AI" }
+                    div { class: "eyebrow", "The Story So Far" }
+                    h2 { "Nine years of figuring things out" }
                     p { class: "sec-sub",
-                        "Nine years progressing from analytics and financial risk modeling to high-scale search and agentic AI systems."
+                        "From early-stage rural fintech and pricing analytics to Rust-powered search and agentic AI."
                     }
                 }
 
                 div { class: "career-layout",
                     aside { class: "about-panel",
-                        h3 { "How I approach engineering" }
+                        h3 { "A bit about how I work" }
                         p {
-                            "I started in decision science and fintech analytics — building competitive pricing dashboards for Pfizer, conversion funnels at FundsIndia, and joining Seed-stage Kaleidofin as employee #70 to protect rural India's underbanked savers."
+                            "My path into AI engineering wasn't a straight line. I started in decision science and fintech — building pricing models for Pfizer, conversion funnels at FundsIndia, and joining Seed-stage Kaleidofin as employee #70 to build risk analysis for rural India's underbanked savers."
                         }
                         p {
-                            "Along the way, I saw that the hardest problems in applied ML rarely end at offline accuracy. They live in tail latency, noisy retries, runaway cloud bills, slow retraining loops, and how quickly a team can trust a model change."
+                            "Somewhere along the way, I fell in love with the unglamorous side of ML: why a ranking model takes 24 hours to retrain, why a search endpoint spikes to 5 seconds under load, or why a cluster is quietly burning budget on idle Python workers."
                         }
                         p {
-                            "Today at Best Buy, I combine ML engineering with systems programming — moving critical search and UI paths to Rust (Axum & Dioxus), compiling rankers to ONNX, and making agentic AI observable and testable by default."
+                            "These days at Best Buy, I spend my time where machine learning meets systems engineering — rewriting hot search and UI paths in Rust (Axum & Dioxus), moving rankers to ONNX, and making agentic AI easy to trace and trust."
                         }
                     }
 

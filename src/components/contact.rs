@@ -13,18 +13,18 @@ pub fn ContactSection(
                 div { class: "contact-box",
                     div { class: "eyebrow", style: "justify-content:center;", "Say Hello" }
                     h2 {
-                        "Always happy to "
-                        span { class: "hl-mark", "chat & collaborate." }
+                        "Pull up a chair — "
+                        span { class: "hl-mark", "I'd love to hear from you." }
                     }
                     p { class: "contact-serif",
-                        "Whether you want to swap notes on high-throughput search, Rust for ML serving, LLM evaluation pipelines, or just grab a coffee in Bengaluru — my inbox is always open."
+                        "The best part of putting work on the internet is meeting thoughtful people. If you're wrestling with a tricky search or latency problem, curious about using Rust alongside Python ML, or just around Bengaluru and up for filter coffee, drop me a note. I read and reply to every email."
                     }
 
                     div { class: "contact-topics",
-                        span { "Search & Ranking at Scale" }
-                        span { "Rust / Axum / ONNX" }
+                        span { "Search & Ranking" }
+                        span { "Rust + Python ML" }
                         span { "Agentic AI & Evals" }
-                        span { "Coffee in Bengaluru" }
+                        span { "Filter coffee in Bengaluru" }
                     }
 
                     div { class: "contact-actions",
@@ -116,11 +116,11 @@ pub fn ContactSection(
 
         footer {
             div { class: "wrap footer-inner",
-                span { "Aaron Joseph Mathew · Senior AI Engineer · Bengaluru, India" }
+                span { "Made with care by Aaron Joseph Mathew · Bengaluru" }
                 span { class: "dioxus-badge",
-                    "Built with Rust + Dioxus (WASM) · Press "
+                    "Built in Rust & Dioxus · Press "
                     code { "⌘K" }
-                    " to search"
+                    " to jump around"
                 }
             }
         }

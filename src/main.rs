@@ -39,49 +39,37 @@ fn main() {
 
 #[component]
 fn App() -> Element {
-    let mut theme = use_signal(|| "light".to_string());
     let mut view = use_signal(|| AppView::Portfolio);
     let resume_style = use_signal(|| ResumeStyle::Styled);
     let mut selected_project = use_signal(|| Option::<&'static str>::None);
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
-    // Load saved theme from localStorage on mount & dismiss the AJM splash loader
+    // Dismiss the AJM splash loader once WASM mounts and main.css is loaded
     use_effect(move || {
-        spawn(async move {
-            let mut eval = document::eval(
-                r#"
-                const saved = localStorage.getItem('ajm-theme-v2');
-                const activeTheme = (saved === 'light' || saved === 'dark') ? saved : 'light';
-                document.documentElement.setAttribute('data-theme', activeTheme);
-                const splash = document.getElementById('aj-splash');
-                if (splash) {
-                    const dismiss = () => {
-                        if (splash.dataset.dismissed) return;
-                        splash.dataset.dismissed = '1';
-                        requestAnimationFrame(() => {
-                            splash.classList.add('aj-hidden');
-                            setTimeout(() => splash.remove(), 320);
-                        });
-                    };
-                    const css = document.querySelector('link[rel="stylesheet"][href*="main"]');
-                    if (!css || css.sheet) {
-                        dismiss();
-                    } else {
-                        css.addEventListener('load', dismiss, { once: true });
-                        css.addEventListener('error', dismiss, { once: true });
-                        setTimeout(dismiss, 800);
-                    }
-                }
-                dioxus.send(activeTheme);
-                "#,
-            );
-            if let Ok(val) = eval.recv::<String>().await {
-                if val == "light" || val == "dark" {
-                    theme.set(val);
+        document::eval(
+            r#"
+            const splash = document.getElementById('aj-splash');
+            if (splash) {
+                const dismiss = () => {
+                    if (splash.dataset.dismissed) return;
+                    splash.dataset.dismissed = '1';
+                    requestAnimationFrame(() => {
+                        splash.classList.add('aj-hidden');
+                        setTimeout(() => splash.remove(), 320);
+                    });
+                };
+                const css = document.querySelector('link[rel="stylesheet"][href*="main"]');
+                if (!css || css.sheet) {
+                    dismiss();
+                } else {
+                    css.addEventListener('load', dismiss, { once: true });
+                    css.addEventListener('error', dismiss, { once: true });
+                    setTimeout(dismiss, 800);
                 }
             }
-        });
+            "#,
+        );
     });
 
     // Global keyboard shortcut for Cmd/Ctrl+K and Escape (closes Command Palette or Deep-Dive Drawer)
@@ -129,15 +117,6 @@ fn App() -> Element {
         document::eval(js);
     });
 
-    let toggle_theme = move |_| {
-        let next = if theme() == "dark" { "light" } else { "dark" };
-        theme.set(next.to_string());
-        let js = format!(
-            "document.documentElement.setAttribute('data-theme', '{next}'); try {{ localStorage.setItem('ajm-theme-v2', '{next}'); }} catch(e) {{}}"
-        );
-        document::eval(&js);
-    };
-
     let copy_email = move |_| {
         let js = format!(
             "navigator.clipboard && navigator.clipboard.writeText('{EMAIL}').catch(() => {{}});"
@@ -178,14 +157,12 @@ fn App() -> Element {
         }
         document::Stylesheet { href: MAIN_CSS }
 
-        div { class: "app-shell", "data-theme": "{theme}",
+        div { class: "app-shell",
             div { class: "bg-canvas", aria_hidden: "true" }
 
             Navbar {
-                theme,
                 view,
                 cmd_open,
-                on_toggle_theme: toggle_theme,
             }
 
             match view() {
@@ -228,7 +205,6 @@ fn App() -> Element {
                 resume_style,
                 selected_project,
                 on_copy_email: copy_email,
-                on_toggle_theme: toggle_theme,
             }
 
             if let Some(msg) = toast() {

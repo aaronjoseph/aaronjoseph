@@ -8,8 +8,8 @@ pub fn CredentialsSection() -> Element {
         section { id: "credentials",
             div { class: "wrap",
                 div { class: "sec-head",
-                    div { class: "eyebrow", "Education & Credentials" }
-                    h2 { "Foundations & verified certifications" }
+                    div { class: "eyebrow", "Background" }
+                    h2 { "School & certifications" }
                 }
 
                 div { class: "cred-grid",
