@@ -874,9 +874,10 @@ section h2 {
   transition: transform 0.22s var(--ease-smooth), box-shadow 0.22s ease, border-color 0.18s ease;
 }
 
-.dd-row.co-bestbuy   { border-top-color: var(--orange); }
-.dd-row.co-falabella { border-top-color: var(--blush); }
-.dd-row.co-accenture { border-top-color: var(--lavender); }
+.dd-row.co-bestbuy    { border-top-color: var(--orange); }
+.dd-row.co-falabella  { border-top-color: var(--blush); }
+.dd-row.co-accenture  { border-top-color: var(--lavender); }
+.dd-row.co-kaleidofin { border-top-color: #35b3ac; }
 
 .dd-row:hover {
   transform: translateY(-4px);

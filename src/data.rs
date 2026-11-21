@@ -817,6 +817,98 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ("BigQuery", false),
         ],
     },
+    DeepDiveProject {
+        id: "kf-amfi-risk",
+        company: "Kaleidofin",
+        company_id: "kaleidofin",
+        period: "Jun 2019 – Dec 2020",
+        category: "Fintech Risk & Quant Analytics",
+        title: "AMFI Mutual Fund Risk Engine & Avoiding the $3.4B Franklin Collapse",
+        one_liner: "Scraped AMFI daily NAV feeds and built Sharpe-ratio & credit-quality risk tooling — flagging hidden credit risk behind Franklin MF's +1–2% XIRR edge ahead of its $3.4B collapse.",
+        headline_badges: &[
+            ("Avoided $3.4B MF collapse", MetricTone::Signal),
+            ("AMFI NAV · Sharpe Ratio", MetricTone::Accent),
+            ("Underbanked customer protection", MetricTone::Default),
+        ],
+        flow: "AMFI (India) Daily NAV Scraper → Unified Fund Return Dataset → Risk Engine [Sharpe Ratio · XIRR · Credit Rating Audit] → Safe Fund Shortlist",
+        comparisons: &[
+            NotebookComparison {
+                label: "Fund Selection Screen",
+                before: "Surface XIRR & headline ratings",
+                after: "Sharpe Ratio + rating-agency audit",
+                delta: "Flagged hidden credit risk",
+                tone: MetricTone::Signal,
+            },
+            NotebookComparison {
+                label: "Franklin MF Debt Schemes",
+                before: "+1–2% higher XIRR (enticing)",
+                after: "Excluded from customer offers",
+                delta: "Dodged $3.4B collapse",
+                tone: MetricTone::Accent,
+            },
+        ],
+        callouts: &[
+            NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Quantitative Screen · Sharpe Ratio = (Rp − Rf) / σp",
+                body: "Measured excess return per unit of volatility — where Rp is the mutual fund return, Rf is the risk-free rate, and σp is the standard deviation of the fund's returns — to narrow the entire AMFI fund universe to schemes with genuinely strong risk-adjusted performance.",
+                link: None,
+            },
+            NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Spotting the Franklin Templeton Red Flag Before the Crash",
+                body: "Franklin schemes outperformed peers by 1–2% XIRR and looked well-rated on the surface, but deep-diving the holdings revealed risky, lower-grade paper backed by weaker credit rating agencies. We refused to recommend them — safeguarding underbanked customers months before Franklin's $3.4B debt-fund collapse.",
+                link: None,
+            },
+        ],
+        sticky_notes: &[StickyNote {
+            tone: StickyTone::Yellow,
+            title: "Why the Tooling Worked",
+            items: &[
+                "Scraped AMFI for full historical mutual fund NAVs",
+                "Ranked funds by Sharpe Ratio = (Rp − Rf) / σp & XIRR",
+                "Audited underlying credit ratings & agency credibility",
+                "Protected underbanked customers from $3.4B wipeout",
+            ],
+        }],
+        key_outcomes: &[
+            ("$3.4B", "Franklin collapse avoided", MetricTone::Signal),
+            ("+1–2% XIRR", "Outlier yield trap flagged", MetricTone::Accent),
+            ("AMFI NAV", "Full India MF universe scraped", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "1 · AMFI Data Scraping & NAV Capture",
+                points: &[
+                    "Built an automated scraping pipeline against AMFI (Association of Mutual Funds in India) to continuously capture daily Net Asset Value (NAV) histories across Indian mutual fund schemes.",
+                    "Consolidated raw NAV series into an analytical dataset that let the team systematically evaluate and narrow the investment search space rather than relying on broker pitches or headline rankings.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "2 · Risk-Adjusted Scoring & Sharpe Ratio Formula",
+                points: &[
+                    "Engineered quantitative screening tooling on top of the AMFI NAV dataset to compute XIRR and risk-adjusted return metrics, anchored by the Sharpe Ratio: Sharpe Ratio = (Rp − Rf) / σp — where Rp is the portfolio/fund return, Rf is the risk-free benchmark rate, and σp is the standard deviation (volatility) of excess returns.",
+                    "Used a strong Sharpe Ratio threshold alongside volatility and drawdown checks to filter for funds that delivered consistent risk-adjusted performance suited to lower-income, underbanked savers.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "3 · Exposing Hidden Credit Risk Ahead of the $3.4B Franklin Collapse",
+                points: &[
+                    "During screening, Franklin Mutual Fund debt schemes stood out by outperforming peer funds by 1–2% XIRR and displaying attractive headline ratings.",
+                    "A deeper inspection into the underlying holdings revealed the giveaway: the yield advantage came from insecure, poorly rated debt instruments whose favorable ratings were issued by weaker, lower-tier credit rating agencies rather than top-tier agencies.",
+                    "Based on this analysis, we chose not to sponsor or recommend Franklin funds to Kaleidofin's underbanked customers. Months later, Franklin Templeton abruptly wound down six debt funds in a $3.4 billion collapse — validating the risk framework and directly safeguarding customer savings.",
+                ],
+            },
+        ],
+        stack: &[
+            ("AMFI NAV Scraping", true),
+            ("Sharpe Ratio / XIRR", true),
+            ("Credit Risk Analysis", true),
+            ("Python", true),
+            ("Portfolio Analytics", false),
+            ("Mutual Funds", false),
+        ],
+    },
 ];
 
 /// Add entries here (newest first) to publish blog posts on the dedicated Writing page.
