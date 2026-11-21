@@ -1460,6 +1460,14 @@ section h2 {
    The Story So Far (Blush/Khaki Narrative Panel + Crisp White Career Cards)
    ========================================================================== */
 
+.story-page {
+  padding: 28px 0 88px;
+}
+
+.story-page-bar {
+  margin-bottom: 18px;
+}
+
 .career-runway {
   position: relative;
   min-height: calc(100vh + 1560px);
