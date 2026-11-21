@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aaron Joseph Mathew — Senior AI &amp; Search Systems Engineer</title>
+  <meta name="description" content="Senior AI Engineer with 9+ years across production search, learning-to-rank, LLM evaluation, and low-latency Python & Rust systems serving up to 12,000 RPS." />
+  <meta property="og:title" content="Aaron Joseph Mathew — Senior AI & Search Systems Engineer" />
+  <meta property="og:description" content="Production search, ranking, LLM evaluation, and Rust/Python ML systems engineered for real-world latency and cost." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#090a0d" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='16' fill='%230b0c10'/%3E%3Crect x='2' y='2' width='60' height='60' rx='14' stroke='url(%23g)' stroke-width='2.5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='%23f3f4f6' font-family='system-ui,-apple-system,sans-serif' font-weight='700' font-size='26' letter-spacing='-1'%3EAJ%3C/text%3E%3Ccircle cx='50' cy='14' r='4' fill='%2310b981'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='4' y1='4' x2='60' y2='60' gradientUnits='userSpaceOnUse'%3E%3Cstop stop-color='%23f97316'/%3E%3Cstop offset='1' stop-color='%2310b981'/%3E%3C/linearGradient%3E%3C/defs%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('ajm-theme');
+        if (saved === 'light' || saved === 'dark') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      background-color: #090a0d;
+      color: #f3f4f6;
+    }
+    html[data-theme="light"], html[data-theme="light"] body {
+      background-color: #f7f6f2;
+      color: #111318;
+    }
+    .aj-splash {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      background-color: #090a0d;
+      background-image:
+        radial-gradient(ellipse 70% 45% at 50% 35%, rgba(249, 115, 22, 0.12), transparent 70%),
+        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 100% 100%, 28px 28px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      z-index: 9999;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.28s ease, visibility 0.28s ease;
+    }
+    .aj-splash.aj-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    html[data-theme="light"] .aj-splash {
+      background-color: #f7f6f2;
+      background-image:
+        radial-gradient(ellipse 70% 45% at 50% 35%, rgba(234, 88, 12, 0.08), transparent 70%),
+        radial-gradient(rgba(15, 23, 42, 0.07) 1px, transparent 1px);
+    }
+    .aj-logo-wrap {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      display: grid;
+      place-items: center;
+    }
+    .aj-logo-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 24px;
+      background: conic-gradient(from 0deg, #f97316, #10b981, transparent 65%, #f97316);
+      opacity: 0.7;
+      animation: aj-spin 1.8s linear infinite;
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 2px;
+    }
+    .aj-logo-svg {
+      width: 84px;
+      height: 84px;
+      border-radius: 20px;
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+      animation: aj-breathe 2s ease-in-out infinite;
+    }
+    html[data-theme="light"] .aj-logo-svg {
+      box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+    }
+    .aj-dot-pulse {
+      transform-origin: 50px 14px;
+      animation: aj-dot 1.6s ease-in-out infinite;
+    }
+    .aj-splash-bar {
+      width: 112px;
+      height: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    html[data-theme="light"] .aj-splash-bar {
+      background: rgba(15, 23, 42, 0.1);
+    }
+    .aj-splash-bar::after {
+      content: "";
+      display: block;
+      width: 45%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #f97316, #10b981);
+      animation: aj-slide 1.15s ease-in-out infinite;
+    }
+    @keyframes aj-spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes aj-breathe {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+    }
+    @keyframes aj-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    @keyframes aj-slide {
+      0% { transform: translateX(-110%); }
+      100% { transform: translateX(250%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .aj-logo-ring, .aj-logo-svg, .aj-dot-pulse, .aj-splash-bar::after {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="aj-splash" class="aj-splash" role="status" aria-label="Loading Aaron Joseph Mathew">
+    <div class="aj-logo-wrap">
+      <div class="aj-logo-ring" aria-hidden="true"></div>
+      <svg class="aj-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect width="64" height="64" rx="16" fill="#0b0c10" />
+        <rect x="2" y="2" width="60" height="60" rx="14" stroke="url(#ajg)" stroke-width="2.5" />
+        <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#f3f4f6" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="26" letter-spacing="-1">AJ</text>
+        <circle class="aj-dot-pulse" cx="50" cy="14" r="4" fill="#10b981" />
+        <defs>
+          <linearGradient id="ajg" x1="4" y1="4" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#f97316" />
+            <stop offset="1" stop-color="#10b981" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <div class="aj-splash-bar" aria-hidden="true"></div>
+  </div>
+  <div id="main"></div>
+</body>
+</html>

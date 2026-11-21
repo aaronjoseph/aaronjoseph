@@ -30,19 +30,34 @@ fn App() -> Element {
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
-    // Load saved theme from localStorage on mount & listen for Cmd/Ctrl+K
+    // Load saved theme from localStorage on mount & dismiss the AJ splash loader
     use_effect(move || {
         spawn(async move {
             let mut eval = document::eval(
                 r#"
                 const saved = localStorage.getItem('ajm-theme');
-                if (saved === 'light' || saved === 'dark') {
-                    document.documentElement.setAttribute('data-theme', saved);
-                    dioxus.send(saved);
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                    dioxus.send('dark');
+                const activeTheme = (saved === 'light' || saved === 'dark') ? saved : 'dark';
+                document.documentElement.setAttribute('data-theme', activeTheme);
+                const splash = document.getElementById('aj-splash');
+                if (splash) {
+                    const dismiss = () => {
+                        if (splash.dataset.dismissed) return;
+                        splash.dataset.dismissed = '1';
+                        requestAnimationFrame(() => {
+                            splash.classList.add('aj-hidden');
+                            setTimeout(() => splash.remove(), 320);
+                        });
+                    };
+                    const css = document.querySelector('link[rel="stylesheet"][href*="main"]');
+                    if (!css || css.sheet) {
+                        dismiss();
+                    } else {
+                        css.addEventListener('load', dismiss, { once: true });
+                        css.addEventListener('error', dismiss, { once: true });
+                        setTimeout(dismiss, 800);
+                    }
                 }
+                dioxus.send(activeTheme);
                 "#,
             );
             if let Ok(val) = eval.recv::<String>().await {
