@@ -199,12 +199,13 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             },
             TelemetryWorkstream {
                 index: "02",
-                title: "Agentic Tracing & Model Dashboards",
-                pipeline: "Google Cloud Trace · Structured Logs",
-                advantage: "Established org-wide request-level tracing across agentic AI inputs & outputs with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
+                title: "Arize Phoenix → Cloud Trace & On-Call",
+                pipeline: "Google Cloud Trace · Monitoring · GoAlert",
+                advantage: "Migrated agentic tracing off an inefficient Cloud Run Arize Phoenix collector to Cloud Trace, diagnosed latency spikes to cut pre-launch TTFT from 15 s to 12 s, and set up Gemma/Gemini dashboards + GoAlert on-call routines.",
                 gains: &[
-                    ("End-to-end agentic I/O traces", MetricTone::Accent),
-                    ("Gemma vs. Gemini dashboards", MetricTone::Default),
+                    ("15 s → 12 s TTFT (−20%)", MetricTone::Signal),
+                    ("Arize Phoenix → Cloud Trace", MetricTone::Accent),
+                    ("Monitoring + GoAlert on-call", MetricTone::Default),
                 ],
             },
             TelemetryWorkstream {
@@ -421,19 +422,118 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         ],
     },
     DeepDiveProject {
+        id: "bb-agentic-tracing",
+        company: "Best Buy",
+        company_id: "bestbuy",
+        period: "May 2025 – Present",
+        category: "Agentic AI · Observability",
+        title: "Agentic Tracing (Arize Phoenix → Cloud Trace), TTFT & On-Call",
+        one_liner: "Migrated agentic tracing from an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace, uncovered latency spikes to cut pre-launch TTFT from 15 s to 12 s, and wired Cloud Monitoring + GoAlert on-call routines.",
+        headline_badges: &[
+            ("15 s → 12 s TTFT (−20%)", MetricTone::Signal),
+            ("Arize Phoenix → Cloud Trace", MetricTone::Accent),
+            ("Cloud Monitoring · GoAlert", MetricTone::Default),
+        ],
+        flow: "Agentic AI I/O → Cloud Trace + Structured Logs → Gemma vs. Gemini Dashboards → Cloud Alerting → GoAlert On-Call",
+        comparisons: &[
+            NotebookComparison {
+                label: "Trace Collector & Backend",
+                before: "Arize Phoenix (Cloud Run)",
+                after: "Google Cloud Trace",
+                delta: "Native · Low-overhead",
+                tone: MetricTone::Accent,
+            },
+            NotebookComparison {
+                label: "Pre-Launch Agent TTFT",
+                before: "15 s time-to-first-token",
+                after: "12 s time-to-first-token",
+                delta: "−3 s (−20% TTFT)",
+                tone: MetricTone::Signal,
+            },
+            NotebookComparison {
+                label: "Incident Response",
+                before: "Ad-hoc debugging",
+                after: "Monitoring + GoAlert",
+                delta: "Eng & DS on-call",
+                tone: MetricTone::Signal,
+            },
+        ],
+        callouts: &[
+            NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Why Move Off Arize Phoenix on Cloud Run?",
+                body: "The Arize Phoenix trace collector was inefficient on our Cloud Run instance. Migrating the entire tracing pipeline to managed Google Cloud Trace + structured Cloud Logging unlocked reliable request-level visibility across every agentic hop.",
+                link: None,
+            },
+            NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Pre-Launch Latency Triage & On-Call Readiness",
+                body: "Pinpointed the exact agentic spans causing latency spikes to drop pre-launch TTFT from 15 s to 12 s, and coupled live dashboards with Cloud Alerting + GoAlert rotations so engineers and scientists can triage production issues cleanly.",
+                link: None,
+            },
+        ],
+        sticky_notes: &[StickyNote {
+            tone: StickyTone::Yellow,
+            title: "Observability & On-Call Stack",
+            items: &[
+                "End-to-end Cloud Trace spans + structured agentic I/O logs",
+                "Live model dashboards comparing fine-tuned Gemma vs. Gemini",
+                "Alert policies routed into GoAlert for engineer & scientist on-call",
+            ],
+        }],
+        key_outcomes: &[
+            ("15 s → 12 s", "Pre-launch TTFT (−20%)", MetricTone::Signal),
+            ("Cloud Trace", "Replaced Cloud Run Phoenix", MetricTone::Accent),
+            ("GoAlert", "Eng & DS on-call routing", MetricTone::Signal),
+            ("Gemma vs Gemini", "Live model dashboards", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "1 · Arize Phoenix → Google Cloud Trace Migration",
+                points: &[
+                    "Migrated the entire agentic tracing pipeline off Arize Phoenix — whose trace collector ran inefficiently on our Cloud Run instance — onto native Google Cloud Trace paired with Cloud Logging and structured agentic I/O logs.",
+                    "Established organization-wide request-level span visibility across prompts, tool invocations, retrieval hops, and LLM responses.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "2 · Pre-Launch Latency Diagnostics (15 s → 12 s TTFT)",
+                points: &[
+                    "Used request-level Cloud Trace waterfalls to uncover bottlenecks in the agentic orchestration where latencies were spiking.",
+                    "Eliminated critical-path stalls during initial pre-launch testing, cutting Time to First Token (TTFT) from 15 seconds down to 12 seconds.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "3 · Monitoring, Alerting & GoAlert On-Call",
+                points: &[
+                    "Contributed monitoring dashboards comparing in-house fine-tuned Gemma models against Gemini models across latency and runtime behavior.",
+                    "Set up Cloud Monitoring & Alerting integrated with GoAlert on-call routines so both engineers and data scientists could reliably triage and handle production issues when on call.",
+                ],
+            },
+        ],
+        stack: &[
+            ("Google Cloud Trace", true),
+            ("Cloud Monitoring", true),
+            ("GoAlert", true),
+            ("Cloud Logging", true),
+            ("Arize Phoenix → GCP", false),
+            ("Gemini / Gemma", false),
+            ("Cloud Run", false),
+        ],
+    },
+    DeepDiveProject {
         id: "bb-agentic-ai",
         company: "Best Buy",
         company_id: "bestbuy",
         period: "May 2025 – Present",
-        category: "Agentic AI",
-        title: "Observability, LLM-as-a-Judge & Unified Dioxus Suite",
-        one_liner: "Built Cloud Trace agentic diagnostics, automated LLM-as-a-judge evals, and evolved a plain chat-only Chainlit UI into a full Rust/Dioxus suite (Chat Comparator, Perf Test, Regression & utilities) under one endpoint.",
+        category: "Agentic AI · Tooling & Evals",
+        title: "LLM-as-a-Judge Evals & Unified Rust/Dioxus Suite",
+        one_liner: "Automated LLM-as-a-judge regression evals (1–2 days → <1 hr) and evolved a plain chat-only Chainlit UI into a full Rust/Dioxus suite (Chat Comparator, Perf Test, Regression & utilities) under one endpoint.",
         headline_badges: &[
             ("1–2 days → <1 hr eval", MetricTone::Signal),
             ("27× lower UI compute", MetricTone::Accent),
             ("Single-endpoint Dioxus suite", MetricTone::Default),
         ],
-        flow: "Agentic I/O → Cloud Trace + Structured Logs → Gemma vs. Gemini Dashboards · Unified Dioxus Suite [Chat Comparator · Perf Test · Regression · Utilities]",
+        flow: "Unified Dioxus Suite [Chat Comparator · Perf Test · Regression · Utilities] → LLM-as-a-Judge & Endpoint Smoke Tests → Automated Release Validation",
         comparisons: &[
             NotebookComparison {
                 label: "Product Release Validation",
@@ -461,19 +561,17 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ("<1 hr", "Regression validation", MetricTone::Signal),
             ("27×", "Lower UI compute (Dioxus)", MetricTone::Accent),
             ("1 endpoint", "Comparator · Perf · Regression", MetricTone::Accent),
-            ("Gemma vs Gemini", "Live eval dashboards", MetricTone::Default),
         ],
         sections: &[
             DeepDiveSection {
-                heading: "Observability & Evaluation",
+                heading: "1 · Automated Evaluation & Self-Service Testing",
                 points: &[
-                    "Established Google Cloud Trace across the organization, pairing Cloud Logging and structured logs for request-level diagnostics across agentic I/O.",
-                    "Contributed monitoring dashboards comparing in-house fine-tuned Gemma models against Gemini models.",
                     "Built an LLM-as-a-judge regression suite, API comparator, endpoint smoke tests, and self-service performance testing — cutting product validation from 1–2 days to under 1 hour.",
+                    "Enabled engineers and scientists to catch quality and latency regressions before formal performance runs.",
                 ],
             },
             DeepDiveSection {
-                heading: "Unified Rust/Dioxus Engineering Suite",
+                heading: "2 · Unified Rust/Dioxus Engineering Suite",
                 points: &[
                     "Transformed a plain vanilla chat-only Chainlit UI (and Streamlit tooling) into a full self-service Rust/Dioxus suite under a single endpoint — bringing together Chat Comparator, Perf Testing, Regression Evaluation, and everyday engineering utilities.",
                     "Cut UI container compute costs by 27× while maintaining or improving responsiveness.",
@@ -481,12 +579,10 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
         ],
         stack: &[
-            ("Google Cloud Trace", true),
             ("LLM-as-a-Judge", true),
-            ("Gemini / Gemma", true),
             ("Dioxus (Rust)", true),
+            ("Gemini / Gemma", true),
             ("Google ADK", false),
-            ("Cloud Logging", false),
             ("Chainlit → Dioxus", false),
         ],
     },
