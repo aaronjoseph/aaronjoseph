@@ -118,7 +118,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
     TelemetryProject {
         id: "search-system",
         label: "Search System",
-        context: "Best Buy · Semantic Search & Ranking Stack (up to 12,000 RPS)",
+        context: "Best Buy · Semantic Search & Ranking Stack",
         stack_summary: "Rust · Axum · ONNX · GKE C4A",
         workstreams: &[
             TelemetryWorkstream {
@@ -127,11 +127,10 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
                 pipeline: "Hexagonal Architecture · C4A GKE",
                 advantage: "Separated core search logic from infra adapters and removed Python runtime overhead, enabling C4A-highcpu-4 right-sizing and clean holiday HPA scaling.",
                 gains: &[
-                    ("Up to 12,000 RPS", MetricTone::Signal),
                     ("700 → 350 ms P50", MetricTone::Signal),
-                    ("28× less compute", MetricTone::Accent),
-                    ("190× less RAM", MetricTone::Accent),
-                    ("−83% non-peak GKE (~$100K/yr)", MetricTone::Default),
+                    ("−95% compute", MetricTone::Accent),
+                    ("−98% RAM", MetricTone::Accent),
+                    ("~$180K/yr saved (~$500/day)", MetricTone::Default),
                 ],
             },
             TelemetryWorkstream {
@@ -214,11 +213,11 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         title: "Flask → FastAPI → Rust (Axum) & GKE C4A",
         one_liner: "Re-architected semantic search into hexagonal Rust/Axum, right-sized C4A GKE node pools, and tuned holiday RPS autoscaling.",
         headline_badges: &[
-            ("Up to 12,000 RPS", MetricTone::Signal),
             ("700 → 350 ms P50", MetricTone::Signal),
-            ("28× compute · 190× RAM", MetricTone::Accent),
+            ("−95% compute · −98% RAM", MetricTone::Accent),
+            ("~$180K/yr saved", MetricTone::Signal),
         ],
-        flow: "Client Traffic (up to 12K RPS) → GKE HPA (RPS Scaling) → Axum HTTP Layer → Hexagonal Search Domain → Downstream Model Adapters",
+        flow: "Client Traffic → GKE HPA (RPS Scaling) → Axum HTTP Layer → Hexagonal Search Domain → Downstream Model Adapters",
         meters: &[
             OutcomeMeter {
                 label: "Search P50 Latency",
@@ -229,21 +228,29 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                 accent_after: false,
             },
             OutcomeMeter {
-                label: "Non-Peak GKE CPU/RAM Spend",
-                before_label: "100% baseline",
+                label: "Compute Cost (Rust Migration)",
+                before_label: "Python baseline",
                 before_pct: 100,
-                after_label: "17% (−83%)",
-                after_pct: 17,
+                after_label: "5% (−95%)",
+                after_pct: 5,
                 accent_after: true,
+            },
+            OutcomeMeter {
+                label: "Memory Footprint (RAM)",
+                before_label: "Python baseline",
+                before_pct: 100,
+                after_label: "2% (−98%)",
+                after_pct: 3,
+                accent_after: false,
             },
         ],
         key_outcomes: &[
-            ("12,000 RPS", "Peak search throughput", MetricTone::Signal),
-            ("28×", "Lower compute cost", MetricTone::Accent),
-            ("190×", "Lower memory footprint", MetricTone::Accent),
+            ("−95%", "Compute cost reduction", MetricTone::Accent),
+            ("−98%", "RAM footprint reduction", MetricTone::Accent),
+            ("~$180K/yr", "Est. savings (~$500/day)", MetricTone::Signal),
             (">1 s", "Max latency cut", MetricTone::Signal),
-            ("~$100K/yr", "Projected GKE savings", MetricTone::Signal),
             ("−78%", "Min node-pool compute", MetricTone::Default),
+            ("−30% / −20%", "C4A upgrade latency / pods", MetricTone::Default),
         ],
         sections: &[
             DeepDiveSection {
