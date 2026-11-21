@@ -1,0 +1,22 @@
+[package]
+name = "aaronjoseph"
+version = "0.1.0"
+edition = "2021"
+authors = ["Aaron Joseph Mathew <aaronjosephmathew@gmail.com>"]
+description = "Personal website & interactive portfolio for Aaron Joseph Mathew — Senior AI & Search Systems Engineer, built with Dioxus."
+
+[dependencies]
+dioxus = { version = "0.7", features = ["web"] }
+
+[features]
+default = ["web"]
+web = ["dioxus/web"]
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
