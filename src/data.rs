@@ -351,6 +351,14 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                     "Paired with RPS-based Kubernetes HPA scaling to stay lean overnight while expanding smoothly for holiday peaks.",
                 ],
             },
+            DeepDiveSection {
+                heading: "4 · Python Polars DataFrames → Native Rust Structs & LLVM Optimization",
+                points: &[
+                    "Replaced Python Polars DataFrames in the hot request path with native typed Rust structs, borrowed slices, small domain collections, and zero-cost iterators. While Polars excels at large offline batch analytics, per-request search scoring operates on small candidate cohorts where DataFrame schema setup, Arrow buffer allocations, and Python↔FFI crossings add avoidable overhead.",
+                    "Modelling candidates, ranking features, scores, and grouped results directly in contiguous Rust memory eliminated intermediate materializations and heap churn, making feature assembly and merging far more CPU-cache friendly.",
+                    "Compiled the production serving binary with aggressive LLVM release flags (opt-level = 3 across dependencies, Fat LTO, and codegen-units = 1), enabling cross-crate inlining across hexagonal layers, dead-code elimination, and tighter ARM Neoverse (C4A) machine code generation.",
+                ],
+            },
         ],
         stack: &[
             ("Rust", true),
@@ -358,6 +366,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ("Hexagonal Monolith", true),
             ("Bulkhead Pools", true),
             ("GKE ARM C4A / Titanium", true),
+            ("LLVM Fat LTO", false),
             ("Concurrent Fan-Out", false),
             ("Kubernetes HPA", false),
             ("FastAPI / Flask", false),
