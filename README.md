@@ -49,7 +49,7 @@ Currently at **Best Buy** (Bengaluru) working on **AskBlue** and **Search 2.0**,
 
 ### Education & Verified Certifications
 
-- **Georgia Institute of Technology** — M.S. in Analytics *(Computational Track)*
+- **[Georgia Institute of Technology](https://www.parchment.com/lp/award/ed53759e-129b-4fdc-a78d-e90fa10e8197)** — M.S. in Analytics *(Computational Track · Parchment Verified)*
 - **BMS Institute of Technology** — B.E. in Electronics & Communication
 - [GCP Professional Data Engineering Certification](https://www.credential.net/5a158b5b-5b95-4e79-868a-2cf6a4959512?key=c4a40ba808cb312664a87fb1f5ae292c984bcd3eafd3db40d07c5427e4b3752f)
 - [Deep Learning Specialization — Coursera](https://www.coursera.org/account/accomplishments/specialization/GLDSULWYE2H4)

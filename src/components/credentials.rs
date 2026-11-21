@@ -15,10 +15,26 @@ pub fn CredentialsSection() -> Element {
                 div { class: "cred-grid",
                     div { class: "cred-col",
                         for edu in EDUCATION {
-                            div { class: "cred-card", key: "{edu.school}",
-                                div { class: "cred-type", "{edu.kind}" }
-                                h3 { "{edu.school}" }
-                                p { class: "cred-sub", "{edu.degree} · {edu.location}" }
+                            if let Some((verify_label, href)) = edu.url {
+                                a {
+                                    key: "{edu.school}",
+                                    class: "cred-card cert-link",
+                                    href: "{href}",
+                                    target: "_blank",
+                                    rel: "noopener noreferrer",
+                                    div {
+                                        div { class: "cred-type", "{edu.kind} · {verify_label}" }
+                                        h3 { "{edu.school}" }
+                                        p { class: "cred-sub", "{edu.degree} · {edu.location}" }
+                                    }
+                                    span { class: "cert-arrow", aria_hidden: "true", "↗" }
+                                }
+                            } else {
+                                div { class: "cred-card", key: "{edu.school}",
+                                    div { class: "cred-type", "{edu.kind}" }
+                                    h3 { "{edu.school}" }
+                                    p { class: "cred-sub", "{edu.degree} · {edu.location}" }
+                                }
                             }
                         }
                     }

@@ -85,6 +85,7 @@ pub struct Education {
     pub school: &'static str,
     pub degree: &'static str,
     pub location: &'static str,
+    pub url: Option<(&'static str, &'static str)>,
 }
 
 pub struct Certification {
@@ -1038,12 +1039,17 @@ pub const EDUCATION: &[Education] = &[
         school: "Georgia Institute of Technology",
         degree: "MS, Analytics — Computational Track",
         location: "Atlanta, US",
+        url: Some((
+            "Parchment verified diploma",
+            "https://www.parchment.com/lp/award/ed53759e-129b-4fdc-a78d-e90fa10e8197",
+        )),
     },
     Education {
         kind: "Undergraduate Degree",
         school: "BMS Institute of Technology",
         degree: "B.E., Electronics & Communication",
         location: "Bengaluru, India",
+        url: None,
     },
 ];
 
