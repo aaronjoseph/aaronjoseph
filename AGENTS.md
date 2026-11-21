@@ -60,7 +60,7 @@ This repository serves two roles:
   - Base Cream: `#faf7f2` · Light Khaki: `#f1eae0` · Floating Card: `#ffffff`
   - Blush Peach: `#f7cec5` · Light Orange CTA: `#f08b6d` · Dusk Lavender: `#877796`
   - Botanical Sage: `#2e7d63` · Warm Charcoal Ink: `#2c2a35`
-- **Typography:** `Fraunces` with `'SOFT' 100, 'WONK' 1` (Recoleta-style soft warm display headings inspired by `aliabdaal.com`), `DM Sans` (clean airy body & hero intro copy), `Newsreader` (literary editorial serif for blog reading inspired by `eugeneyan.com`), `IBM Plex Mono` (timestamps, metrics, chips).
+- **Typography:** `Fraunces` with `'SOFT' 100, 'WONK' 0` (upright Recoleta-style soft warm display headings inspired by `aliabdaal.com`), `DM Sans` (clean airy body & hero intro copy), `Newsreader` (literary editorial serif for blog reading inspired by `eugeneyan.com`), `IBM Plex Mono` (timestamps, metrics, chips).
 - **Mobile Polish:** Full-width spacious buttons on mobile (`min-height: 46px`), horizontal swipeable filter pills, full-width segmented mode switches, and an uncrowded mobile navbar.
 - **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 

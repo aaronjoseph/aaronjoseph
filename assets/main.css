@@ -88,7 +88,7 @@ h1, h2, h3,
 .latest-title,
 .blog-tl-title,
 .rs-name {
-  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
 }
 
 .app-shell {
@@ -548,7 +548,7 @@ code {
 
 .hero-serif-lead strong {
   font-family: var(--font-display);
-  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  font-variation-settings: 'SOFT' 100, 'WONK' 0;
   font-weight: 700;
   text-decoration: underline;
   text-decoration-color: var(--orange);
