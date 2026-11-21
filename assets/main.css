@@ -59,7 +59,7 @@
 
   --font-display: 'Fraunces', Georgia, serif;
   --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
 
   --bar-track: rgba(35, 31, 27, 0.10);
@@ -84,6 +84,21 @@ body {
   font-size: 16px;
   line-height: 1.65;
   overflow-x: hidden;
+}
+
+h1, h2, h3,
+.brand,
+.qstat-val,
+.folder-tab,
+.stream-title,
+.dd-title,
+.drawer-title,
+.drawer-kpi-val,
+.role-title,
+.latest-title,
+.blog-tl-title,
+.rs-name {
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
 }
 
 .app-shell {
@@ -544,19 +559,25 @@ code {
 }
 
 .hero-serif-lead {
-  margin: 0 0 16px;
-  font-family: var(--font-serif);
-  font-size: clamp(1.2rem, 1.8vw, 1.42rem);
-  line-height: 1.62;
+  margin: 0 0 18px;
+  font-family: var(--font-sans);
+  font-size: clamp(1.18rem, 1.85vw, 1.42rem);
+  line-height: 1.56;
+  letter-spacing: -0.02em;
   color: var(--ink);
-  max-width: 58ch;
+  max-width: 54ch;
 }
 
 .hero-serif-lead strong {
-  font-weight: 600;
-  background: var(--yellow-soft);
-  padding: 0 4px;
-  border-radius: 4px;
+  font-family: var(--font-display);
+  font-variation-settings: 'SOFT' 100, 'WONK' 1;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--border-ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  background: transparent;
+  padding: 0;
 }
 
 .hero-inline-nav {
