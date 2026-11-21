@@ -42,7 +42,6 @@ pub fn Navbar(
                 }
 
                 nav { class: "nav-links", aria_label: "Primary",
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#impact"), "Impact" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#systems"), "Systems" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#stack"), "Stack" }
@@ -134,8 +133,7 @@ pub fn Navbar(
 
         if mobile_open() {
             nav { class: "mobile-drawer", aria_label: "Mobile Navigation",
-                button { r#type: "button", onclick: move |_| jump_to("#impact"), "Impact" }
-                button { r#type: "button", onclick: move |_| jump_to("#systems"), "Selected Systems" }
+                button { r#type: "button", onclick: move |_| jump_to("#systems"), "Architecture & Outcomes" }
                 button { r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                 button { r#type: "button", onclick: move |_| jump_to("#stack"), "Technical Stack" }
                 button { r#type: "button", onclick: move |_| jump_to("#blog"), "Blog & Writing" }

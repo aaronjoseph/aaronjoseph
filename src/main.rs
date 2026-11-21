@@ -5,8 +5,8 @@ use dioxus::prelude::*;
 
 use components::{
     blog::BlogSection, cmd_palette::CommandPalette, contact::ContactSection,
-    credentials::CredentialsSection, hero::Hero, impact::ImpactSection, journey::JourneySection,
-    navbar::Navbar, resume::ResumeView, stack::StackSection, systems::SystemsSection,
+    credentials::CredentialsSection, hero::Hero, journey::JourneySection, navbar::Navbar,
+    resume::ResumeView, stack::StackSection, systems::SystemsSection,
 };
 use data::EMAIL;
 
@@ -34,6 +34,7 @@ fn App() -> Element {
     let mut theme = use_signal(|| "dark".to_string());
     let mut view = use_signal(|| AppView::Portfolio);
     let resume_style = use_signal(|| ResumeStyle::Styled);
+    let mut selected_project = use_signal(|| Option::<&'static str>::None);
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
@@ -75,7 +76,7 @@ fn App() -> Element {
         });
     });
 
-    // Global keyboard shortcut for Cmd/Ctrl+K and Escape
+    // Global keyboard shortcut for Cmd/Ctrl+K and Escape (closes Command Palette or Deep-Dive Drawer)
     use_effect(move || {
         spawn(async move {
             let mut eval = document::eval(
@@ -87,7 +88,7 @@ fn App() -> Element {
                             e.preventDefault();
                             dioxus.send('toggle_cmd');
                         } else if (e.key === 'Escape') {
-                            dioxus.send('close_cmd');
+                            dioxus.send('close_overlay');
                         }
                     });
                 }
@@ -96,11 +97,28 @@ fn App() -> Element {
             while let Ok(msg) = eval.recv::<String>().await {
                 match msg.as_str() {
                     "toggle_cmd" => cmd_open.toggle(),
-                    "close_cmd" => cmd_open.set(false),
+                    "close_overlay" => {
+                        if cmd_open() {
+                            cmd_open.set(false);
+                        } else if selected_project().is_some() {
+                            selected_project.set(None);
+                        }
+                    }
                     _ => {}
                 }
             }
         });
+    });
+
+    // Prevent background body scroll while side drawer is open
+    use_effect(move || {
+        let locked = selected_project().is_some();
+        let js = if locked {
+            "document.body.style.overflow = 'hidden';"
+        } else {
+            "document.body.style.overflow = '';"
+        };
+        document::eval(js);
     });
 
     let toggle_theme = move |_| {
@@ -126,6 +144,7 @@ fn App() -> Element {
     };
 
     let open_resume = move |_| {
+        selected_project.set(None);
         view.set(AppView::Resume);
         document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
     };
@@ -156,8 +175,7 @@ fn App() -> Element {
                         on_open_resume: open_resume,
                         on_copy_email: copy_email,
                     }
-                    ImpactSection {}
-                    SystemsSection {}
+                    SystemsSection { selected_project }
                     JourneySection {}
                     StackSection {}
                     BlogSection {}
@@ -181,6 +199,7 @@ fn App() -> Element {
                 open: cmd_open,
                 view,
                 resume_style,
+                selected_project,
                 on_copy_email: copy_email,
                 on_toggle_theme: toggle_theme,
             }

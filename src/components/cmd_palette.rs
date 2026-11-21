@@ -1,10 +1,12 @@
 use dioxus::prelude::*;
 
+use crate::data::DEEP_DIVE_PROJECTS;
 use crate::{AppView, ResumeStyle};
 
 #[derive(Clone, Copy)]
 enum CmdAction {
     Section(&'static str),
+    Project(&'static str),
     ResumeStyled,
     ResumeAts,
     CopyEmail,
@@ -12,30 +14,17 @@ enum CmdAction {
 }
 
 struct CmdItem {
-    label: &'static str,
+    label: String,
     hint: &'static str,
     action: CmdAction,
 }
-
-const ITEMS: &[CmdItem] = &[
-    CmdItem { label: "Jump to Impact & Benchmarks", hint: "#impact", action: CmdAction::Section("#impact") },
-    CmdItem { label: "Jump to Selected Systems", hint: "#systems", action: CmdAction::Section("#systems") },
-    CmdItem { label: "Jump to Experience Timeline", hint: "#journey", action: CmdAction::Section("#journey") },
-    CmdItem { label: "Jump to Technical Stack", hint: "#stack", action: CmdAction::Section("#stack") },
-    CmdItem { label: "Jump to Engineering Blog", hint: "#blog", action: CmdAction::Section("#blog") },
-    CmdItem { label: "Jump to Education & Certifications", hint: "#credentials", action: CmdAction::Section("#credentials") },
-    CmdItem { label: "Jump to Contact", hint: "#contact", action: CmdAction::Section("#contact") },
-    CmdItem { label: "Open Styled Résumé", hint: "Styled", action: CmdAction::ResumeStyled },
-    CmdItem { label: "Open Plain / ATS-Compliant Résumé", hint: "ATS", action: CmdAction::ResumeAts },
-    CmdItem { label: "Copy Email Address", hint: "Clipboard", action: CmdAction::CopyEmail },
-    CmdItem { label: "Toggle Dark / Light Theme", hint: "Theme", action: CmdAction::ToggleTheme },
-];
 
 #[component]
 pub fn CommandPalette(
     open: Signal<bool>,
     view: Signal<AppView>,
     resume_style: Signal<ResumeStyle>,
+    selected_project: Signal<Option<&'static str>>,
     on_copy_email: EventHandler<()>,
     on_toggle_theme: EventHandler<()>,
 ) -> Element {
@@ -45,15 +34,38 @@ pub fn CommandPalette(
         return rsx! {};
     }
 
+    let mut items = vec![
+        CmdItem { label: "Jump to Architecture & Outcomes".into(), hint: "#systems", action: CmdAction::Section("#systems") },
+        CmdItem { label: "Jump to Experience Timeline".into(), hint: "#journey", action: CmdAction::Section("#journey") },
+        CmdItem { label: "Jump to Technical Stack".into(), hint: "#stack", action: CmdAction::Section("#stack") },
+        CmdItem { label: "Jump to Engineering Blog".into(), hint: "#blog", action: CmdAction::Section("#blog") },
+        CmdItem { label: "Jump to Education & Certifications".into(), hint: "#credentials", action: CmdAction::Section("#credentials") },
+        CmdItem { label: "Jump to Contact".into(), hint: "#contact", action: CmdAction::Section("#contact") },
+        CmdItem { label: "Open Styled Résumé".into(), hint: "Styled", action: CmdAction::ResumeStyled },
+        CmdItem { label: "Open Plain / ATS-Compliant Résumé".into(), hint: "ATS", action: CmdAction::ResumeAts },
+        CmdItem { label: "Copy Email Address".into(), hint: "Clipboard", action: CmdAction::CopyEmail },
+        CmdItem { label: "Toggle Dark / Light Theme".into(), hint: "Theme", action: CmdAction::ToggleTheme },
+    ];
+
+    for p in DEEP_DIVE_PROJECTS {
+        items.push(CmdItem {
+            label: format!("Inspect: {} ({})", p.title, p.company),
+            hint: "Deep Dive",
+            action: CmdAction::Project(p.id),
+        });
+    }
+
     let q = query().to_lowercase();
-    let filtered: Vec<&CmdItem> = ITEMS
-        .iter()
+    let filtered: Vec<CmdItem> = items
+        .into_iter()
         .filter(|it| {
             q.is_empty()
                 || it.label.to_lowercase().contains(&q)
                 || it.hint.to_lowercase().contains(&q)
         })
         .collect();
+
+    let first_action = filtered.first().map(|it| it.action);
 
     let mut run_action = move |action: CmdAction| {
         open.set(false);
@@ -66,12 +78,21 @@ pub fn CommandPalette(
                 );
                 document::eval(&js);
             }
+            CmdAction::Project(pid) => {
+                view.set(AppView::Portfolio);
+                selected_project.set(Some(pid));
+                document::eval(
+                    "setTimeout(() => { const el = document.querySelector('#systems'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 20);",
+                );
+            }
             CmdAction::ResumeStyled => {
+                selected_project.set(None);
                 resume_style.set(ResumeStyle::Styled);
                 view.set(AppView::Resume);
                 document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
             }
             CmdAction::ResumeAts => {
+                selected_project.set(None);
                 resume_style.set(ResumeStyle::Ats);
                 view.set(AppView::Resume);
                 document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
@@ -112,7 +133,7 @@ pub fn CommandPalette(
                         class: "cmd-input",
                         r#type: "text",
                         autofocus: true,
-                        placeholder: "Jump to section, styled/ATS résumé, blog, copy email...",
+                        placeholder: "Jump to section, inspect a project, open styled/ATS résumé...",
                         value: "{query}",
                         oninput: move |evt| query.set(evt.value()),
                         onkeydown: move |evt| {
@@ -120,13 +141,8 @@ pub fn CommandPalette(
                                 open.set(false);
                                 query.set(String::new());
                             } else if evt.key() == Key::Enter {
-                                if let Some(first) = ITEMS.iter().find(|it| {
-                                    let q = query().to_lowercase();
-                                    q.is_empty()
-                                        || it.label.to_lowercase().contains(&q)
-                                        || it.hint.to_lowercase().contains(&q)
-                                }) {
-                                    run_action(first.action);
+                                if let Some(act) = first_action {
+                                    run_action(act);
                                 }
                             }
                         }
@@ -147,14 +163,16 @@ pub fn CommandPalette(
                         for item in filtered {
                             {
                                 let act = item.action;
+                                let label = item.label.clone();
+                                let hint = item.hint;
                                 rsx! {
                                     button {
-                                        key: "{item.label}",
+                                        key: "{label}",
                                         class: "cmd-item",
                                         r#type: "button",
                                         onclick: move |_| run_action(act),
-                                        span { "{item.label}" }
-                                        span { "{item.hint}" }
+                                        span { "{label}" }
+                                        span { "{hint}" }
                                     }
                                 }
                             }

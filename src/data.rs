@@ -21,7 +21,8 @@ pub struct TelemetryProject {
     pub stack_summary: &'static str,
 }
 
-pub struct ImpactMeter {
+pub struct OutcomeMeter {
+    pub label: &'static str,
     pub before_label: &'static str,
     pub before_pct: u8,
     pub after_label: &'static str,
@@ -29,23 +30,26 @@ pub struct ImpactMeter {
     pub accent_after: bool,
 }
 
-pub struct ImpactCard {
-    pub tag: &'static str,
-    pub org: &'static str,
-    pub headline: &'static str,
-    pub title: &'static str,
-    pub desc: &'static str,
-    pub wide: bool,
-    pub meter: Option<ImpactMeter>,
+pub struct DeepDiveSection {
+    pub heading: &'static str,
+    pub points: &'static [&'static str],
 }
 
-pub struct CaseStudy {
-    pub kicker: &'static str,
-    pub place: &'static str,
+pub struct DeepDiveProject {
+    pub id: &'static str,
+    pub index: &'static str,
+    pub company: &'static str,
+    pub company_id: &'static str,
+    pub period: &'static str,
+    pub category: &'static str,
     pub title: &'static str,
-    pub body: &'static str,
+    pub one_liner: &'static str,
+    pub headline_badges: &'static [(&'static str, MetricTone)],
     pub flow: &'static str,
-    pub chips: &'static [(&'static str, &'static str)], // (label, class: "core" | "signal" | "")
+    pub meters: &'static [OutcomeMeter],
+    pub key_outcomes: &'static [(&'static str, &'static str, MetricTone)], // (metric, label, tone)
+    pub sections: &'static [DeepDiveSection],
+    pub stack: &'static [(&'static str, bool)], // (name, is_core)
 }
 
 pub struct Role {
@@ -181,6 +185,398 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
     },
 ];
 
+pub const DEEP_DIVE_COMPANIES: &[(&str, &str)] = &[
+    ("all", "All Projects"),
+    ("bestbuy", "Best Buy"),
+    ("falabella", "Falabella"),
+    ("accenture", "Accenture AI"),
+];
+
+pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
+    DeepDiveProject {
+        id: "bb-search-rust",
+        index: "01",
+        company: "Best Buy",
+        company_id: "bestbuy",
+        period: "May 2025 – Present",
+        category: "Search System",
+        title: "Flask → FastAPI → Rust (Axum) & GKE C4A",
+        one_liner: "Re-architected semantic search into hexagonal Rust/Axum, right-sized C4A GKE node pools, and tuned holiday RPS autoscaling.",
+        headline_badges: &[
+            ("700 → 350 ms P50", MetricTone::Signal),
+            ("28× compute · 190× RAM", MetricTone::Accent),
+        ],
+        flow: "Client Traffic (up to 12K RPS) → GKE HPA (RPS Scaling) → Axum HTTP Layer → Hexagonal Search Domain → Downstream Model Adapters",
+        meters: &[
+            OutcomeMeter {
+                label: "Search P50 Latency",
+                before_label: "700 ms",
+                before_pct: 100,
+                after_label: "350 ms (−50%)",
+                after_pct: 50,
+                accent_after: false,
+            },
+            OutcomeMeter {
+                label: "Non-Peak GKE CPU/RAM Spend",
+                before_label: "100% baseline",
+                before_pct: 100,
+                after_label: "17% (−83%)",
+                after_pct: 17,
+                accent_after: true,
+            },
+        ],
+        key_outcomes: &[
+            ("28×", "Lower compute cost", MetricTone::Accent),
+            ("190×", "Lower memory footprint", MetricTone::Accent),
+            (">1 s", "Max latency cut", MetricTone::Signal),
+            ("~$100K/yr", "Projected GKE savings", MetricTone::Signal),
+            ("−78%", "Min node-pool compute", MetricTone::Default),
+            ("−30% / −20%", "C4A upgrade latency / pods", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Problem & Context",
+                points: &[
+                    "The original Flask semantic search layer carried heavy Python runtime overhead, high memory footprint, and 700 ms P50 latency under peak retail traffic.",
+                    "Tight coupling between search orchestration and infrastructure adapters made iterative performance and cloud right-sizing harder than necessary.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "Architecture & Key Decisions",
+                points: &[
+                    "Migrated incrementally from Flask → FastAPI → Rust with Axum, introducing hexagonal architecture to cleanly isolate core search logic from HTTP/cloud infrastructure.",
+                    "Right-sized GKE node pools from C4A-standard-16 to C4A-highcpu-4 and independently identified a 3-generation C4A upgrade across AML (−30% search latency, −20% compute pods).",
+                    "Tuned holiday-season Kubernetes HPA with requests-per-second (RPS) scaling and right-sized CPU/GPU deployments.",
+                ],
+            },
+        ],
+        stack: &[
+            ("Rust", true),
+            ("Axum", true),
+            ("Hexagonal Architecture", true),
+            ("GKE / C4A", true),
+            ("Kubernetes HPA", false),
+            ("FastAPI", false),
+            ("Flask", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "bb-search-onnx-esci",
+        index: "02",
+        company: "Best Buy",
+        company_id: "bestbuy",
+        period: "May 2025 – Present",
+        category: "Search System",
+        title: "ONNX LTR Inference & GPU ESCI Caching",
+        one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime and resolved 5-second GPU ESCI latency spikes via async write-back caching.",
+        headline_badges: &[
+            ("2 ms P50 / 4 ms P95 LTR", MetricTone::Signal),
+            ("5 s → <200 ms ESCI", MetricTone::Accent),
+        ],
+        flow: "Search Query → [NER · Sparse Retrieval · GPU ESCI + Async Write-Back Cache] → ONNX Runtime LTR Ranker",
+        meters: &[
+            OutcomeMeter {
+                label: "GPU ESCI Tail Latency",
+                before_label: "5,000 ms spike",
+                before_pct: 100,
+                after_label: "<200 ms (25×)",
+                after_pct: 6,
+                accent_after: false,
+            },
+            OutcomeMeter {
+                label: "LTR Inference Latency",
+                before_label: "3× Python baseline",
+                before_pct: 100,
+                after_label: "2 ms P50 / 4 ms P95",
+                after_pct: 33,
+                accent_after: true,
+            },
+        ],
+        key_outcomes: &[
+            ("2 ms", "LTR ONNX P50", MetricTone::Signal),
+            ("4 ms", "LTR ONNX P95", MetricTone::Signal),
+            ("3×", "Faster LTR inference", MetricTone::Accent),
+            ("<200 ms", "ESCI post-fix latency", MetricTone::Signal),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Problem & Context",
+                points: &[
+                    "Python-based Learning-to-Rank inference added avoidable scoring latency on every search query.",
+                    "Intermittent 5-second spikes on the GPU-hosted ESCI relevance model cascaded into overall Search slowdowns and stability issues.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "Architecture & Key Decisions",
+                points: &[
+                    "Migrated Python LTR inference to ONNX Runtime, achieving 3× lower inference latency with 2 ms P50 and 4 ms P95.",
+                    "Introduced asynchronous write-back caching and stripped unnecessary logging overhead on the GPU-hosted ESCI service, bringing latency down from 5 s to <200 ms.",
+                    "Supported production setup and ongoing upgrades of NER, sparse, and ESCI models across the search stack.",
+                ],
+            },
+        ],
+        stack: &[
+            ("ONNX Runtime", true),
+            ("Learning to Rank", true),
+            ("ESCI", true),
+            ("NER / Sparse Models", false),
+            ("Async Write-Back Cache", false),
+            ("GPU Serving", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "bb-agentic-ai",
+        index: "03",
+        company: "Best Buy",
+        company_id: "bestbuy",
+        period: "May 2025 – Present",
+        category: "Agentic AI",
+        title: "Observability, LLM-as-a-Judge & Rust Dioxus Tooling",
+        one_liner: "Built Cloud Trace agentic diagnostics, automated LLM-as-a-judge evals, 5× faster container builds, and migrated Streamlit UIs to Dioxus.",
+        headline_badges: &[
+            ("1–2 days → <1 hr eval", MetricTone::Signal),
+            ("27× UI compute · 5× builds", MetricTone::Accent),
+        ],
+        flow: "Agentic I/O → Cloud Trace + Structured Logs → Gemma vs. Gemini Dashboards · LLM-as-a-Judge + API Comparator · Dioxus UI",
+        meters: &[
+            OutcomeMeter {
+                label: "Product Release Validation",
+                before_label: "24–48 hrs manual",
+                before_pct: 100,
+                after_label: "<1 hr automated",
+                after_pct: 6,
+                accent_after: false,
+            },
+            OutcomeMeter {
+                label: "Python Docker Image Builds",
+                before_label: "5–6 min (Bullseye)",
+                before_pct: 100,
+                after_label: "~1 min (slim-trixie)",
+                after_pct: 20,
+                accent_after: true,
+            },
+        ],
+        key_outcomes: &[
+            ("<1 hr", "Regression validation", MetricTone::Signal),
+            ("27×", "Lower UI compute (Dioxus)", MetricTone::Accent),
+            ("5×", "Faster Docker builds", MetricTone::Accent),
+            ("Gemma vs Gemini", "Live eval dashboards", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Observability & Evaluation",
+                points: &[
+                    "Established Google Cloud Trace across the organization, pairing Cloud Logging and structured logs for request-level diagnostics across agentic I/O.",
+                    "Contributed monitoring dashboards comparing in-house fine-tuned Gemma models against Gemini models.",
+                    "Built an LLM-as-a-judge regression suite, API comparator, endpoint smoke tests, and self-service performance testing — cutting product validation from 1–2 days to under 1 hour.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "Rust UI & Build Velocity",
+                points: &[
+                    "Migrated internal Streamlit apps to Rust Dioxus, cutting compute costs 27× while maintaining or improving responsiveness.",
+                    "Independently optimized Python Docker builds by replacing Bullseye with slim-trixie and splitting reusable base-image vs. code-change app-image stages (5–6 min → ~1 min).",
+                ],
+            },
+        ],
+        stack: &[
+            ("Google Cloud Trace", true),
+            ("LLM-as-a-Judge", true),
+            ("Gemini / Gemma", true),
+            ("Dioxus (Rust)", true),
+            ("Google ADK", false),
+            ("Cloud Logging", false),
+            ("slim-trixie Docker", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "fl-search-ltr",
+        index: "04",
+        company: "Falabella",
+        company_id: "falabella",
+        period: "Apr 2023 – Apr 2025",
+        category: "Search & Ranking",
+        title: "FastAPI Migration, 15-Min LTR Retraining & Polars",
+        one_liner: "Cut LTR retraining from 24 hours to under 15 minutes across 5 business units, moved Flask to async FastAPI, and shipped related-keywords search.",
+        headline_badges: &[
+            ("24 hrs → <15 min LTR", MetricTone::Signal),
+            ("−40% timeouts · +7% engagement", MetricTone::Accent),
+        ],
+        flow: "Kubernetes CronJobs + Polars → XGBoost LTR (5 BUs) → Async FastAPI Search APIs → Loki / Datadog / Slack Alerts",
+        meters: &[
+            OutcomeMeter {
+                label: "LTR Model Retraining Time",
+                before_label: "24 hours",
+                before_pct: 100,
+                after_label: "<15 min (96×)",
+                after_pct: 5,
+                accent_after: false,
+            },
+            OutcomeMeter {
+                label: "Daily API Timeouts",
+                before_label: "Flask sync baseline",
+                before_pct: 100,
+                after_label: "−40% (FastAPI async)",
+                after_pct: 60,
+                accent_after: true,
+            },
+        ],
+        key_outcomes: &[
+            ("<15 min", "LTR retraining (was 24 h)", MetricTone::Signal),
+            (">20%", "Cloud cost reduction", MetricTone::Accent),
+            ("−40%", "Daily API timeouts", MetricTone::Signal),
+            ("+7%", "Search user engagement", MetricTone::Accent),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Serving & Reliability",
+                points: &[
+                    "Migrated backend search services from synchronous Flask to async FastAPI, cutting daily timeouts by 40%.",
+                    "Added continuous observability for API and model-inference pipelines with Slack, Loki, and Datadog for peak-load reliability.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "Training Pipelines & Product Impact",
+                points: &[
+                    "Revamped LTR retraining from 24 hours to <15 minutes while cutting cloud costs by >20% across 5 business units, optimizing for NDCG, RPV, and CTR.",
+                    "Migrated Pandas data pipelines to Polars and orchestrated ML jobs via Kubernetes CronJobs to reduce CPU/RAM consumption and job failures.",
+                    "Built a related-keywords search feature driving +7% user engagement across two major business segments.",
+                ],
+            },
+        ],
+        stack: &[
+            ("FastAPI", true),
+            ("Learning to Rank", true),
+            ("Polars", true),
+            ("Kubernetes CronJobs", true),
+            ("XGBoost", false),
+            ("Datadog / Loki", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "fl-ab-testing",
+        index: "05",
+        company: "Falabella",
+        company_id: "falabella",
+        period: "Apr 2023 – Apr 2025",
+        category: "Experimentation",
+        title: "In-House Cookie A/B Testing & Cyber Load Readiness",
+        one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine and hardened search resilience for biannual cyber events.",
+        headline_badges: &[
+            ("$50K/yr saved", MetricTone::Signal),
+            ("Zero 3rd-party dependency", MetricTone::Default),
+        ],
+        flow: "User Session Cookie Bucketing → Variant Routing → Search Telemetry & Experiment Metrics",
+        meters: &[],
+        key_outcomes: &[
+            ("$50K/yr", "Software spend eliminated", MetricTone::Signal),
+            ("Biannual", "Cyber-event load readiness", MetricTone::Accent),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Problem & Context",
+                points: &[
+                    "Third-party experimentation tooling added recurring annual software spend ($50K/yr) and external integration overhead for search experiments.",
+                    "Biannual high-traffic cyber events demanded predictable tail latency and resilience across the search and ranking stack.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "Architecture & Key Decisions",
+                points: &[
+                    "Engineered a lightweight, cookie-based A/B testing solution in-house, eliminating third-party vendor reliance and saving $50K annually.",
+                    "Partnered with the cyber team on formal performance testing ahead of biannual cyber sales events to validate system headroom.",
+                ],
+            },
+        ],
+        stack: &[
+            ("A/B Testing", true),
+            ("Cookie Bucketing", true),
+            ("Performance Testing", true),
+            ("FastAPI", false),
+            ("Datadog", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "ac-telecom-3g",
+        index: "06",
+        company: "Accenture AI",
+        company_id: "accenture",
+        period: "Dec 2020 – Apr 2023",
+        category: "Applied ML",
+        title: "3G Telecom Tower Decommissioning (Vertex AI)",
+        one_liner: "Built a Vertex AI data-driven workflow streamlining 3G infrastructure sunsetting across the London outskirts.",
+        headline_badges: &[
+            ("150+ towers removed", MetricTone::Signal),
+            ("Vertex AI · GCP", MetricTone::Default),
+        ],
+        flow: "Telecom Network & Traffic Data → BigQuery Feature Layer → Vertex AI Decommissioning Scoring → Rollout Schedule",
+        meters: &[],
+        key_outcomes: &[
+            ("150+", "3G towers decommissioned", MetricTone::Signal),
+            ("London", "Outskirts rollout scope", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Overview & Impact",
+                points: &[
+                    "Crafted a data-driven decision workflow on GCP Vertex AI to prioritize and streamline the 3G telecommunications decommissioning lifecycle.",
+                    "Directly enabled the successful removal of over 150 legacy 3G towers in the London outskirts.",
+                ],
+            },
+        ],
+        stack: &[
+            ("Vertex AI", true),
+            ("Google Cloud (GCP)", true),
+            ("BigQuery", true),
+            ("Python", false),
+        ],
+    },
+    DeepDiveProject {
+        id: "ac-gcp-terraform",
+        index: "07",
+        company: "Accenture AI",
+        company_id: "accenture",
+        period: "Dec 2020 – Apr 2023",
+        category: "Cloud & MLOps",
+        title: "GCP Terraform MLOps Automation",
+        one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows and helped win $2M in CPG & banking proposals.",
+        headline_badges: &[
+            ("−50% manual setup", MetricTone::Signal),
+            ("$2M GCP contracts", MetricTone::Accent),
+        ],
+        flow: "Terraform Modules (IaC) → Automated GCP Provisioning [dev · stage · prod] → Reproducible ML Workloads",
+        meters: &[OutcomeMeter {
+            label: "Environment Setup Effort",
+            before_label: "Manual provisioning",
+            before_pct: 100,
+            after_label: "−50% (Terraform IaC)",
+            after_pct: 50,
+            accent_after: true,
+        }],
+        key_outcomes: &[
+            ("−50%", "Manual GCP setup effort", MetricTone::Signal),
+            ("$2M", "Client contracts supported", MetricTone::Accent),
+            ("3 envs", "dev / stage / prod parity", MetricTone::Default),
+        ],
+        sections: &[
+            DeepDiveSection {
+                heading: "Infrastructure Automation & Proposals",
+                points: &[
+                    "Constructed robust Terraform automation workflows for GCP resource management across dev, stage, and prod ecosystems, cutting manual setup effort by 50% and improving cross-project consistency.",
+                    "Collaborated with CPG and banking clients to design tailored GCP ML architecture proposals, contributing to securing $2 million in contracts.",
+                ],
+            },
+        ],
+        stack: &[
+            ("Terraform", true),
+            ("Google Cloud (GCP)", true),
+            ("MLOps IaC", true),
+            ("Vertex AI", false),
+            ("BigQuery", false),
+        ],
+    },
+];
+
 /// Add entries here to publish blog posts on the website.
 /// When empty, the Blog section displays an intentional "coming soon" state with planned topics.
 pub const BLOG_POSTS: &[BlogPost] = &[];
@@ -202,170 +598,6 @@ pub const PLANNED_BLOG_TOPICS: &[(&str, &str)] = &[
         "Applied AI",
         "Observability & LLM-as-a-Judge Regression Suites for Agentic Workflows",
     ),
-];
-
-pub const IMPACT_CARDS: &[ImpactCard] = &[
-    ImpactCard {
-        tag: "SEMANTIC SEARCH RE-ARCHITECTURE",
-        org: "Best Buy",
-        headline: "28× compute · 190× memory",
-        title: "Flask → FastAPI → Rust (Axum)",
-        desc: "Halved Search 2.0 P50 latency, cut max observed latency by over 1 second, and slashed non-peak GKE CPU/RAM spend by 83% (~US$100K projected annualised savings).",
-        wide: true,
-        meter: Some(ImpactMeter {
-            before_label: "700 ms P50",
-            before_pct: 100,
-            after_label: "350 ms P50",
-            after_pct: 50,
-            accent_after: false,
-        }),
-    },
-    ImpactCard {
-        tag: "GPU MODEL STABILITY",
-        org: "Best Buy",
-        headline: "25× lower tail latency",
-        title: "Eliminated GPU-hosted ESCI latency spikes",
-        desc: "Introduced asynchronous write-back caching and reduced logging overhead on the GPU-hosted ESCI model that was slowing Search.",
-        wide: true,
-        meter: Some(ImpactMeter {
-            before_label: "5,000 ms spike",
-            before_pct: 100,
-            after_label: "<200 ms",
-            after_pct: 6,
-            accent_after: false,
-        }),
-    },
-    ImpactCard {
-        tag: "RANKING PIPELINE",
-        org: "Falabella",
-        headline: "96× faster",
-        title: "LTR model retraining",
-        desc: "Compressed retraining across 5 business units while cutting cloud costs >20% and optimizing NDCG, RPV, and CTR.",
-        wide: false,
-        meter: Some(ImpactMeter {
-            before_label: "24 hrs",
-            before_pct: 100,
-            after_label: "<15 min",
-            after_pct: 5,
-            accent_after: true,
-        }),
-    },
-    ImpactCard {
-        tag: "EVALUATION AUTOMATION",
-        org: "Best Buy",
-        headline: "1–2 days → <1 hr",
-        title: "LLM-as-a-judge regression suite",
-        desc: "Combined LLM-as-a-judge evals, an API comparator, and endpoint smoke tests to compress release validation from days to under an hour.",
-        wide: false,
-        meter: Some(ImpactMeter {
-            before_label: "24–48 hrs",
-            before_pct: 100,
-            after_label: "<1 hr",
-            after_pct: 8,
-            accent_after: false,
-        }),
-    },
-    ImpactCard {
-        tag: "CI/CD & COMPUTE UPGRADE",
-        org: "Best Buy",
-        headline: "5× faster builds",
-        title: "Split base/app slim-trixie images",
-        desc: "Replaced Bullseye with slim-trixie and split reusable base vs. app image stages; also drove a 3-gen C4A upgrade (−30% latency, −20% pods).",
-        wide: false,
-        meter: Some(ImpactMeter {
-            before_label: "5–6 min",
-            before_pct: 100,
-            after_label: "~1 min",
-            after_pct: 20,
-            accent_after: true,
-        }),
-    },
-    ImpactCard {
-        tag: "INFERENCE SPEED",
-        org: "Best Buy",
-        headline: "2 ms P50",
-        title: "Python LTR → ONNX Runtime",
-        desc: "Achieved 3× lower inference latency with 4 ms P95 for production ranking models.",
-        wide: false,
-        meter: None,
-    },
-    ImpactCard {
-        tag: "RUST FRONTEND MIGRATION",
-        org: "Best Buy",
-        headline: "27× less compute",
-        title: "Streamlit → Dioxus",
-        desc: "Replaced Python UI workloads with Rust-based Dioxus (the same framework powering this site) while maintaining or improving UX speed.",
-        wide: false,
-        meter: None,
-    },
-    ImpactCard {
-        tag: "COMMERCIAL & RISK VALUE",
-        org: "Multi-Org",
-        headline: "$50K · $1.2M · $2M",
-        title: "Direct business impact",
-        desc: "$50K/yr saved via in-house A/B testing (Falabella), $2M GCP deals (Accenture), $1.2M/yr Pfizer pricing revenue, and avoided Franklin MF's $3.4B collapse.",
-        wide: false,
-        meter: None,
-    },
-];
-
-pub const CASE_STUDIES: &[CaseStudy] = &[
-    CaseStudy {
-        kicker: "Search Infrastructure",
-        place: "Best Buy · Search 2.0",
-        title: "Hexagonal Rust/Axum Semantic Search Platform",
-        body: "Led the step-by-step migration from Flask to FastAPI and finally to Rust with Axum. Introducing hexagonal architecture isolated core search & ranking logic from infrastructure adapters, enabling C4A-highcpu-4 GKE right-sizing and RPS-aware HPA autoscaling for holiday peaks.",
-        flow: "HTTP / RPS HPA → Axum Router → Core Search Domain → [NER · Sparse · ESCI · ONNX LTR]",
-        chips: &[
-            ("Rust", "core"),
-            ("Axum", "core"),
-            ("Hexagonal Arch", ""),
-            ("GKE / C4A", ""),
-            ("−50% P50 · 190× less RAM", "signal"),
-        ],
-    },
-    CaseStudy {
-        kicker: "Agentic AI & Observability",
-        place: "Best Buy · AskBlue",
-        title: "End-to-End Tracing & LLM-as-a-Judge Evaluation",
-        body: "Established Google Cloud Trace and structured Cloud Logging across the org, extending request-level diagnostics into AskBlue's agentic inputs and outputs. Built monitoring dashboards comparing fine-tuned Gemma vs. Gemini models alongside automated regression evals and self-service load testing.",
-        flow: "Agentic I/O → Cloud Trace + Structured Logs → Gemma/Gemini Dashboards + LLM Judge",
-        chips: &[
-            ("Gemini / Gemma", "core"),
-            ("Cloud Trace", "core"),
-            ("Google ADK", ""),
-            ("LLM-as-a-Judge", ""),
-            ("1–2d → <1h validation", "signal"),
-        ],
-    },
-    CaseStudy {
-        kicker: "Ranking & Experimentation",
-        place: "Falabella",
-        title: "High-Velocity LTR Retraining & In-House A/B Engine",
-        body: "Overhauled multi-BU Learning-to-Rank pipelines from 24-hour runs to under 15 minutes using Polars and Kubernetes CronJobs, migrated Flask APIs to async FastAPI (−40% daily timeouts), shipped related-keywords search (+7% engagement), and built a cookie-based A/B platform saving $50K/yr.",
-        flow: "K8s CronJobs + Polars → XGBoost LTR (5 BUs) → FastAPI Async + Loki / Datadog",
-        chips: &[
-            ("Learning to Rank", "core"),
-            ("Polars", "core"),
-            ("FastAPI", ""),
-            ("K8s CronJobs", ""),
-            ("24h → <15m · $50K saved", "signal"),
-        ],
-    },
-    CaseStudy {
-        kicker: "Cloud MLOps & FinTech Risk",
-        place: "Accenture AI · Kaleidofin",
-        title: "Terraform GCP Foundations & Underbanked Portfolio Risk",
-        body: "Built standardized dev/stage/prod Terraform MLOps workflows on GCP (−50% manual setup) and a Vertex AI 3G telecom decommissioning solution removing 150+ London-outskirts towers. Earlier, as employee #70 at Seed-stage Kaleidofin, built risk analysis that avoided Franklin MF ahead of its $3.4B collapse.",
-        flow: "Terraform IaC → Vertex AI / BigQuery Pipelines · Portfolio Risk Signals",
-        chips: &[
-            ("GCP / Vertex AI", "core"),
-            ("Terraform", "core"),
-            ("BigQuery", ""),
-            ("Risk Analytics", ""),
-            ("150+ towers · $3.4B risk avoided", "signal"),
-        ],
-    },
 ];
 
 pub const ROLES: &[Role] = &[

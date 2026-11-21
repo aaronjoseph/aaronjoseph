@@ -3,7 +3,6 @@ pub mod cmd_palette;
 pub mod contact;
 pub mod credentials;
 pub mod hero;
-pub mod impact;
 pub mod journey;
 pub mod navbar;
 pub mod resume;
