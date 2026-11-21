@@ -44,8 +44,8 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
 
                 nav { class: "nav-links", aria_label: "Primary",
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#systems"), "Work" }
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Story" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#stack"), "Toolbox" }
+                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Story" }
                     button {
                         class: if is_blog { "nav-link-btn active" } else { "nav-link-btn" },
                         r#type: "button",
@@ -102,8 +102,8 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
         if mobile_open() {
             nav { class: "mobile-drawer", aria_label: "Mobile Navigation",
                 button { r#type: "button", onclick: move |_| jump_to("#systems"), "Key Work" }
-                button { r#type: "button", onclick: move |_| jump_to("#journey"), "The Story So Far" }
                 button { r#type: "button", onclick: move |_| jump_to("#stack"), "Toolbox" }
+                button { r#type: "button", onclick: move |_| jump_to("#journey"), "The Story So Far" }
                 button { r#type: "button", onclick: move |_| open_page(AppView::Blog), "Blog & Notes" }
                 button { r#type: "button", onclick: move |_| jump_to("#credentials"), "Background" }
                 button { r#type: "button", onclick: move |_| open_page(AppView::Resume), "Résumé (Styled / ATS)" }

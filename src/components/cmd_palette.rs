@@ -36,8 +36,8 @@ pub fn CommandPalette(
     let mut items = vec![
         CmdItem { label: "Open Blog & Notes Page".into(), hint: "Page", action: CmdAction::Blog },
         CmdItem { label: "Jump to Key Work".into(), hint: "#systems", action: CmdAction::Section("#systems") },
-        CmdItem { label: "Jump to The Story So Far".into(), hint: "#journey", action: CmdAction::Section("#journey") },
         CmdItem { label: "Jump to Toolbox".into(), hint: "#stack", action: CmdAction::Section("#stack") },
+        CmdItem { label: "Jump to The Story So Far".into(), hint: "#journey", action: CmdAction::Section("#journey") },
         CmdItem { label: "Jump to School & Certifications".into(), hint: "#credentials", action: CmdAction::Section("#credentials") },
         CmdItem { label: "Jump to Say Hello".into(), hint: "#contact", action: CmdAction::Section("#contact") },
         CmdItem { label: "Open Styled Résumé".into(), hint: "Styled", action: CmdAction::ResumeStyled },

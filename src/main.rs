@@ -204,8 +204,8 @@ fn App() -> Element {
                             on_copy_email: copy_email,
                         }
                         SystemsSection { selected_project }
-                        JourneySection {}
                         StackSection {}
+                        JourneySection {}
                         WritingPreviewSection { on_open_blog: open_blog }
                         CredentialsSection {}
                         ContactSection {
