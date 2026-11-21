@@ -494,23 +494,6 @@ code {
   100% { box-shadow: 0 0 0 0 rgba(46, 125, 99, 0); }
 }
 
-.spring-palette-dots {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.sp-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-}
-.sp-dot.d1 { background: var(--blush); }
-.sp-dot.d2 { background: var(--orange); }
-.sp-dot.d3 { background: var(--khaki-deep); }
-.sp-dot.d4 { background: var(--sage); }
-.sp-dot.d5 { background: var(--lavender); }
-
 .hero-title {
   margin: 0 0 22px;
   font-family: var(--font-display);

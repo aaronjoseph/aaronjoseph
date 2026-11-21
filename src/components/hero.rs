@@ -18,22 +18,6 @@ pub fn Hero(
             div { class: "wrap",
                 // Playful Editorial Top Intro
                 div { class: "hero-editorial",
-                    div { class: "hero-badge-row",
-                        div { class: "status-pill",
-                            span { class: "pulse-dot", aria_hidden: "true" }
-                            span { "Currently at" }
-                            CompanyLogo { company_id: "bestbuy", size: 20 }
-                            span { "Best Buy · Bengaluru, India" }
-                        }
-                        span { class: "spring-palette-dots", aria_hidden: "true",
-                            span { class: "sp-dot d1" }
-                            span { class: "sp-dot d2" }
-                            span { class: "sp-dot d3" }
-                            span { class: "sp-dot d4" }
-                            span { class: "sp-dot d5" }
-                        }
-                    }
-
                     h1 { class: "hero-title",
                         "Hi, I'm "
                         span { class: "squiggle-name",
@@ -51,6 +35,15 @@ pub fn Hero(
                                     stroke_linecap: "round",
                                 }
                             }
+                        }
+                    }
+
+                    div { class: "hero-badge-row",
+                        div { class: "status-pill",
+                            span { class: "pulse-dot", aria_hidden: "true" }
+                            span { "Currently at" }
+                            CompanyLogo { company_id: "bestbuy", size: 20 }
+                            span { "Best Buy · Bengaluru, India" }
                         }
                     }
 
