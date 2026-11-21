@@ -718,12 +718,13 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Experimentation",
         title: "In-House Cookie A/B Testing & Cyber Load Readiness",
-        one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine and hardened search resilience for biannual cyber events.",
+        one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine ($50K/yr saved) and stress-tested search resilience up to 15,000 RPS ahead of biannual cyber events.",
         headline_badges: &[
+            ("Up to 15K RPS cyber load", MetricTone::Accent),
             ("$50K/yr saved", MetricTone::Signal),
             ("Zero 3rd-party dependency", MetricTone::Default),
         ],
-        flow: "User Session Cookie Bucketing → Variant Routing → Search Telemetry & Experiment Metrics",
+        flow: "User Session Cookie Bucketing → Variant Routing → Search Telemetry · Cyber Load Testing (Up to 15K RPS)",
         comparisons: &[NotebookComparison {
             label: "Experimentation Software Spend",
             before: "3rd-party SaaS vendor",
@@ -731,25 +732,31 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             delta: "$50K/yr saved",
             tone: MetricTone::Signal,
         }],
-        callouts: &[],
+        callouts: &[NotebookCallout {
+            style: CalloutStyle::GreenCheck,
+            title: "Cyber Load Preparedness: Tested Up to 15,000 RPS",
+            body: "Partnered with the cyber team on formal performance & stress testing up to 15K RPS ahead of biannual cyber sales events — validating autoscaling headroom, throughput limits, and tail latency under peak burst traffic.",
+            link: None,
+        }],
         sticky_notes: &[],
         key_outcomes: &[
+            ("15K RPS", "Cyber load-test preparedness", MetricTone::Accent),
             ("$50K/yr", "Software spend eliminated", MetricTone::Signal),
-            ("Biannual", "Cyber-event load readiness", MetricTone::Accent),
+            ("Biannual", "Cyber-event load readiness", MetricTone::Default),
         ],
         sections: &[
             DeepDiveSection {
                 heading: "Problem & Context",
                 points: &[
                     "Third-party experimentation tooling added recurring annual software spend ($50K/yr) and external integration overhead for search experiments.",
-                    "Biannual high-traffic cyber events demanded predictable tail latency and resilience across the search and ranking stack.",
+                    "Biannual high-traffic cyber events demanded predictable tail latency and resilience up to 15,000 RPS across the search and ranking stack.",
                 ],
             },
             DeepDiveSection {
                 heading: "Architecture & Key Decisions",
                 points: &[
+                    "Partnered with the cyber team on formal performance and stress testing up to 15,000 RPS ahead of biannual cyber sales events to validate system headroom, scaling behavior, and tail latency.",
                     "Engineered a lightweight, cookie-based A/B testing solution in-house, eliminating third-party vendor reliance and saving $50K annually.",
-                    "Partnered with the cyber team on formal performance testing ahead of biannual cyber sales events to validate system headroom.",
                 ],
             },
         ],
@@ -875,7 +882,7 @@ pub const ROLES: &[Role] = &[
             "Built a related-keywords search feature that increased user engagement by 7% across two major business segments.",
             "Improved code maintainability while reducing CPU and RAM consumption; migrated Pandas jobs to Polars to minimize job failures and integrated MLOps with Kubernetes CronJobs.",
             "Engineered a cookie-based A/B testing solution that eliminated reliance on third-party tools and saved $50k annually in software costs.",
-            "Played a key role in the cyber team's performance testing, strengthening system resilience ahead of biannual cyber events.",
+            "Played a key role in the cyber team's performance testing up to 15,000 RPS, strengthening system resilience ahead of biannual cyber events.",
         ],
     },
     Role {
