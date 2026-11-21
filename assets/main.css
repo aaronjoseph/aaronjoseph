@@ -1213,16 +1213,6 @@ section h2 {
   transform: rotate(-1.5deg);
 }
 
-.nb-pg {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: 0.82rem;
-  color: #a83c2a;
-  border: 1.4px solid rgba(168, 60, 42, 0.45);
-  border-radius: 999px;
-  padding: 1px 10px;
-}
-
 /* Clear Visual Before -> After Rows (Replaces skinny bar charts) */
 .nb-comp-list {
   display: grid;

@@ -241,7 +241,6 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                             div { class: "nb-sheet",
                                 div { class: "nb-sheet-head",
                                     span { class: "nb-stamp", "Architecture Field Notes" }
-                                    span { class: "nb-pg", "pg {idx + 1}" }
                                 }
 
                                 if !proj.comparisons.is_empty() {
