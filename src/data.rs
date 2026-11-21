@@ -66,7 +66,6 @@ pub struct DeepDiveProject {
     pub period: &'static str,
     pub category: &'static str,
     pub title: &'static str,
-    pub tech_tags: &'static [&'static str],
     pub one_liner: &'static str,
     pub headline_badges: &'static [(&'static str, MetricTone)],
     pub flow: &'static str,
@@ -232,7 +231,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "Flask → FastAPI → Rust (Axum) & GKE ARM C4A",
-        tech_tags: &["Rust", "FastAPI", "Flask", "GCP / GKE", "Kubernetes"],
         one_liner: "Migrated GKE from x86 n1-standard-16 to ARM C4A, consolidated search microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized idle node pools.",
         headline_badges: &[
             ("−30% ARM C4A latency", MetricTone::Signal),
@@ -362,7 +360,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "ONNX LTR Inference & GPU ESCI Caching",
-        tech_tags: &["ONNX", "Learning to Rank"],
         one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime and resolved 5-second GPU ESCI latency spikes via async write-back caching.",
         headline_badges: &[
             ("2 ms P50 / 4 ms P95 LTR", MetricTone::Signal),
@@ -431,7 +428,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Agentic AI · Observability",
         title: "Agentic Tracing (Arize Phoenix → Cloud Trace), TTFT & On-Call",
-        tech_tags: &["GCP / GKE", "Observability", "Gemini / Gemma"],
         one_liner: "Migrated agentic tracing from an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace, uncovered latency spikes to cut pre-launch TTFT from 15 s to 12 s, and wired Cloud Monitoring + GoAlert on-call routines.",
         headline_badges: &[
             ("15 s → 12 s TTFT (−20%)", MetricTone::Signal),
@@ -531,7 +527,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Agentic AI · Tooling & Evals",
         title: "LLM-as-a-Judge Evals & Unified Rust/Dioxus Suite",
-        tech_tags: &["Rust", "Dioxus", "LLM-as-a-Judge", "Gemini / Gemma"],
         one_liner: "Automated LLM-as-a-judge regression evals (1–2 days → <1 hr) and evolved a plain chat-only Chainlit UI into a full Rust/Dioxus suite (Chat Comparator, Perf Test, Regression & utilities) under one endpoint.",
         headline_badges: &[
             ("1–2 days → <1 hr eval", MetricTone::Signal),
@@ -599,7 +594,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Ranking & MLOps",
         title: "15-Min LTR Retraining Pipeline with Polars",
-        tech_tags: &["Learning to Rank", "Polars", "Kubernetes"],
         one_liner: "Rebuilt Learning-to-Rank retraining using Polars and Kubernetes CronJobs — cutting model creation from 24 hours to under 15 minutes and cloud spend by >20% across 5 business units.",
         headline_badges: &[
             ("24 hrs → <15 min LTR", MetricTone::Signal),
@@ -665,7 +659,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Search Serving",
         title: "Flask → FastAPI Async Migration & Search Reliability",
-        tech_tags: &["FastAPI", "Flask", "Observability"],
         one_liner: "Migrated synchronous Flask search APIs to async FastAPI (−40% daily timeouts), added Datadog/Loki/Slack monitoring, and shipped related-keywords search (+7% engagement).",
         headline_badges: &[
             ("−40% daily timeouts", MetricTone::Signal),
@@ -725,7 +718,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Experimentation",
         title: "In-House Cookie A/B Testing & Cyber Load Readiness",
-        tech_tags: &["FastAPI", "Observability", "A/B Testing"],
         one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine and hardened search resilience for biannual cyber events.",
         headline_badges: &[
             ("$50K/yr saved", MetricTone::Signal),
@@ -776,7 +768,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Dec 2020 – Apr 2023",
         category: "Cloud & MLOps",
         title: "GCP Terraform MLOps Automation",
-        tech_tags: &["GCP / GKE", "Terraform"],
         one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows for consistent, repeatable deployments.",
         headline_badges: &[
             ("−50% manual setup", MetricTone::Signal),

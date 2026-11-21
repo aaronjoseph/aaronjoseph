@@ -211,7 +211,6 @@ pub fn RichTitle(title: &'static str) -> Element {
 #[component]
 pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element {
     let mut company_filter = use_signal(|| "all");
-    let mut tech_filter = use_signal(|| "all");
 
     let mut companies: Vec<(&'static str, &'static str)> = vec![("all", "All Projects")];
     for p in DEEP_DIVE_PROJECTS {
@@ -219,19 +218,6 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
             companies.push((p.company_id, p.company));
         }
     }
-
-    // Collect unique tech tags dynamically, ordered by frequency (most cross-cutting first)
-    let mut tech_tags: Vec<(&'static str, usize)> = Vec::new();
-    for p in DEEP_DIVE_PROJECTS {
-        for &tag in p.tech_tags {
-            if let Some((_, c)) = tech_tags.iter_mut().find(|(t, _)| *t == tag) {
-                *c += 1;
-            } else {
-                tech_tags.push((tag, 1));
-            }
-        }
-    }
-    tech_tags.sort_by(|a, b| b.1.cmp(&a.1));
 
     let active_idx = selected_project().and_then(|id| {
         DEEP_DIVE_PROJECTS.iter().position(|p| p.id == id)
@@ -250,100 +236,24 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                     }
                 }
 
-                div { class: "filter-stack",
-                    div { class: "filter-bar company-filter-bar", role: "group", aria_label: "Filter projects by company",
-                        for (cid, label) in companies {
-                            {
-                                let count = if cid == "all" {
-                                    DEEP_DIVE_PROJECTS.len()
-                                } else {
-                                    DEEP_DIVE_PROJECTS.iter().filter(|p| p.company_id == cid).count()
-                                };
-                                rsx! {
-                                    button {
-                                        key: "{cid}",
-                                        class: if company_filter() == cid { "filter-pill active" } else { "filter-pill" },
-                                        r#type: "button",
-                                        onclick: move |_| {
-                                            company_filter.set(cid);
-                                            let cur_tech = tech_filter();
-                                            if cur_tech != "all" {
-                                                let has_match = DEEP_DIVE_PROJECTS.iter().any(|p| {
-                                                    (cid == "all" || p.company_id == cid)
-                                                        && p.tech_tags.contains(&cur_tech)
-                                                });
-                                                if !has_match {
-                                                    tech_filter.set("all");
-                                                }
-                                            }
-                                        },
-                                        if cid != "all" {
-                                            CompanyLogo { company_id: cid, size: 18 }
-                                        }
-                                        span { "{label} ({count})" }
+                div { class: "filter-bar", role: "group", aria_label: "Filter projects by company",
+                    for (cid, label) in companies {
+                        {
+                            let count = if cid == "all" {
+                                DEEP_DIVE_PROJECTS.len()
+                            } else {
+                                DEEP_DIVE_PROJECTS.iter().filter(|p| p.company_id == cid).count()
+                            };
+                            rsx! {
+                                button {
+                                    key: "{cid}",
+                                    class: if company_filter() == cid { "filter-pill active" } else { "filter-pill" },
+                                    r#type: "button",
+                                    onclick: move |_| company_filter.set(cid),
+                                    if cid != "all" {
+                                        CompanyLogo { company_id: cid, size: 18 }
                                     }
-                                }
-                            }
-                        }
-                    }
-
-                    div { class: "tech-filter-bar", role: "group", aria_label: "Filter projects by technology",
-                        span { class: "tech-filter-label", "Tech" }
-                        button {
-                            class: if tech_filter() == "all" { "tech-filter-pill active" } else { "tech-filter-pill" },
-                            r#type: "button",
-                            onclick: move |_| tech_filter.set("all"),
-                            "All"
-                        }
-                        for (tag, _total) in tech_tags {
-                            {
-                                let cur_company = company_filter();
-                                let scoped_count = DEEP_DIVE_PROJECTS
-                                    .iter()
-                                    .filter(|p| {
-                                        (cur_company == "all" || p.company_id == cur_company)
-                                            && p.tech_tags.contains(&tag)
-                                    })
-                                    .count();
-                                let is_active = tech_filter() == tag;
-                                let pill_cls = if is_active {
-                                    "tech-filter-pill active"
-                                } else if scoped_count == 0 {
-                                    "tech-filter-pill muted"
-                                } else {
-                                    "tech-filter-pill"
-                                };
-                                let icon_kind = match tag {
-                                    "Rust" => Some(FrameworkKind::Rust),
-                                    "FastAPI" => Some(FrameworkKind::FastApi),
-                                    "Flask" => Some(FrameworkKind::Flask),
-                                    "GCP / GKE" => Some(FrameworkKind::Gcp),
-                                    _ => None,
-                                };
-                                rsx! {
-                                    button {
-                                        key: "{tag}",
-                                        class: "{pill_cls}",
-                                        r#type: "button",
-                                        onclick: move |_| {
-                                            if tech_filter() == tag {
-                                                tech_filter.set("all");
-                                            } else {
-                                                if scoped_count == 0 {
-                                                    company_filter.set("all");
-                                                }
-                                                tech_filter.set(tag);
-                                            }
-                                        },
-                                        if let Some(kind) = icon_kind {
-                                            FrameworkLogo { kind }
-                                        }
-                                        if scoped_count > 0 {
-                                            span { "{tag} ({scoped_count})" }
-                                        } else {
-                                            span { "{tag}" }
-                                        }
-                                    }
+                                    span { "{label} ({count})" }
                                 }
                             }
                         }
@@ -351,10 +261,7 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                 }
 
                 div { class: "dd-list",
-                    for project in DEEP_DIVE_PROJECTS.iter().filter(|p| {
-                        (company_filter() == "all" || p.company_id == company_filter())
-                            && (tech_filter() == "all" || p.tech_tags.contains(&tech_filter()))
-                    }) {
+                    for project in DEEP_DIVE_PROJECTS.iter().filter(|p| company_filter() == "all" || p.company_id == company_filter()) {
                         {
                             let pid = project.id;
                             let is_active = selected_project() == Some(pid);
