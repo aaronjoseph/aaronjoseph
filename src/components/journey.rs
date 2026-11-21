@@ -275,7 +275,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
 }
 
 #[component]
-pub fn JourneySection(on_back: EventHandler<()>) -> Element {
+pub fn JourneySection() -> Element {
     let mut active_idx = use_signal(|| 0usize);
     let mut expand_all = use_signal(|| false);
 
@@ -412,16 +412,8 @@ pub fn JourneySection(on_back: EventHandler<()>) -> Element {
     };
 
     rsx! {
-        section { id: "journey", class: "story-page",
+        section { id: "journey",
             div { class: "wrap",
-                div { class: "story-page-bar",
-                    button {
-                        class: "text-btn",
-                        r#type: "button",
-                        onclick: move |_| on_back.call(()),
-                        "← Back to portfolio"
-                    }
-                }
                 div { class: "sec-head",
                     div { class: "eyebrow", "The Story So Far" }
                     h2 { "Nine years of figuring things out" }

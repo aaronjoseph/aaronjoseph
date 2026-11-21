@@ -4,7 +4,6 @@ use crate::components::company_logo::CompanyLogo;
 
 #[component]
 pub fn Hero(
-    on_open_story: EventHandler<()>,
     on_open_resume: EventHandler<()>,
     on_open_blog: EventHandler<()>,
     on_copy_email: EventHandler<()>,
@@ -52,13 +51,6 @@ pub fn Hero(
                     p { class: "hero-inline-nav",
                         "Over the last nine years, I've gone from rural fintech and risk analytics to high-scale search, ranking, and agentic AI. Feel free to browse "
                         a { href: "#systems", class: "inline-hl hl-yellow", "what I've built" }
-                        ", follow "
-                        button {
-                            class: "inline-hl-btn hl-peach",
-                            r#type: "button",
-                            onclick: move |_| on_open_story.call(()),
-                            "my story"
-                        }
                         ", read "
                         button {
                             class: "inline-hl-btn hl-lime",

@@ -23,7 +23,6 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum AppView {
     Portfolio,
-    Story,
     Blog,
     Resume,
 }
@@ -173,12 +172,6 @@ fn App() -> Element {
         document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
     };
 
-    let open_story = move |_| {
-        selected_project.set(None);
-        view.set(AppView::Story);
-        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
-    };
-
     let open_blog = move |_| {
         selected_project.set(None);
         view.set(AppView::Blog);
@@ -206,12 +199,12 @@ fn App() -> Element {
                 AppView::Portfolio => rsx! {
                     main {
                         Hero {
-                            on_open_story: open_story,
                             on_open_resume: open_resume,
                             on_open_blog: open_blog,
                             on_copy_email: copy_email,
                         }
                         SystemsSection { selected_project }
+                        JourneySection {}
                         StackSection {}
                         WritingPreviewSection { on_open_blog: open_blog }
                         CredentialsSection {}
@@ -219,11 +212,6 @@ fn App() -> Element {
                             on_copy_email: copy_email,
                             on_open_resume: open_resume,
                         }
-                    }
-                },
-                AppView::Story => rsx! {
-                    main {
-                        JourneySection { on_back: go_home }
                     }
                 },
                 AppView::Blog => rsx! {
