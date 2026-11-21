@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use dioxus::prelude::*;
 
 use crate::components::company_logo::CompanyLogo;
@@ -279,7 +277,6 @@ fn StoryGraphic(role_id: &'static str) -> Element {
 #[component]
 pub fn JourneySection() -> Element {
     let mut active_idx = use_signal(|| 0usize);
-    let mut open_roles = use_signal(|| ROLES.iter().map(|r| r.id).collect::<HashSet<&'static str>>());
 
     // Lightweight passive scroll-spy: never traps or hijacks scrolling, and never mutates
     // card heights on scroll — simply updates the sticky left animated story panel as you
@@ -357,16 +354,9 @@ pub fn JourneySection() -> Element {
     let current_role = &ROLES[active_idx()];
     let chrono_step = ROLES.len().saturating_sub(active_idx());
     let progress_pct = ((chrono_step as f32) / (ROLES.len() as f32) * 100.0).round() as u32;
-    let all_open = open_roles.read().len() == ROLES.len();
 
-    fn jump_to_role(
-        mut active_idx: Signal<usize>,
-        mut open_roles: Signal<HashSet<&'static str>>,
-        idx: usize,
-        scroll_to_card: bool,
-    ) {
+    fn jump_to_role(mut active_idx: Signal<usize>, idx: usize, scroll_to_card: bool) {
         active_idx.set(idx);
-        open_roles.write().insert(ROLES[idx].id);
         let js = if scroll_to_card {
             format!(
                 r#"
@@ -445,7 +435,7 @@ pub fn JourneySection() -> Element {
                                             role: "tab",
                                             aria_selected: "{is_cur}",
                                             title: "{role.company} ({role.period})",
-                                            onclick: move |_| jump_to_role(active_idx, open_roles, rev_i, true),
+                                            onclick: move |_| jump_to_role(active_idx, rev_i, true),
                                             CompanyLogo { company_id: role.id, size: 18 }
                                         }
                                     }
@@ -455,30 +445,11 @@ pub fn JourneySection() -> Element {
                     }
 
                     div { class: "career-right",
-                        div { class: "timeline-controls",
-                            button {
-                                class: "text-btn",
-                                r#type: "button",
-                                onclick: move |_| {
-                                    if all_open {
-                                        let mut only_active = HashSet::new();
-                                        only_active.insert(ROLES[active_idx()].id);
-                                        open_roles.set(only_active);
-                                    } else {
-                                        let all: HashSet<&'static str> = ROLES.iter().map(|r| r.id).collect();
-                                        open_roles.set(all);
-                                    }
-                                },
-                                if all_open { "Collapse others" } else { "Expand all roles" }
-                            }
-                        }
-
                         div { class: "timeline",
                             for (idx, role) in ROLES.iter().enumerate() {
                                 {
                                     let id = role.id;
                                     let is_active = active_idx() == idx;
-                                    let is_open = open_roles.read().contains(id);
                                     let card_cls = match (role.current, is_active) {
                                         (true, true) => "role-card current active-story",
                                         (true, false) => "role-card current",
@@ -490,24 +461,8 @@ pub fn JourneySection() -> Element {
                                             key: "{id}",
                                             class: "{card_cls}",
                                             "data-role-idx": "{idx}",
-                                            button {
-                                                class: "role-trigger",
-                                                r#type: "button",
-                                                aria_expanded: "{is_open}",
-                                                onclick: move |_| {
-                                                    let mut set = open_roles.write();
-                                                    if set.contains(id) {
-                                                        set.remove(id);
-                                                    } else {
-                                                        set.insert(id);
-                                                    }
-                                                    drop(set);
-                                                    active_idx.set(idx);
-                                                    let js = format!(
-                                                        "window.__ajmStoryLockUntil = Date.now() + 450; if (window.__ajmStorySetLast) window.__ajmStorySetLast({idx});"
-                                                    );
-                                                    document::eval(&js);
-                                                },
+                                            onclick: move |_| jump_to_role(active_idx, idx, false),
+                                            div { class: "role-trigger",
                                                 div {
                                                     div { class: "role-meta",
                                                         if let Some(badge) = role.badge {
@@ -521,32 +476,12 @@ pub fn JourneySection() -> Element {
                                                         span { "{role.company}" }
                                                     }
                                                 }
-                                                span {
-                                                    class: if is_open { "role-chevron open" } else { "role-chevron" },
-                                                    aria_hidden: "true",
-                                                    svg {
-                                                        width: "15",
-                                                        height: "15",
-                                                        view_box: "0 0 24 24",
-                                                        fill: "none",
-                                                        stroke: "currentColor",
-                                                        stroke_width: "2.2",
-                                                        stroke_linecap: "round",
-                                                        stroke_linejoin: "round",
-                                                        path { d: "m6 9 6 6 6-6" }
-                                                    }
-                                                }
                                             }
 
-                                            div {
-                                                class: if is_open { "role-body-wrap open" } else { "role-body-wrap" },
-                                                div { class: "role-body-inner",
-                                                    div { class: "role-body",
-                                                        ul { class: "role-list",
-                                                            for bullet in role.bullets {
-                                                                li { "{bullet}" }
-                                                            }
-                                                        }
+                                            div { class: "role-body",
+                                                ul { class: "role-list",
+                                                    for bullet in role.bullets {
+                                                        li { "{bullet}" }
                                                     }
                                                 }
                                             }
