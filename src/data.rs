@@ -152,10 +152,10 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
                 pipeline: "Monolith + Bulkheads · ARM C4A GKE",
                 advantage: "Moved x86 n1-standard-16 → ARM c4a-standard-16 (−30% latency), consolidated microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized to c4a-highcpu-8.",
                 gains: &[
+                    ("21¢ → 18¢ / agent turn (−3¢)", MetricTone::Signal),
                     ("−30% ARM C4A latency", MetricTone::Signal),
                     ("700 → 350 ms P50", MetricTone::Signal),
                     ("−95% CPU · −98% RAM", MetricTone::Accent),
-                    ("−8.5% agent cost/turn", MetricTone::Signal),
                     ("~$180K/yr (~$500/day)", MetricTone::Default),
                 ],
             },
@@ -233,12 +233,20 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         title: "Flask → FastAPI → Rust (Axum) & GKE ARM C4A",
         one_liner: "Migrated GKE from x86 n1-standard-16 to ARM C4A, consolidated search microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized idle node pools.",
         headline_badges: &[
+            ("21¢ → 18¢ / turn (−3¢)", MetricTone::Signal),
             ("−30% ARM C4A latency", MetricTone::Signal),
             ("−95% CPU · −98% RAM", MetricTone::Accent),
-            ("−57% idle node cost · ~$180K/yr", MetricTone::Signal),
+            ("−57% idle node cost · ~$180K/yr", MetricTone::Default),
         ],
         flow: "Client Traffic → GKE ARM C4A HPA → Rust/Axum Monolith (api → domain ← infra) → Bulkhead Pools [Product Search | Recall Fan-Out | Metadata | LTR | ESCI]",
         comparisons: &[
+            NotebookComparison {
+                label: "AskBlue Agent Cost / Turn",
+                before: "21¢ / turn",
+                after: "18¢ / turn",
+                delta: "−3¢ / turn",
+                tone: MetricTone::Signal,
+            },
             NotebookComparison {
                 label: "GKE x86 → ARM C4A (Titanium)",
                 before: "x86 n1-standard-16",
@@ -289,7 +297,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                 items: &[
                     "−95% CPU & −98% RAM usage",
                     "~$180K/yr saved (~$500/day)",
-                    "~8.5% lower cost/turn for the agentic shopping assistant",
+                    "AskBlue agent cost/turn: 21¢ → 18¢ (−3¢)",
                     "700 ms → 350 ms P50 (>1 s max cut)",
                 ],
             },
@@ -304,6 +312,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
         ],
         key_outcomes: &[
+            ("21¢ → 18¢", "Agent cost/turn (−3¢)", MetricTone::Signal),
             ("−30%", "Immediate ARM C4A latency drop", MetricTone::Signal),
             ("−95% / −98%", "CPU & RAM cut (Rust)", MetricTone::Accent),
             ("~$180K/yr", "Est. savings (~$500/day)", MetricTone::Signal),
@@ -320,7 +329,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             DeepDiveSection {
                 heading: "2 · Microservices → Hexagonal Rust Monolith + Bulkheads",
                 points: &[
-                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings — which directly reduced the end-to-end cost per turn of the agentic shopping assistant (AskBlue) by roughly 8.5%.",
+                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings — which directly reduced the end-to-end cost per turn of the agentic shopping assistant (AskBlue) by 3¢, from 21¢ down to 18¢ per turn.",
                     "Collapsed separate Python search/recall/reranker microservices into a single in-process Rust binary to remove internal HTTP serialization overhead while preserving distinct OpenTelemetry spans per stage.",
                     "Designed per-service bulkhead connection pools (isolating product-search, ESCI cache, reranker metadata, and LTR Redis managers) so large metadata batches never head-of-line-block small LTR lookups, paired with order-preserving concurrent fan-out for multi-tier recall.",
                 ],
