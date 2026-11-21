@@ -5,9 +5,18 @@ pub enum MetricTone {
     Signal,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum TechKind {
+    Flask,
+    FastApi,
+    RustAxum,
+    GkeArm,
+}
+
 pub struct TelemetryWorkstream {
     pub index: &'static str,
     pub title: &'static str,
+    pub tech_steps: &'static [TechKind],
     pub pipeline: &'static str,
     pub advantage: &'static str,
     pub gains: &'static [(&'static str, MetricTone)],
@@ -21,13 +30,37 @@ pub struct TelemetryProject {
     pub stack_summary: &'static str,
 }
 
-pub struct OutcomeMeter {
+pub struct NotebookComparison {
     pub label: &'static str,
-    pub before_label: &'static str,
-    pub before_pct: u8,
-    pub after_label: &'static str,
-    pub after_pct: u8,
-    pub accent_after: bool,
+    pub before: &'static str,
+    pub after: &'static str,
+    pub delta: &'static str,
+    pub tone: MetricTone,
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum CalloutStyle {
+    PurpleDashed,
+    GreenCheck,
+}
+
+pub struct NotebookCallout {
+    pub style: CalloutStyle,
+    pub title: &'static str,
+    pub body: &'static str,
+    pub link: Option<(&'static str, &'static str)>, // (label, url)
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum StickyTone {
+    Yellow,
+    Pink,
+}
+
+pub struct StickyNote {
+    pub tone: StickyTone,
+    pub title: &'static str,
+    pub items: &'static [&'static str],
 }
 
 pub struct DeepDiveSection {
@@ -42,13 +75,16 @@ pub struct DeepDiveProject {
     pub period: &'static str,
     pub category: &'static str,
     pub title: &'static str,
+    pub tech_steps: &'static [TechKind],
     pub one_liner: &'static str,
     pub headline_badges: &'static [(&'static str, MetricTone)],
     pub flow: &'static str,
-    pub meters: &'static [OutcomeMeter],
-    pub key_outcomes: &'static [(&'static str, &'static str, MetricTone)], // (metric, label, tone)
+    pub comparisons: &'static [NotebookComparison],
+    pub callouts: &'static [NotebookCallout],
+    pub sticky_notes: &'static [StickyNote],
+    pub key_outcomes: &'static [(&'static str, &'static str, MetricTone)],
     pub sections: &'static [DeepDiveSection],
-    pub stack: &'static [(&'static str, bool)], // (name, is_core)
+    pub stack: &'static [(&'static str, bool)],
 }
 
 pub struct Role {
@@ -67,7 +103,7 @@ pub struct SkillGroup {
     pub id: &'static str,
     pub filter_label: &'static str,
     pub title: &'static str,
-    pub items: &'static [(&'static str, bool)], // (name, is_core)
+    pub items: &'static [(&'static str, bool)],
 }
 
 pub struct Education {
@@ -87,9 +123,9 @@ pub struct Certification {
 #[allow(dead_code)]
 pub struct BlogPost {
     pub slug: &'static str,
-    pub date: &'static str,       // Displayed on the left, e.g. "Nov 21, 2026"
-    pub year: &'static str,       // Displayed in topic tree, e.g. "2026"
-    pub topic: &'static str,      // Grouping for By-Topic tree, e.g. "Search Systems"
+    pub date: &'static str,
+    pub year: &'static str,
+    pub topic: &'static str,
     pub read_time: &'static str,
     pub title: &'static str,
     pub subtitle: &'static str,
@@ -118,23 +154,25 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
         id: "search-system",
         label: "Search System",
         context: "Best Buy · Semantic Search & Ranking Stack",
-        stack_summary: "Rust · Axum · ONNX · GKE C4A",
+        stack_summary: "Rust · Axum · ONNX · GKE ARM C4A",
         workstreams: &[
             TelemetryWorkstream {
                 index: "01",
                 title: "Flask → FastAPI → Rust (Axum)",
-                pipeline: "Hexagonal Architecture · C4A GKE",
-                advantage: "Separated core search logic from infra adapters and removed Python runtime overhead, enabling C4A-highcpu-4 right-sizing and clean holiday HPA scaling.",
+                tech_steps: &[TechKind::Flask, TechKind::FastApi, TechKind::RustAxum],
+                pipeline: "Monolith + Bulkheads · ARM C4A GKE",
+                advantage: "Moved x86 n1-standard-16 → ARM c4a-standard-16 (−30% latency), consolidated microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized to c4a-highcpu-8.",
                 gains: &[
+                    ("−30% ARM C4A latency", MetricTone::Signal),
                     ("700 → 350 ms P50", MetricTone::Signal),
-                    ("−95% compute", MetricTone::Accent),
-                    ("−98% RAM", MetricTone::Accent),
-                    ("~$180K/yr saved (~$500/day)", MetricTone::Default),
+                    ("−95% CPU · −98% RAM", MetricTone::Accent),
+                    ("~$180K/yr (~$500/day)", MetricTone::Default),
                 ],
             },
             TelemetryWorkstream {
                 index: "02",
                 title: "LTR Inference → ONNX",
+                tech_steps: &[],
                 pipeline: "Python Ranker → ONNX Runtime",
                 advantage: "Eliminated Python inference bottlenecks in the ranking stage for predictable, single-digit-millisecond scoring under peak load.",
                 gains: &[
@@ -145,6 +183,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "03",
                 title: "ESCI Async Write-Back Caching",
+                tech_steps: &[],
                 pipeline: "GPU ESCI · Reduced Logging Overhead",
                 advantage: "Eliminated GPU-hosted ESCI tail-latency spikes that were stalling Search requests through async write-back caching and leaner logging.",
                 gains: &[
@@ -163,6 +202,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "01",
                 title: "LLM-as-a-Judge & API Comparator",
+                tech_steps: &[],
                 pipeline: "Regression Evals · Endpoint Smoke Tests",
                 advantage: "Replaced slow manual release checks with automated LLM-as-a-judge regression suites and self-service performance testing before formal perf runs.",
                 gains: &[
@@ -173,6 +213,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "02",
                 title: "Agentic Tracing & Model Dashboards",
+                tech_steps: &[],
                 pipeline: "Google Cloud Trace · Structured Logs",
                 advantage: "Established org-wide request-level tracing across agentic AI inputs & outputs with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
                 gains: &[
@@ -183,6 +224,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "03",
                 title: "Chainlit → Unified Rust Dioxus Suite",
+                tech_steps: &[],
                 pipeline: "Dioxus WASM · Single-Endpoint Suite",
                 advantage: "Evolved a plain chat-only Chainlit UI into an all-in-one Rust/Dioxus suite — Chat Comparator, Perf Testing, Regression Evals, and team utilities under a single endpoint.",
                 gains: &[
@@ -202,73 +244,123 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         company_id: "bestbuy",
         period: "May 2025 – Present",
         category: "Search System",
-        title: "Flask → FastAPI → Rust (Axum) & GKE C4A",
-        one_liner: "Re-architected semantic search into hexagonal Rust/Axum, right-sized C4A GKE node pools, and tuned holiday RPS autoscaling.",
-        headline_badges: &[
-            ("700 → 350 ms P50", MetricTone::Signal),
-            ("−95% compute · −98% RAM", MetricTone::Accent),
-            ("~$180K/yr saved", MetricTone::Signal),
+        title: "Flask → FastAPI → Rust (Axum) & GKE ARM C4A",
+        tech_steps: &[
+            TechKind::Flask,
+            TechKind::FastApi,
+            TechKind::RustAxum,
+            TechKind::GkeArm,
         ],
-        flow: "Client Traffic → GKE HPA (RPS Scaling) → Axum HTTP Layer → Hexagonal Search Domain → Downstream Model Adapters",
-        meters: &[
-            OutcomeMeter {
+        one_liner: "Migrated GKE from x86 n1-standard-16 to ARM C4A, consolidated search microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized idle node pools.",
+        headline_badges: &[
+            ("−30% ARM C4A latency", MetricTone::Signal),
+            ("−95% CPU · −98% RAM", MetricTone::Accent),
+            ("−57% idle node cost · ~$180K/yr", MetricTone::Signal),
+        ],
+        flow: "Client Traffic → GKE ARM C4A HPA → Rust/Axum Monolith (api → domain ← infra) → Bulkhead Pools [Product Search | Recall Fan-Out | Metadata | LTR | ESCI]",
+        comparisons: &[
+            NotebookComparison {
+                label: "GKE x86 → ARM C4A (Titanium)",
+                before: "x86 n1-standard-16",
+                after: "ARM c4a-standard-16",
+                delta: "−30% latency",
+                tone: MetricTone::Signal,
+            },
+            NotebookComparison {
                 label: "Search P50 Latency",
-                before_label: "700 ms",
-                before_pct: 100,
-                after_label: "350 ms (−50%)",
-                after_pct: 50,
-                accent_after: false,
+                before: "700 ms (Python)",
+                after: "350 ms (Rust/Axum)",
+                delta: "−50% P50",
+                tone: MetricTone::Signal,
             },
-            OutcomeMeter {
-                label: "Compute Cost (Rust Migration)",
-                before_label: "Python baseline",
-                before_pct: 100,
-                after_label: "5% (−95%)",
-                after_pct: 5,
-                accent_after: true,
+            NotebookComparison {
+                label: "FastAPI → Rust Footprint",
+                before: "Python workers",
+                after: "Rust single binary",
+                delta: "−95% CPU · −98% RAM",
+                tone: MetricTone::Accent,
             },
-            OutcomeMeter {
-                label: "Memory Footprint (RAM)",
-                before_label: "Python baseline",
-                before_pct: 100,
-                after_label: "2% (−98%)",
-                after_pct: 3,
-                accent_after: false,
+            NotebookComparison {
+                label: "Idle / Low-Traffic Node Pool",
+                before: "c4a-standard-16",
+                after: "c4a-highcpu-8",
+                delta: "−57% idle cost/node",
+                tone: MetricTone::Accent,
+            },
+        ],
+        callouts: &[
+            NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Platform Win · x86 n1-standard-16 → ARM c4a-standard-16",
+                body: "Partnered with the Platform team to evaluate and adopt Google Cloud's Arm/Titanium-backed C4A instances across AML, delivering an immediate 30% search latency drop and 20% fewer compute pods even before the Rust rewrite.",
+                link: Some(("Deep dive: Google Cloud Titanium ↗", "https://cloud.google.com/titanium")),
+            },
+            NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Why Monolith + Bulkhead Connectors + Fan-Out?",
+                body: "Instead of paying network hops between Python microservices, search, recall, and reranking now run in-process inside one hexagonal Rust binary. Each downstream dependency gets its own isolated bulkhead connection pool (e.g., separate pools for recall fan-out, large metadata HMGET pipelines, small LTR reads, and ESCI cache) so high-concurrency recall fan-out or heavy metadata payloads never head-of-line-block latency-sensitive scoring.",
+                link: None,
+            },
+        ],
+        sticky_notes: &[
+            StickyNote {
+                tone: StickyTone::Yellow,
+                title: "FastAPI → Rust Migration",
+                items: &[
+                    "−95% CPU & −98% RAM usage",
+                    "~$180K/yr saved (~$500/day)",
+                    "700 ms → 350 ms P50 (>1 s max cut)",
+                ],
+            },
+            StickyNote {
+                tone: StickyTone::Pink,
+                title: "C4A Node Right-Sizing",
+                items: &[
+                    "c4a-standard-16 → c4a-highcpu-8",
+                    "−57% idle cost per node at low load",
+                    "RPS-aware HPA tuned for peak events",
+                ],
             },
         ],
         key_outcomes: &[
-            ("−95%", "Compute cost reduction", MetricTone::Accent),
-            ("−98%", "RAM footprint reduction", MetricTone::Accent),
+            ("−30%", "Immediate ARM C4A latency drop", MetricTone::Signal),
+            ("−95% / −98%", "CPU & RAM cut (Rust)", MetricTone::Accent),
             ("~$180K/yr", "Est. savings (~$500/day)", MetricTone::Signal),
-            (">1 s", "Max latency cut", MetricTone::Signal),
-            ("−78%", "Min node-pool compute", MetricTone::Default),
-            ("−30% / −20%", "C4A upgrade latency / pods", MetricTone::Default),
+            ("−57%", "Idle node cost (highcpu-8)", MetricTone::Accent),
         ],
         sections: &[
             DeepDiveSection {
-                heading: "Problem & Context",
+                heading: "1 · GKE Architecture: x86 → ARM C4A (Titanium)",
                 points: &[
-                    "The original Flask semantic search layer carried heavy Python runtime overhead, high memory footprint, and 700 ms P50 latency under peak retail traffic.",
-                    "Tight coupling between search orchestration and infrastructure adapters made iterative performance and cloud right-sizing harder than necessary.",
+                    "Independently identified the 3-generation jump from x86 n1-standard-16 to ARM c4a-standard-16 on Google Cloud Titanium and worked with the Platform team to drive adoption across AML.",
+                    "Delivered an immediate 30% latency reduction and 20% pod-count drop from the hardware/architecture upgrade alone.",
                 ],
             },
             DeepDiveSection {
-                heading: "Architecture & Key Decisions",
+                heading: "2 · Microservices → Hexagonal Rust Monolith + Bulkheads",
                 points: &[
-                    "Migrated incrementally from Flask → FastAPI → Rust with Axum, introducing hexagonal architecture to cleanly isolate core search logic from HTTP/cloud infrastructure.",
-                    "Right-sized GKE node pools from C4A-standard-16 to C4A-highcpu-4 and independently identified a 3-generation C4A upgrade across AML (−30% search latency, −20% compute pods).",
-                    "Tuned holiday-season Kubernetes HPA with requests-per-second (RPS) scaling and right-sized CPU/GPU deployments.",
+                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings.",
+                    "Collapsed separate Python search/recall/reranker microservices into a single in-process Rust binary to remove internal HTTP serialization overhead while preserving distinct OpenTelemetry spans per stage.",
+                    "Designed per-service bulkhead connection pools (isolating product-search, ESCI cache, reranker metadata, and LTR Redis managers) so large metadata batches never head-of-line-block small LTR lookups, paired with order-preserving concurrent fan-out for multi-tier recall.",
+                ],
+            },
+            DeepDiveSection {
+                heading: "3 · Idle Cost Right-Sizing (c4a-standard-16 → c4a-highcpu-8)",
+                points: &[
+                    "Because the Rust monolith needed a fraction of Python's RAM, downsized the node pool from c4a-standard-16 to c4a-highcpu-8 — cutting idle/low-traffic per-node compute costs by 57%.",
+                    "Paired with RPS-based Kubernetes HPA scaling to stay lean overnight while expanding smoothly for holiday peaks.",
                 ],
             },
         ],
         stack: &[
             ("Rust", true),
             ("Axum", true),
-            ("Hexagonal Architecture", true),
-            ("GKE / C4A", true),
+            ("Hexagonal Monolith", true),
+            ("Bulkhead Pools", true),
+            ("GKE ARM C4A / Titanium", true),
+            ("Concurrent Fan-Out", false),
             ("Kubernetes HPA", false),
-            ("FastAPI", false),
-            ("Flask", false),
+            ("FastAPI / Flask", false),
         ],
     },
     DeepDiveProject {
@@ -278,30 +370,36 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "ONNX LTR Inference & GPU ESCI Caching",
+        tech_steps: &[],
         one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime and resolved 5-second GPU ESCI latency spikes via async write-back caching.",
         headline_badges: &[
             ("2 ms P50 / 4 ms P95 LTR", MetricTone::Signal),
             ("5 s → <200 ms ESCI", MetricTone::Accent),
         ],
         flow: "Search Query → [NER · Sparse Retrieval · GPU ESCI + Async Write-Back Cache] → ONNX Runtime LTR Ranker",
-        meters: &[
-            OutcomeMeter {
+        comparisons: &[
+            NotebookComparison {
                 label: "GPU ESCI Tail Latency",
-                before_label: "5,000 ms spike",
-                before_pct: 100,
-                after_label: "<200 ms (25×)",
-                after_pct: 6,
-                accent_after: false,
+                before: "5,000 ms spikes",
+                after: "<200 ms steady",
+                delta: "25× faster tail",
+                tone: MetricTone::Signal,
             },
-            OutcomeMeter {
+            NotebookComparison {
                 label: "LTR Inference Latency",
-                before_label: "3× Python baseline",
-                before_pct: 100,
-                after_label: "2 ms P50 / 4 ms P95",
-                after_pct: 33,
-                accent_after: true,
+                before: "Python scorer",
+                after: "2 ms P50 · 4 ms P95",
+                delta: "3× faster",
+                tone: MetricTone::Accent,
             },
         ],
+        callouts: &[NotebookCallout {
+            style: CalloutStyle::PurpleDashed,
+            title: "Keeping Async Workers Free",
+            body: "ONNX sessions run inside a bounded per-branch session pool offloaded via spawn_blocking so CPU-bound scoring never starves async Redis/network reader tasks under load, while ESCI writes happen asynchronously in the background.",
+            link: None,
+        }],
+        sticky_notes: &[],
         key_outcomes: &[
             ("2 ms", "LTR ONNX P50", MetricTone::Signal),
             ("4 ms", "LTR ONNX P95", MetricTone::Signal),
@@ -341,6 +439,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Agentic AI",
         title: "Observability, LLM-as-a-Judge & Unified Dioxus Suite",
+        tech_steps: &[],
         one_liner: "Built Cloud Trace agentic diagnostics, automated LLM-as-a-judge evals, and evolved a plain chat-only Chainlit UI into a full Rust/Dioxus suite (Chat Comparator, Perf Test, Regression & utilities) under one endpoint.",
         headline_badges: &[
             ("1–2 days → <1 hr eval", MetricTone::Signal),
@@ -348,14 +447,29 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ("Single-endpoint Dioxus suite", MetricTone::Default),
         ],
         flow: "Agentic I/O → Cloud Trace + Structured Logs → Gemma vs. Gemini Dashboards · Unified Dioxus Suite [Chat Comparator · Perf Test · Regression · Utilities]",
-        meters: &[OutcomeMeter {
-            label: "Product Release Validation",
-            before_label: "24–48 hrs manual",
-            before_pct: 100,
-            after_label: "<1 hr automated",
-            after_pct: 6,
-            accent_after: false,
+        comparisons: &[
+            NotebookComparison {
+                label: "Product Release Validation",
+                before: "1–2 days manual",
+                after: "<1 hr automated",
+                delta: "24×+ faster",
+                tone: MetricTone::Signal,
+            },
+            NotebookComparison {
+                label: "Internal AI Workbench",
+                before: "Chat-only Chainlit / Streamlit",
+                after: "Unified Dioxus Suite",
+                delta: "27× lower compute",
+                tone: MetricTone::Accent,
+            },
+        ],
+        callouts: &[NotebookCallout {
+            style: CalloutStyle::GreenCheck,
+            title: "One Endpoint for the Entire AI Workflow",
+            body: "Consolidated scattered manual scripts and a chat-only Chainlit UI into a single Rust/Dioxus app covering Chat Comparator, Self-Service Perf Testing, Regression Evals, and everyday engineering utilities.",
+            link: None,
         }],
+        sticky_notes: &[],
         key_outcomes: &[
             ("<1 hr", "Regression validation", MetricTone::Signal),
             ("27×", "Lower UI compute (Dioxus)", MetricTone::Accent),
@@ -396,30 +510,31 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Search & Ranking",
         title: "FastAPI Migration, 15-Min LTR Retraining & Polars",
+        tech_steps: &[TechKind::Flask, TechKind::FastApi],
         one_liner: "Cut LTR retraining from 24 hours to under 15 minutes across 5 business units, moved Flask to async FastAPI, and shipped related-keywords search.",
         headline_badges: &[
             ("24 hrs → <15 min LTR", MetricTone::Signal),
             ("−40% timeouts · +7% engagement", MetricTone::Accent),
         ],
         flow: "Kubernetes CronJobs + Polars → XGBoost LTR (5 BUs) → Async FastAPI Search APIs → Loki / Datadog / Slack Alerts",
-        meters: &[
-            OutcomeMeter {
-                label: "LTR Model Retraining Time",
-                before_label: "24 hours",
-                before_pct: 100,
-                after_label: "<15 min (96×)",
-                after_pct: 5,
-                accent_after: false,
+        comparisons: &[
+            NotebookComparison {
+                label: "LTR Model Retraining (5 BUs)",
+                before: "24 hours",
+                after: "<15 minutes",
+                delta: "96× faster",
+                tone: MetricTone::Signal,
             },
-            OutcomeMeter {
+            NotebookComparison {
                 label: "Daily API Timeouts",
-                before_label: "Flask sync baseline",
-                before_pct: 100,
-                after_label: "−40% (FastAPI async)",
-                after_pct: 60,
-                accent_after: true,
+                before: "Sync Flask",
+                after: "Async FastAPI",
+                delta: "−40% timeouts",
+                tone: MetricTone::Accent,
             },
         ],
+        callouts: &[],
+        sticky_notes: &[],
         key_outcomes: &[
             ("<15 min", "LTR retraining (was 24 h)", MetricTone::Signal),
             (">20%", "Cloud cost reduction", MetricTone::Accent),
@@ -459,13 +574,22 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Experimentation",
         title: "In-House Cookie A/B Testing & Cyber Load Readiness",
+        tech_steps: &[],
         one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine and hardened search resilience for biannual cyber events.",
         headline_badges: &[
             ("$50K/yr saved", MetricTone::Signal),
             ("Zero 3rd-party dependency", MetricTone::Default),
         ],
         flow: "User Session Cookie Bucketing → Variant Routing → Search Telemetry & Experiment Metrics",
-        meters: &[],
+        comparisons: &[NotebookComparison {
+            label: "Experimentation Software Spend",
+            before: "3rd-party SaaS vendor",
+            after: "In-house cookie engine",
+            delta: "$50K/yr saved",
+            tone: MetricTone::Signal,
+        }],
+        callouts: &[],
+        sticky_notes: &[],
         key_outcomes: &[
             ("$50K/yr", "Software spend eliminated", MetricTone::Signal),
             ("Biannual", "Cyber-event load readiness", MetricTone::Accent),
@@ -501,26 +625,27 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Dec 2020 – Apr 2023",
         category: "Applied ML",
         title: "3G Telecom Tower Decommissioning (Vertex AI)",
+        tech_steps: &[],
         one_liner: "Built a Vertex AI data-driven workflow streamlining 3G infrastructure sunsetting across the London outskirts.",
         headline_badges: &[
             ("150+ towers removed", MetricTone::Signal),
             ("Vertex AI · GCP", MetricTone::Default),
         ],
         flow: "Telecom Network & Traffic Data → BigQuery Feature Layer → Vertex AI Decommissioning Scoring → Rollout Schedule",
-        meters: &[],
+        comparisons: &[],
+        callouts: &[],
+        sticky_notes: &[],
         key_outcomes: &[
             ("150+", "3G towers decommissioned", MetricTone::Signal),
             ("London", "Outskirts rollout scope", MetricTone::Default),
         ],
-        sections: &[
-            DeepDiveSection {
-                heading: "Overview & Impact",
-                points: &[
-                    "Crafted a data-driven decision workflow on GCP Vertex AI to prioritize and streamline the 3G telecommunications decommissioning lifecycle.",
-                    "Directly enabled the successful removal of over 150 legacy 3G towers in the London outskirts.",
-                ],
-            },
-        ],
+        sections: &[DeepDiveSection {
+            heading: "Overview & Impact",
+            points: &[
+                "Crafted a data-driven decision workflow on GCP Vertex AI to prioritize and streamline the 3G telecommunications decommissioning lifecycle.",
+                "Directly enabled the successful removal of over 150 legacy 3G towers in the London outskirts.",
+            ],
+        }],
         stack: &[
             ("Vertex AI", true),
             ("Google Cloud (GCP)", true),
@@ -535,34 +660,34 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Dec 2020 – Apr 2023",
         category: "Cloud & MLOps",
         title: "GCP Terraform MLOps Automation",
+        tech_steps: &[],
         one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows and helped win $2M in CPG & banking proposals.",
         headline_badges: &[
             ("−50% manual setup", MetricTone::Signal),
             ("$2M GCP contracts", MetricTone::Accent),
         ],
         flow: "Terraform Modules (IaC) → Automated GCP Provisioning [dev · stage · prod] → Reproducible ML Workloads",
-        meters: &[OutcomeMeter {
+        comparisons: &[NotebookComparison {
             label: "Environment Setup Effort",
-            before_label: "Manual provisioning",
-            before_pct: 100,
-            after_label: "−50% (Terraform IaC)",
-            after_pct: 50,
-            accent_after: true,
+            before: "Manual GCP provisioning",
+            after: "Reusable Terraform IaC",
+            delta: "−50% setup time",
+            tone: MetricTone::Signal,
         }],
+        callouts: &[],
+        sticky_notes: &[],
         key_outcomes: &[
             ("−50%", "Manual GCP setup effort", MetricTone::Signal),
             ("$2M", "Client contracts supported", MetricTone::Accent),
             ("3 envs", "dev / stage / prod parity", MetricTone::Default),
         ],
-        sections: &[
-            DeepDiveSection {
-                heading: "Infrastructure Automation & Proposals",
-                points: &[
-                    "Constructed robust Terraform automation workflows for GCP resource management across dev, stage, and prod ecosystems, cutting manual setup effort by 50% and improving cross-project consistency.",
-                    "Collaborated with CPG and banking clients to design tailored GCP ML architecture proposals, contributing to securing $2 million in contracts.",
-                ],
-            },
-        ],
+        sections: &[DeepDiveSection {
+            heading: "Infrastructure Automation & Proposals",
+            points: &[
+                "Constructed robust Terraform automation workflows for GCP resource management across dev, stage, and prod ecosystems, cutting manual setup effort by 50% and improving cross-project consistency.",
+                "Collaborated with CPG and banking clients to design tailored GCP ML architecture proposals, contributing to securing $2 million in contracts.",
+            ],
+        }],
         stack: &[
             ("Terraform", true),
             ("Google Cloud (GCP)", true),
@@ -574,7 +699,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
 ];
 
 /// Add entries here (newest first) to publish blog posts on the dedicated Writing page.
-/// New posts automatically appear at the top with their timestamp on the left and in the By-Topic index.
 pub const BLOG_POSTS: &[BlogPost] = &[];
 
 pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
@@ -583,7 +707,7 @@ pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
         year: "Upcoming",
         topic: "Search & Rust Systems",
         title: "Migrating Semantic Search from Flask to FastAPI to Rust (Axum)",
-        subtitle: "Hexagonal architecture, halving P50 latency (700 ms → 350 ms), and right-sizing GKE C4A pools at up to 12,000 RPS.",
+        subtitle: "Hexagonal monolith + per-service bulkheads, ARM C4A Titanium (−30% latency), and halving P50 latency (700 ms → 350 ms).",
     },
     PlannedTopic {
         date_label: "Draft",
@@ -619,16 +743,16 @@ pub const ROLES: &[Role] = &[
         current: true,
         default_open: true,
         bullets: &[
-            "Migrated the Search 2.0 semantic search platform from Flask to FastAPI, then to Rust with Axum, introducing hexagonal architecture to separate core search logic from infrastructure. Cut compute costs 28-fold and memory usage 190-fold; halved P50 latency from 700 ms to 350 ms and reduced maximum observed latency by over 1 second. Moving from C4A-standard-16 to C4A-highcpu-4 on GKE lowered minimum node-pool compute costs by 78% and reduced non-peak GKE CPU/RAM spend by 83%, with nearly US$100,000 in projected annualised savings at scale.",
+            "Migrated the Search 2.0 semantic search platform from Flask to FastAPI, then to Rust with Axum, consolidating microservices into a hexagonal monolith with bulkhead connection pools and concurrent recall fan-out. Cut CPU by 95% and RAM by 98%, halved P50 latency from 700 ms to 350 ms, cut max observed latency by >1 s, and drove ~$180K/yr (~$500/day) in savings.",
+            "Independently identified a 3-generation GKE migration from x86 n1-standard-16 to ARM c4a-standard-16 (Google Cloud Titanium) and partnered with the Platform team for adoption across AML, achieving an immediate 30% latency drop and 20% pod reduction; later right-sized node pools to c4a-highcpu-8, cutting idle per-node cost by 57%.",
             "Migrated Python-based LTR inference to ONNX, reducing inference latency threefold, with P50 of 2 ms and P95 of 4 ms.",
             "Supported the setup of NER, sparse, and ESCI models in the search stack and managed ongoing model upgrades.",
-            "Independently identified a three-generation C4A upgrade across AML, reducing search request latency by 30% and compute pod count by 20%. Independently optimised Python image builds by replacing Bullseye with slim-trixie and splitting reusable base/application image stages, cutting build time 5× (5–6 min to ~1 min).",
             "Optimised holiday-season infrastructure costs by tuning Kubernetes HPA, adding requests-per-second (RPS) scaling, and right-sizing CPU and GPU deployments.",
             "Built a self-service performance-testing setup for AskBlue, enabling engineers to identify bottlenecks and iterate before formal performance testing.",
             "Established Google Cloud Trace within the organisation, integrating Cloud Logging and structured logs for request-level diagnostics. Extended tracing to AskBlue agentic I/O and contributed monitoring dashboards comparing fine-tuned Gemma models with Gemini models.",
             "Resolved latency spikes in the GPU-hosted ESCI model from 5 seconds to under 200 ms through asynchronous write-back caching and reduced logging overhead.",
             "Set up LLM-as-a-judge regression evaluation, an API comparator, and endpoint smoke tests, cutting product validation from 1–2 days to under 1 hour.",
-            "Migrated Streamlit to Dioxus, reducing compute costs by a factor of 27 while maintaining or improving performance.",
+            "Evolved a plain chat-only Chainlit / Streamlit UI into a unified Rust Dioxus suite under a single endpoint (Chat Comparator, Perf Testing, Regression Evals, and utilities), reducing UI compute costs by 27×.",
         ],
     },
     Role {

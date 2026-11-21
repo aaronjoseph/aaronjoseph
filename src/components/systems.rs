@@ -1,6 +1,71 @@
 use dioxus::prelude::*;
 
-use crate::data::{DEEP_DIVE_PROJECTS, MetricTone};
+use crate::data::{
+    CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, StickyTone, TechKind,
+};
+
+#[component]
+pub fn TechEvolutionStrip(steps: &'static [TechKind]) -> Element {
+    if steps.is_empty() {
+        return rsx! {};
+    }
+
+    rsx! {
+        div { class: "tech-evo-strip", aria_label: "Technology progression",
+            for (i, step) in steps.iter().enumerate() {
+                if i > 0 {
+                    span { class: "tech-evo-arrow", "→" }
+                }
+                match step {
+                    TechKind::Flask => rsx! {
+                        span { class: "tech-pill tp-flask",
+                            span { class: "tp-dot" }
+                            "Flask"
+                        }
+                    },
+                    TechKind::FastApi => rsx! {
+                        span { class: "tech-pill tp-fastapi",
+                            svg {
+                                width: "12",
+                                height: "12",
+                                view_box: "0 0 24 24",
+                                fill: "currentColor",
+                                "aria-hidden": "true",
+                                path { d: "M13 2 3 14h7l-1 8 10-12h-7l1-8z" }
+                            }
+                            "FastAPI"
+                        }
+                    },
+                    TechKind::RustAxum => rsx! {
+                        span { class: "tech-pill tp-rust",
+                            // Recognizable Rust cog/gear emblem
+                            svg {
+                                width: "14",
+                                height: "14",
+                                view_box: "0 0 24 24",
+                                fill: "none",
+                                stroke: "currentColor",
+                                stroke_width: "2",
+                                stroke_linecap: "round",
+                                stroke_linejoin: "round",
+                                "aria-hidden": "true",
+                                circle { cx: "12", cy: "12", r: "4.2" }
+                                circle { cx: "12", cy: "12", r: "8.2", stroke_dasharray: "2.4 2.4" }
+                                path { d: "M12 1.8v2.4M12 19.8v2.4M1.8 12h2.4M19.8 12h2.4M4.8 4.8l1.7 1.7M17.5 17.5l1.7 1.7M19.2 4.8l-1.7 1.7M6.5 17.5l-1.7 1.7" }
+                            }
+                            "Rust (Axum)"
+                        }
+                    },
+                    TechKind::GkeArm => rsx! {
+                        span { class: "tech-pill tp-arm",
+                            "GKE ARM C4A"
+                        }
+                    },
+                }
+            }
+        }
+    }
+}
 
 #[component]
 pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element {
@@ -75,6 +140,9 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                             span { class: "dd-sep", "·" }
                                             span { "{project.period}" }
                                         }
+                                        if !project.tech_steps.is_empty() {
+                                            TechEvolutionStrip { steps: project.tech_steps }
+                                        }
                                         h3 { class: "dd-title", "{project.title}" }
                                         p { class: "dd-oneliner", "{project.one_liner}" }
                                         div { class: "t-gains",
@@ -131,6 +199,9 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                 span { class: "dd-company", "{proj.company}" }
                                 span { "· {proj.category} · {proj.period}" }
                             }
+                            if !proj.tech_steps.is_empty() {
+                                TechEvolutionStrip { steps: proj.tech_steps }
+                            }
                             h2 { class: "drawer-title", "{proj.title}" }
                             p { class: "drawer-sub", "{proj.one_liner}" }
                         }
@@ -155,51 +226,100 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                     }
 
                     div { class: "drawer-body",
-                        // Measured Outcomes (Key KPIs + Before/After Bars)
-                        div { class: "drawer-block",
-                            div { class: "drawer-block-label", "MEASURED OUTCOMES" }
+                        // Handcrafted Ruled-Paper Engineering Notebook Sheet
+                        if !proj.comparisons.is_empty() || !proj.callouts.is_empty() || !proj.sticky_notes.is_empty() {
+                            div { class: "nb-sheet",
+                                div { class: "nb-sheet-head",
+                                    span { class: "nb-stamp", "Architecture Field Notes" }
+                                    span { class: "nb-pg", "pg {idx + 1}" }
+                                }
 
-                            div { class: "drawer-kpi-grid",
-                                for (val, lbl, tone) in proj.key_outcomes {
-                                    div { class: "drawer-kpi", key: "{lbl}",
-                                        div {
-                                            class: match tone {
-                                                MetricTone::Signal => "drawer-kpi-val signal",
-                                                MetricTone::Accent => "drawer-kpi-val accent",
-                                                MetricTone::Default => "drawer-kpi-val",
-                                            },
-                                            "{val}"
+                                if !proj.comparisons.is_empty() {
+                                    div { class: "nb-comp-list",
+                                        for c in proj.comparisons {
+                                            div { class: "nb-comp-row", key: "{c.label}",
+                                                div { class: "nb-comp-label", "{c.label}" }
+                                                div { class: "nb-comp-flow",
+                                                    span { class: "nb-before", "{c.before}" }
+                                                    span { class: "nb-arrow", "→" }
+                                                    span { class: "nb-after", "{c.after}" }
+                                                    span {
+                                                        class: match c.tone {
+                                                            MetricTone::Signal => "nb-delta green",
+                                                            MetricTone::Accent => "nb-delta orange",
+                                                            MetricTone::Default => "nb-delta yellow",
+                                                        },
+                                                        "{c.delta}"
+                                                    }
+                                                }
+                                            }
                                         }
-                                        div { class: "drawer-kpi-lbl", "{lbl}" }
+                                    }
+                                }
+
+                                for callout in proj.callouts {
+                                    div {
+                                        key: "{callout.title}",
+                                        class: match callout.style {
+                                            CalloutStyle::PurpleDashed => "nb-callout nb-purple",
+                                            CalloutStyle::GreenCheck => "nb-callout nb-green",
+                                        },
+                                        div { class: "nb-callout-title",
+                                            if callout.style == CalloutStyle::GreenCheck {
+                                                span { class: "nb-check", "✓ " }
+                                            }
+                                            "{callout.title}"
+                                        }
+                                        p { class: "nb-callout-body", "{callout.body}" }
+                                        if let Some((lbl, url)) = callout.link {
+                                            a {
+                                                class: "nb-callout-link",
+                                                href: "{url}",
+                                                target: "_blank",
+                                                rel: "noopener noreferrer",
+                                                "{lbl}"
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if !proj.sticky_notes.is_empty() {
+                                    div { class: "nb-sticky-grid",
+                                        for note in proj.sticky_notes {
+                                            div {
+                                                key: "{note.title}",
+                                                class: match note.tone {
+                                                    StickyTone::Yellow => "nb-sticky sticky-yellow",
+                                                    StickyTone::Pink => "nb-sticky sticky-pink",
+                                                },
+                                                div { class: "nb-sticky-tape", aria_hidden: "true" }
+                                                div { class: "nb-sticky-title", "{note.title}" }
+                                                ul { class: "nb-sticky-list",
+                                                    for item in note.items {
+                                                        li { "{item}" }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
-
-                            if !proj.meters.is_empty() {
-                                div { class: "drawer-meters",
-                                    for m in proj.meters {
-                                        div { class: "drawer-meter-card", key: "{m.label}",
-                                            div { class: "drawer-meter-title", "{m.label}" }
-                                            div { class: "meter-row",
-                                                span { class: "meter-lbl", "Before" }
-                                                div { class: "meter-track",
-                                                    div {
-                                                        class: "meter-fill before",
-                                                        style: "width: {m.before_pct}%;",
-                                                    }
-                                                }
-                                                span { class: "meter-val", "{m.before_label}" }
+                        } else {
+                            // Compact KPI strip for projects without a notebook sheet yet
+                            div { class: "drawer-block",
+                                div { class: "drawer-block-label", "KEY OUTCOMES" }
+                                div { class: "drawer-kpi-grid",
+                                    for (val, lbl, tone) in proj.key_outcomes {
+                                        div { class: "drawer-kpi", key: "{lbl}",
+                                            div {
+                                                class: match tone {
+                                                    MetricTone::Signal => "drawer-kpi-val signal",
+                                                    MetricTone::Accent => "drawer-kpi-val accent",
+                                                    MetricTone::Default => "drawer-kpi-val",
+                                                },
+                                                "{val}"
                                             }
-                                            div { class: "meter-row",
-                                                span { class: "meter-lbl", "After" }
-                                                div { class: "meter-track",
-                                                    div {
-                                                        class: if m.accent_after { "meter-fill after-accent" } else { "meter-fill after" },
-                                                        style: "width: {m.after_pct}%;",
-                                                    }
-                                                }
-                                                span { class: "meter-val good", "{m.after_label}" }
-                                            }
+                                            div { class: "drawer-kpi-lbl", "{lbl}" }
                                         }
                                     }
                                 }
