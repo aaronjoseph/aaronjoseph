@@ -143,12 +143,12 @@ pub fn Hero(
                         div { class: "qstat-lbl", "Peak Search RPS" }
                     }
                     div { class: "sticker-stat s-peach",
-                        div { class: "qstat-val", "2 ms" }
-                        div { class: "qstat-lbl", "LTR ONNX P50" }
+                        div { class: "qstat-val", "95%" }
+                        div { class: "qstat-lbl", "Compute cost cut via Rust migration" }
                     }
                     div { class: "sticker-stat s-lavender",
-                        div { class: "qstat-val", "MS" }
-                        div { class: "qstat-lbl", "Georgia Tech" }
+                        div { class: "qstat-val", "50%" }
+                        div { class: "qstat-lbl", "Search P50 latency cut (700→350 ms)" }
                     }
                 }
 
