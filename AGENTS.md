@@ -51,13 +51,13 @@ This repository serves two roles:
 
 ## 3. Design System
 
-- **Aesthetic:** *Warm Editorial & Engineering Notebook* — inspired by `eugeneyan.com` (typography & marker highlights), `evanyou.me` & `aliabdaal.com` (warm, approachable intro & contact), `iamtrask.github.io` (left-timestamp chronological blog), and `mccormickml.com` (clean distraction-free clarity).
-- **Theme:** Warm Paper Light-only (`#faf8f3` cream paper, `#1c1917` warm ink) — no dark mode toggle.
-- **Palette:**
-  - Highlighter Wash: Sunlit Yellow (`#fef08a`)
-  - Primary Accent: Warm Terracotta Amber (`#c2410c`)
-  - Signal Accent: Sage Emerald (`#15803d`)
-- **Typography:** `Plus Jakarta Sans` (crisp bold display/headings & UI), `Newsreader` (warm literary optical serif for intro prose & blog reading), `IBM Plex Mono` (blog timestamps, telemetry, chips, dates).
+- **Aesthetic:** *Playful Spring Cream Editorial* — rich butter-cream canvas (`#f5f1e3`) and warm vanilla cream surfaces (`#fbf8ee`) with crisp espresso ink (`#231f1b`) borders, tactile offset shadows, floating pill navigation, tilted Spring sticker stats, folder-tabbed workstream cards, and wavy coral-peach accents.
+- **Theme:** Spring Cream Light-only (no dark mode toggle, no harsh sterile white backgrounds outside the printable résumé sheet).
+- **SPRING Palette:**
+  - Cream Canvas: `#f5f1e3` · Vanilla Card: `#fbf8ee` · Sage Mist: `#e9edd7` · Taupe: `#baa898`
+  - Coral Peach: `#f2b5a4` · Pistachio Lime: `#c6d887` · Buttercup Yellow: `#f4dc62`
+  - Botanical Emerald: `#3b8a6c` · Periwinkle Lavender: `#8e82b4` · Espresso Ink: `#231f1b`
+- **Typography:** `Fraunces` (warm expressive display headings), `Plus Jakarta Sans` (clean UI & buttons), `Newsreader` (literary editorial serif for intro & blog reading), `IBM Plex Mono` (timestamps, metrics, chips).
 - **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 
 ---

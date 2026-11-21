@@ -50,10 +50,15 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                         {
                             let pid = project.id;
                             let is_active = selected_project() == Some(pid);
+                            let row_class = if is_active {
+                                format!("dd-row co-{} active", project.company_id)
+                            } else {
+                                format!("dd-row co-{}", project.company_id)
+                            };
                             rsx! {
                                 button {
                                     key: "{pid}",
-                                    class: if is_active { "dd-row active" } else { "dd-row" },
+                                    class: "{row_class}",
                                     r#type: "button",
                                     onclick: move |_| selected_project.set(Some(pid)),
                                     div { class: "dd-row-left",

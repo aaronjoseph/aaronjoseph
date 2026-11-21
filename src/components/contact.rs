@@ -11,6 +11,12 @@ pub fn ContactSection(
         section { id: "contact",
             div { class: "wrap",
                 div { class: "contact-box",
+                    div { class: "confetti-shapes", aria_hidden: "true",
+                        span { class: "c-shape cs-1" }
+                        span { class: "c-shape cs-2" }
+                        span { class: "c-shape cs-3" }
+                        span { class: "c-shape cs-4" }
+                    }
                     div { class: "eyebrow", style: "justify-content:center;", "Say Hello" }
                     h2 {
                         "Pull up a chair — "
