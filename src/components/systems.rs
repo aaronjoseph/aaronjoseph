@@ -2,7 +2,8 @@ use dioxus::prelude::*;
 
 use crate::components::company_logo::CompanyLogo;
 use crate::data::{
-    CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, StickyTone,
+    CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, NotebookCallout, NotebookComparison, StickyNote,
+    StickyTone,
 };
 
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -208,6 +209,93 @@ pub fn RichTitle(title: &'static str) -> Element {
     }
 }
 
+/// Reusable ruled-paper Engineering Field Notes infographic (shared by Key Work Deep Dives & Blog Articles).
+#[component]
+pub fn NotebookFieldNotes(
+    #[props(default = "Architecture Field Notes")] stamp: &'static str,
+    comparisons: &'static [NotebookComparison],
+    callouts: &'static [NotebookCallout],
+    sticky_notes: &'static [StickyNote],
+) -> Element {
+    rsx! {
+        div { class: "nb-sheet",
+            div { class: "nb-sheet-head",
+                span { class: "nb-stamp", "{stamp}" }
+            }
+
+            if !comparisons.is_empty() {
+                div { class: "nb-comp-list",
+                    for c in comparisons {
+                        div { class: "nb-comp-row", key: "{c.label}",
+                            div { class: "nb-comp-label", "{c.label}" }
+                            div { class: "nb-comp-flow",
+                                span { class: "nb-before", "{c.before}" }
+                                span { class: "nb-arrow", "→" }
+                                span { class: "nb-after", "{c.after}" }
+                                span {
+                                    class: match c.tone {
+                                        MetricTone::Signal => "nb-delta green",
+                                        MetricTone::Accent => "nb-delta orange",
+                                        MetricTone::Default => "nb-delta yellow",
+                                    },
+                                    "{c.delta}"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            for callout in callouts {
+                div {
+                    key: "{callout.title}",
+                    class: match callout.style {
+                        CalloutStyle::PurpleDashed => "nb-callout nb-purple",
+                        CalloutStyle::GreenCheck => "nb-callout nb-green",
+                    },
+                    div { class: "nb-callout-title",
+                        if callout.style == CalloutStyle::GreenCheck {
+                            span { class: "nb-check", "✓ " }
+                        }
+                        "{callout.title}"
+                    }
+                    p { class: "nb-callout-body", "{callout.body}" }
+                    if let Some((lbl, url)) = callout.link {
+                        a {
+                            class: "nb-callout-link",
+                            href: "{url}",
+                            target: "_blank",
+                            rel: "noopener noreferrer",
+                            "{lbl}"
+                        }
+                    }
+                }
+            }
+
+            if !sticky_notes.is_empty() {
+                div { class: "nb-sticky-grid",
+                    for note in sticky_notes {
+                        div {
+                            key: "{note.title}",
+                            class: match note.tone {
+                                StickyTone::Yellow => "nb-sticky sticky-yellow",
+                                StickyTone::Pink => "nb-sticky sticky-pink",
+                            },
+                            div { class: "nb-sticky-tape", aria_hidden: "true" }
+                            div { class: "nb-sticky-title", "{note.title}" }
+                            ul { class: "nb-sticky-list",
+                                for item in note.items {
+                                    li { "{item}" }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 #[component]
 pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element {
     let mut company_filter = use_signal(|| "all");
@@ -377,80 +465,10 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                     div { class: "drawer-body",
                         // Handcrafted Ruled-Paper Engineering Notebook Sheet
                         if !proj.comparisons.is_empty() || !proj.callouts.is_empty() || !proj.sticky_notes.is_empty() {
-                            div { class: "nb-sheet",
-                                div { class: "nb-sheet-head",
-                                    span { class: "nb-stamp", "Architecture Field Notes" }
-                                }
-
-                                if !proj.comparisons.is_empty() {
-                                    div { class: "nb-comp-list",
-                                        for c in proj.comparisons {
-                                            div { class: "nb-comp-row", key: "{c.label}",
-                                                div { class: "nb-comp-label", "{c.label}" }
-                                                div { class: "nb-comp-flow",
-                                                    span { class: "nb-before", "{c.before}" }
-                                                    span { class: "nb-arrow", "→" }
-                                                    span { class: "nb-after", "{c.after}" }
-                                                    span {
-                                                        class: match c.tone {
-                                                            MetricTone::Signal => "nb-delta green",
-                                                            MetricTone::Accent => "nb-delta orange",
-                                                            MetricTone::Default => "nb-delta yellow",
-                                                        },
-                                                        "{c.delta}"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                for callout in proj.callouts {
-                                    div {
-                                        key: "{callout.title}",
-                                        class: match callout.style {
-                                            CalloutStyle::PurpleDashed => "nb-callout nb-purple",
-                                            CalloutStyle::GreenCheck => "nb-callout nb-green",
-                                        },
-                                        div { class: "nb-callout-title",
-                                            if callout.style == CalloutStyle::GreenCheck {
-                                                span { class: "nb-check", "✓ " }
-                                            }
-                                            "{callout.title}"
-                                        }
-                                        p { class: "nb-callout-body", "{callout.body}" }
-                                        if let Some((lbl, url)) = callout.link {
-                                            a {
-                                                class: "nb-callout-link",
-                                                href: "{url}",
-                                                target: "_blank",
-                                                rel: "noopener noreferrer",
-                                                "{lbl}"
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if !proj.sticky_notes.is_empty() {
-                                    div { class: "nb-sticky-grid",
-                                        for note in proj.sticky_notes {
-                                            div {
-                                                key: "{note.title}",
-                                                class: match note.tone {
-                                                    StickyTone::Yellow => "nb-sticky sticky-yellow",
-                                                    StickyTone::Pink => "nb-sticky sticky-pink",
-                                                },
-                                                div { class: "nb-sticky-tape", aria_hidden: "true" }
-                                                div { class: "nb-sticky-title", "{note.title}" }
-                                                ul { class: "nb-sticky-list",
-                                                    for item in note.items {
-                                                        li { "{item}" }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            NotebookFieldNotes {
+                                comparisons: proj.comparisons,
+                                callouts: proj.callouts,
+                                sticky_notes: proj.sticky_notes,
                             }
                         } else {
                             // Compact KPI strip for projects without a notebook sheet yet

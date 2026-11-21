@@ -5,6 +5,7 @@ pub enum MetricTone {
     Signal,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct NotebookComparison {
     pub label: &'static str,
     pub before: &'static str,
@@ -19,6 +20,7 @@ pub enum CalloutStyle {
     GreenCheck,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct NotebookCallout {
     pub style: CalloutStyle,
     pub title: &'static str,
@@ -32,6 +34,7 @@ pub enum StickyTone {
     Pink,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct StickyNote {
     pub tone: StickyTone,
     pub title: &'static str,
@@ -98,7 +101,19 @@ pub struct Certification {
     pub url: &'static str,
 }
 
-#[allow(dead_code)]
+pub enum ArticleBlock {
+    Heading(&'static str),
+    Paragraph(&'static str),
+    ArchitectureFlow(&'static str),
+    Bullets(&'static [&'static str]),
+    FieldNotes {
+        stamp: &'static str,
+        comparisons: &'static [NotebookComparison],
+        callouts: &'static [NotebookCallout],
+        sticky_notes: &'static [StickyNote],
+    },
+}
+
 pub struct BlogPost {
     pub slug: &'static str,
     pub date: &'static str,
@@ -108,7 +123,7 @@ pub struct BlogPost {
     pub title: &'static str,
     pub subtitle: &'static str,
     pub tags: &'static [&'static str],
-    pub paragraphs: &'static [&'static str],
+    pub blocks: &'static [ArticleBlock],
 }
 
 pub struct PlannedTopic {
@@ -816,16 +831,159 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
 ];
 
 /// Add entries here (newest first) to publish blog posts on the dedicated Writing page.
-pub const BLOG_POSTS: &[BlogPost] = &[];
+pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
+    slug: "fastapi-to-rust-semantic-search",
+    date: "Nov 2026",
+    year: "2026",
+    topic: "Search & Rust Systems",
+    read_time: "7 min read",
+    title: "Migrating Semantic Search from FastAPI to Rust (Axum)",
+    subtitle: "How collapsing Python microservices into a hexagonal Rust monolith with per-service bulkheads, ARM C4A Titanium nodes, and native structs halved P50 latency (700 ms → 350 ms) and cut agent turn cost from 21¢ to 18¢.",
+    tags: &[
+        "Rust",
+        "Axum",
+        "FastAPI",
+        "Hexagonal Architecture",
+        "Bulkhead Pools",
+        "GKE ARM C4A",
+        "ONNX",
+        "LLVM Fat LTO",
+    ],
+    blocks: &[
+        ArticleBlock::Paragraph(
+            "Our FastAPI semantic search stack served production retail traffic reliably, but scale exposed its real tax: heavy Python worker footprints, 700 ms median latency under load, and rising compute bills across separate search, recall, and reranking microservices. Even worse, because our agentic shopping assistant invokes semantic search across multi-turn conversations, every millisecond and every extra pod showed up directly in our cost per agent turn.",
+        ),
+        ArticleBlock::Paragraph(
+            "Rather than jumping straight into a rewrite, we attacked the critical path layer by layer — starting with the underlying GKE silicon, then redesigning service boundaries, connection isolation, async inference scheduling, and hot-path data structures in Rust.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Architecture Field Notes",
+            comparisons: &[
+                NotebookComparison {
+                    label: "AskBlue Agent Cost / Turn",
+                    before: "21¢ / turn",
+                    after: "18¢ / turn",
+                    delta: "−3¢ / turn",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "GKE x86 → ARM C4A (Titanium)",
+                    before: "x86 n1-standard-16",
+                    after: "ARM c4a-standard-16",
+                    delta: "−30% latency",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Search P50 Latency",
+                    before: "700 ms (Python)",
+                    after: "350 ms (Rust/Axum)",
+                    delta: "−50% P50",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "FastAPI → Rust Footprint",
+                    before: "Python workers",
+                    after: "Rust single binary",
+                    delta: "−95% CPU · −98% RAM",
+                    tone: MetricTone::Accent,
+                },
+                NotebookComparison {
+                    label: "Idle / Low-Traffic Node Pool",
+                    before: "c4a-standard-16",
+                    after: "c4a-highcpu-8",
+                    delta: "−57% idle cost/node",
+                    tone: MetricTone::Accent,
+                },
+            ],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Platform Win · x86 n1-standard-16 → ARM c4a-standard-16",
+                body: "Before touching application code, we partnered with the Platform team to adopt Google Cloud's Arm/Titanium-backed C4A instances across AML — unlocking an immediate 30% latency reduction and 20% pod-count drop on the existing workload.",
+                link: Some((
+                    "Deep dive: Google Cloud Titanium ↗",
+                    "https://cloud.google.com/titanium",
+                )),
+            }],
+            sticky_notes: &[],
+        },
+        ArticleBlock::Heading("1. Start with the Silicon Before Rewriting Code"),
+        ArticleBlock::Paragraph(
+            "It is tempting to reach for a language rewrite on day one, but hardware architecture often hides the fastest wins. Auditing our GKE clusters revealed we were still running older x86 n1-standard-16 nodes. Jumping three generations to ARM-based c4a-standard-16 instances backed by Google Cloud Titanium (which offloads networking and I/O work away from host CPUs) immediately shaved 30% off search latency and cut pod counts by 20% — giving us both headroom and strong organizational momentum for the Rust migration.",
+        ),
+        ArticleBlock::Heading("2. Collapsing Microservices into a Hexagonal Rust Monolith"),
+        ArticleBlock::Paragraph(
+            "In Python, product search, vector recall, and reranking lived as separate HTTP microservices. That boundary looked tidy on an architecture slide, but at runtime every query paid repeated JSON serialization, deserialization, and internal network hops. Moving to Rust gave us an opportunity to collapse those stages into a single in-process Axum binary without turning the codebase into a tangled ball of mud.",
+        ),
+        ArticleBlock::ArchitectureFlow(
+            "Client Traffic → GKE ARM C4A HPA → Rust/Axum Monolith (api → domain ← infra) → Bulkhead Pools [Product Search | Recall Fan-Out | Metadata | LTR | ESCI]",
+        ),
+        ArticleBlock::Paragraph(
+            "We enforced strict compile-time hexagonal layering across workspace crates so dependencies always flow inward (api → domain ← infra):",
+        ),
+        ArticleBlock::Bullets(&[
+            "domain owns business models, orchestration policies, typed errors, and port traits — with zero dependency on HTTP clients, Redis, or database drivers.",
+            "infra implements those domain ports and translates external wire payloads (vector search, Redis, Spanner, ONNX, and upstream HTTP services) into clean domain structs.",
+            "api stays paper-thin: validate incoming DTOs, invoke a domain service, and map typed results back to HTTP responses — with zero unwrap() or expect() on request paths.",
+            "Distinct OpenTelemetry span namespaces (ner, recall, reranker, plus scoped dependency spans) preserve microservice-grade Cloud Trace waterfalls inside one process.",
+        ]),
+        ArticleBlock::Heading("3. Per-Service Bulkhead Pools & Async-Safe Concurrency"),
+        ArticleBlock::Paragraph(
+            "One of the sharpest production lessons during the FastAPI-to-Rust migration was how easy it is to accidentally reintroduce tail latency through shared connection pools or misused async runtimes. Multiplexed async Redis connections return replies in order: if small, latency-sensitive Learning-to-Rank (LTR) lookups share connections with large product-metadata HMGET pipelines, big metadata responses head-of-line-block tiny ranking reads.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Concurrency & Isolation Notes",
+            comparisons: &[],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Why Monolith + Per-Service Bulkheads + Concurrent Fan-Out?",
+                body: "Splitting downstream connectors into dedicated bulkhead pools (isolating product search, ESCI cache, reranker metadata, and LTR Redis managers) ensures heavy metadata batches or multi-tier recall fan-outs never starve latency-sensitive scoring lookups.",
+                link: None,
+            }],
+            sticky_notes: &[
+                StickyNote {
+                    tone: StickyTone::Yellow,
+                    title: "Caching & Fan-Out Patterns",
+                    items: &[
+                        "Order-preserving concurrent recall fan-out (preserves first-seen dedup parity)",
+                        "Pod-local exact-query LRU cache for NER removes a full Redis round trip",
+                        "Early pipelined ESCI cache read + XXH3-64 content hash freshness checks",
+                        "Bounded async write-back ESCI writer pauses gracefully at >=85% Redis memory",
+                    ],
+                },
+                StickyNote {
+                    tone: StickyTone::Pink,
+                    title: "Async-Safe ONNX Inference",
+                    items: &[
+                        "Never lock a single Mutex<Session> on Tokio async workers — it starves Redis I/O",
+                        "Use per-branch ONNX session pools bounded by an admission semaphore",
+                        "Run Session::run inside tokio::task::spawn_blocking (1 intra-op / 1 inter-op thread)",
+                    ],
+                },
+            ],
+        },
+        ArticleBlock::Paragraph(
+            "That same discipline applied to caching and model scoring. Starting query-level ESCI cache reads right after query rewrite — before recall finishes — moves cache latency off the critical path. Freshness is checked via fast XXH3-64 content hashes so only misses hit the GPU model, while cache updates flush through a bounded background writer that never delays a user response and backs off automatically under Redis memory pressure.",
+        ),
+        ArticleBlock::Heading("4. Moving Off DataFrames in the Hot Path (+ LLVM Fat LTO)"),
+        ArticleBlock::Paragraph(
+            "In offline batch training, Polars DataFrames are a superpower (they helped us cut LTR retraining from 24 hours to under 15 minutes). In real-time request serving, however, candidate cohorts are relatively small — and constructing DataFrame schemas, allocating Arrow buffers, and crossing Python↔FFI boundaries on every request adds overhead that dwarfs the actual scoring arithmetic.",
+        ),
+        ArticleBlock::Paragraph(
+            "In Rust, we modeled recalled candidates, ranking features, scores, and grouped results directly as typed structs, borrowed slices, small maps, and zero-cost iterators. Keeping data in contiguous memory eliminated intermediate materializations and heap churn. Compiling the serving binary with opt-level = 3 across dependencies, Fat LTO, and codegen-units = 1 let LLVM inline cleanly across hexagonal crate boundaries and generate tight ARM Neoverse machine code for C4A.",
+        ),
+        ArticleBlock::Heading("5. Safe Cutover, Parity Discipline & Idle Cost Right-Sizing"),
+        ArticleBlock::Paragraph(
+            "Rewriting a live search engine is only half the work; proving behavioral parity and surviving production rollouts is the other half. Rather than translating Python files one-by-one, we ported vertical slices end-to-end and validated them with an automated query comparator capturing side-by-side Python and Rust responses and structured logs.",
+        ),
+        ArticleBlock::Bullets(&[
+            "Startup resilience: pairing Istio's holdApplicationUntilProxyStarts with a bounded startup wait for the cloud metadata server prevents thundering-herd token failures when dozens of pods scale out simultaneously.",
+            "Right-sizing the node pool: because the Rust binary used 95% less CPU and 98% less RAM than Python workers, we no longer needed high-memory c4a-standard-16 nodes during off-peak hours — downsizing to c4a-highcpu-8 cut idle per-node costs by 57%.",
+            "Business impact: halving P50 latency (700 ms → 350 ms) and cutting compute spend by ~$180K/yr (~$500/day) translated directly into a 3¢ drop per conversational turn for our shopping agent (from 21¢ down to 18¢).",
+        ]),
+    ],
+}];
 
 pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
-    PlannedTopic {
-        date_label: "Draft",
-        year: "Upcoming",
-        topic: "Search & Rust Systems",
-        title: "Migrating Semantic Search from Flask to FastAPI to Rust (Axum)",
-        subtitle: "Hexagonal monolith + per-service bulkheads, ARM C4A Titanium (−30% latency), and halving P50 latency (700 ms → 350 ms).",
-    },
     PlannedTopic {
         date_label: "Draft",
         year: "Upcoming",

@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 
-use crate::data::{BLOG_POSTS, GITHUB_URL, LINKEDIN_URL, PLANNED_BLOG_TOPICS, X_URL};
+use crate::components::systems::{NotebookFieldNotes, RichTitle};
+use crate::data::{ArticleBlock, BLOG_POSTS, PLANNED_BLOG_TOPICS};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum BlogLayoutMode {
@@ -9,9 +10,9 @@ enum BlogLayoutMode {
 }
 
 /// Dedicated standalone Blog / Writing page with:
-/// 1) Chronological Timeline (timestamp on the left, newest first — inspired by iamtrask / eugeneyan / mccormickml)
+/// 1) Chronological Timeline (timestamp on the left, newest first)
 /// 2) By-Topic Indented Tree Index (grouped by subject with vertical guides & year)
-/// 3) Full distraction-free serif Article Reader
+/// 3) Rich serif Article Reader with inline Architecture Field Notes
 #[component]
 pub fn BlogView(on_back: EventHandler<()>) -> Element {
     let mut layout_mode = use_signal(|| BlogLayoutMode::Timeline);
@@ -38,12 +39,15 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
         div { class: "blog-page",
             div { class: "blog-wrap",
                 if let Some(post) = active_post {
-                    // Distraction-free serif Article Reader (Eugene Yan-inspired typography)
+                    // Rich serif Article Reader with inline Architecture Field Notes
                     div { class: "blog-top-bar",
                         button {
                             class: "text-btn",
                             r#type: "button",
-                            onclick: move |_| active_slug.set(None),
+                            onclick: move |_| {
+                                active_slug.set(None);
+                                document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
+                            },
                             "← All posts"
                         }
                         span { class: "blog-meta-mono", "{post.date} · {post.read_time}" }
@@ -52,7 +56,9 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                     article { class: "article-shell",
                         header { class: "article-head",
                             div { class: "article-topic", "{post.topic}" }
-                            h1 { class: "article-title", "{post.title}" }
+                            h1 { class: "article-title",
+                                RichTitle { title: post.title }
+                            }
                             p { class: "article-subtitle", "{post.subtitle}" }
                             div { class: "chip-row",
                                 for tag in post.tags {
@@ -62,8 +68,43 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                         }
 
                         div { class: "article-prose",
-                            for para in post.paragraphs {
-                                p { "{para}" }
+                            for (idx, block) in post.blocks.iter().enumerate() {
+                                match block {
+                                    ArticleBlock::Heading(h) => rsx! {
+                                        h2 { key: "h-{idx}", class: "article-h2", "{h}" }
+                                    },
+                                    ArticleBlock::Paragraph(p) => rsx! {
+                                        p { key: "p-{idx}", "{p}" }
+                                    },
+                                    ArticleBlock::ArchitectureFlow(flow) => rsx! {
+                                        div { key: "f-{idx}", class: "article-flow-wrap",
+                                            div { class: "drawer-block-label", "Architecture Flow" }
+                                            div { class: "drawer-flow", "{flow}" }
+                                        }
+                                    },
+                                    ArticleBlock::Bullets(items) => rsx! {
+                                        ul { key: "b-{idx}", class: "article-bullets",
+                                            for item in *items {
+                                                li { "{item}" }
+                                            }
+                                        }
+                                    },
+                                    ArticleBlock::FieldNotes {
+                                        stamp,
+                                        comparisons,
+                                        callouts,
+                                        sticky_notes,
+                                    } => rsx! {
+                                        div { key: "n-{idx}", class: "article-nb-wrap",
+                                            NotebookFieldNotes {
+                                                stamp: *stamp,
+                                                comparisons: *comparisons,
+                                                callouts: *callouts,
+                                                sticky_notes: *sticky_notes,
+                                            }
+                                        }
+                                    },
+                                }
                             }
                         }
                     }
@@ -107,58 +148,7 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                         }
                     }
 
-                    if BLOG_POSTS.is_empty() {
-                        div { class: "blog-draft-banner",
-                            div { class: "blog-draft-badge",
-                                span { class: "pulse-dot", aria_hidden: "true" }
-                                span { "Just getting this notebook off the ground · first essays in progress" }
-                            }
-                            p {
-                                "Nothing published just yet, though a few drafts are taking shape below. If any of these topics sound interesting — or you'd like to swap notes on them — feel free to say hi on "
-                                a { href: "{LINKEDIN_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "LinkedIn" }
-                                ", "
-                                a { href: "{GITHUB_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "GitHub" }
-                                ", or "
-                                a { href: "{X_URL}", target: "_blank", rel: "noopener noreferrer", class: "inline-hl", "X" }
-                                "."
-                            }
-                        }
-
-                        if layout_mode() == BlogLayoutMode::Timeline {
-                            div { class: "blog-timeline-list",
-                                for item in PLANNED_BLOG_TOPICS {
-                                    div { class: "blog-tl-row is-draft", key: "{item.title}",
-                                        div { class: "blog-tl-date", "{item.date_label}" }
-                                        div { class: "blog-tl-body",
-                                            div { class: "blog-tl-topic", "{item.topic}" }
-                                            h2 { class: "blog-tl-title", "{item.title}" }
-                                            p { class: "blog-tl-sub", "{item.subtitle}" }
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            // Hierarchical indented Topic Tree (inspired by classic scholarly CS blogs)
-                            div { class: "topic-tree",
-                                div { class: "tree-root-label", "Engineering Notes (Drafts)" }
-                                div { class: "tree-branch",
-                                    for group in planned_topics {
-                                        div { class: "tree-group", key: "{group}",
-                                            div { class: "tree-group-title", "{group}" }
-                                            div { class: "tree-items",
-                                                for item in PLANNED_BLOG_TOPICS.iter().filter(|t| t.topic == group) {
-                                                    div { class: "tree-item is-draft", key: "{item.title}",
-                                                        span { class: "tree-item-title", "{item.title}" }
-                                                        span { class: "tree-item-year", " ({item.year})" }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    } else if layout_mode() == BlogLayoutMode::Timeline {
+                    if layout_mode() == BlogLayoutMode::Timeline {
                         div { class: "blog-timeline-list",
                             for post in BLOG_POSTS {
                                 {
@@ -175,9 +165,28 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                                             div { class: "blog-tl-date", "{post.date}" }
                                             div { class: "blog-tl-body",
                                                 div { class: "blog-tl-topic", "{post.topic} · {post.read_time}" }
-                                                h2 { class: "blog-tl-title", "{post.title}" }
+                                                h2 { class: "blog-tl-title",
+                                                    RichTitle { title: post.title }
+                                                }
                                                 p { class: "blog-tl-sub", "{post.subtitle}" }
+                                                span { class: "blog-read-cue", "Read essay →" }
                                             }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if !PLANNED_BLOG_TOPICS.is_empty() {
+                            div { class: "blog-drafts-divider", "Upcoming Drafts" }
+                            div { class: "blog-timeline-list",
+                                for item in PLANNED_BLOG_TOPICS {
+                                    div { class: "blog-tl-row is-draft", key: "{item.title}",
+                                        div { class: "blog-tl-date", "{item.date_label}" }
+                                        div { class: "blog-tl-body",
+                                            div { class: "blog-tl-topic", "{item.topic}" }
+                                            h2 { class: "blog-tl-title", "{item.title}" }
+                                            p { class: "blog-tl-sub", "{item.subtitle}" }
                                         }
                                     }
                                 }
@@ -185,7 +194,7 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                         }
                     } else {
                         div { class: "topic-tree",
-                            div { class: "tree-root-label", "All Articles" }
+                            div { class: "tree-root-label", "Published Articles" }
                             div { class: "tree-branch",
                                 for group in published_topics {
                                     div { class: "tree-group", key: "{group}",
@@ -206,6 +215,25 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                                                             span { class: "tree-item-title", "{post.title}" }
                                                             span { class: "tree-item-year", " ({post.year})" }
                                                         }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if !PLANNED_BLOG_TOPICS.is_empty() {
+                                div { class: "tree-root-label", style: "margin-top: 26px;", "Upcoming Drafts" }
+                                div { class: "tree-branch",
+                                    for group in planned_topics {
+                                        div { class: "tree-group", key: "draft-{group}",
+                                            div { class: "tree-group-title", "{group}" }
+                                            div { class: "tree-items",
+                                                for item in PLANNED_BLOG_TOPICS.iter().filter(|t| t.topic == group) {
+                                                    div { class: "tree-item is-draft", key: "{item.title}",
+                                                        span { class: "tree-item-title", "{item.title}" }
+                                                        span { class: "tree-item-year", " ({item.year})" }
                                                     }
                                                 }
                                             }
