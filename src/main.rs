@@ -45,29 +45,65 @@ fn App() -> Element {
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
-    // Dismiss the AJM splash loader once WASM mounts and main.css is loaded
+    // Cross-fade out the AJM splash loader only after main.css is genuinely applied
+    // and webfonts are ready (with bounded timeouts), preventing any FOUC or font reflow jump.
     use_effect(move || {
         document::eval(
             r#"
-            const splash = document.getElementById('aj-splash');
-            if (splash) {
-                const dismiss = () => {
-                    if (splash.dataset.dismissed) return;
-                    splash.dataset.dismissed = '1';
+            (function() {
+                const splash = document.getElementById('aj-splash');
+                if (!splash) {
+                    document.body.classList.add('aj-ready');
+                    return;
+                }
+                if (splash.dataset.waiting) return;
+                splash.dataset.waiting = '1';
+
+                let done = false;
+                const reveal = () => {
+                    if (done) return;
+                    done = true;
                     requestAnimationFrame(() => {
-                        splash.classList.add('aj-hidden');
-                        setTimeout(() => splash.remove(), 320);
+                        requestAnimationFrame(() => {
+                            document.body.classList.add('aj-ready');
+                            splash.classList.add('aj-hidden');
+                            setTimeout(() => splash.remove(), 460);
+                        });
                     });
                 };
-                const css = document.querySelector('link[rel="stylesheet"][href*="main"]');
-                if (!css || css.sheet) {
-                    dismiss();
-                } else {
-                    css.addEventListener('load', dismiss, { once: true });
-                    css.addEventListener('error', dismiss, { once: true });
-                    setTimeout(dismiss, 800);
-                }
-            }
+
+                const failsafe = setTimeout(reveal, 1600);
+
+                const isCssApplied = () => {
+                    const bg = getComputedStyle(document.documentElement)
+                        .getPropertyValue('--bg')
+                        .trim();
+                    return bg.length > 0;
+                };
+
+                const waitForCss = () => new Promise((resolve) => {
+                    if (isCssApplied()) return resolve();
+                    let tries = 0;
+                    const check = () => {
+                        if (isCssApplied() || tries++ > 90) return resolve();
+                        requestAnimationFrame(check);
+                    };
+                    requestAnimationFrame(check);
+                });
+
+                const waitForFonts = () => {
+                    if (!document.fonts || !document.fonts.ready) return Promise.resolve();
+                    return Promise.race([
+                        document.fonts.ready,
+                        new Promise((r) => setTimeout(r, 700)),
+                    ]);
+                };
+
+                Promise.all([waitForCss(), waitForFonts()]).then(() => {
+                    clearTimeout(failsafe);
+                    reveal();
+                });
+            })();
             "#,
         );
     });
@@ -149,12 +185,6 @@ fn App() -> Element {
 
     rsx! {
         document::Link { rel: "icon", r#type: "image/svg+xml", href: FAVICON }
-        document::Link { rel: "preconnect", href: "https://fonts.googleapis.com" }
-        document::Link { rel: "preconnect", href: "https://fonts.gstatic.com" }
-        document::Link {
-            rel: "stylesheet",
-            href: "https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..800,100,0&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap",
-        }
         document::Stylesheet { href: MAIN_CSS }
 
         div { class: "app-shell",

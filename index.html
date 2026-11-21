@@ -14,14 +14,27 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..800,100,0&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" />
 
   <style>
+    html {
+      scrollbar-gutter: stable;
+    }
     html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
       background-color: #faf7f2;
       color: #2c2a35;
+    }
+    #main {
+      opacity: 0;
+      transition: opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: opacity;
+    }
+    body.aj-ready #main {
+      opacity: 1;
+      will-change: auto;
     }
     .aj-splash {
       position: fixed;
@@ -33,18 +46,27 @@
       gap: 20px;
       background-color: #faf7f2;
       background-image:
-        radial-gradient(ellipse 65% 45% at 25% 25%, rgba(247, 206, 197, 0.52), transparent 65%),
-        radial-gradient(ellipse 60% 45% at 78% 75%, rgba(236, 228, 214, 0.72), transparent 65%);
+        radial-gradient(ellipse 68% 42% at 14% 6%, rgba(247, 206, 197, 0.42), transparent 68%),
+        radial-gradient(ellipse 62% 44% at 88% 12%, rgba(241, 234, 224, 0.92), transparent 70%),
+        radial-gradient(ellipse 58% 38% at 78% 82%, rgba(247, 206, 197, 0.26), transparent 68%),
+        radial-gradient(ellipse 52% 38% at 18% 76%, rgba(241, 234, 224, 0.75), transparent 68%);
       font-family: system-ui, -apple-system, sans-serif;
       z-index: 9999;
       opacity: 1;
       visibility: visible;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
+      will-change: opacity;
+      transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.38s ease;
     }
     .aj-splash.aj-hidden {
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
+    }
+    .aj-splash.aj-hidden .aj-logo-wrap,
+    .aj-splash.aj-hidden .aj-dots {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.96);
+      transition: opacity 0.24s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
     }
     .aj-logo-wrap {
       position: relative;
@@ -85,6 +107,9 @@
     @media (prefers-reduced-motion: reduce) {
       .aj-logo-wrap, .aj-dots span {
         animation: none;
+      }
+      #main, .aj-splash {
+        transition-duration: 0.01ms;
       }
     }
   </style>
