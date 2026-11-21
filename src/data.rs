@@ -583,7 +583,8 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ("Dioxus (Rust)", true),
             ("Gemini / Gemma", true),
             ("Google ADK", false),
-            ("Chainlit → Dioxus", false),
+            ("Chainlit", false),
+            ("Streamlit", false),
         ],
     },
     DeepDiveProject {
