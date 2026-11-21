@@ -4,7 +4,7 @@ mod data;
 use dioxus::prelude::*;
 
 use components::{
-    blog::{BlogView, WritingPreviewSection},
+    blog::BlogView,
     cmd_palette::CommandPalette,
     contact::ContactSection,
     credentials::CredentialsSection,
@@ -206,7 +206,6 @@ fn App() -> Element {
                         SystemsSection { selected_project }
                         StackSection {}
                         JourneySection {}
-                        WritingPreviewSection { on_open_blog: open_blog }
                         CredentialsSection {}
                         ContactSection {
                             on_copy_email: copy_email,

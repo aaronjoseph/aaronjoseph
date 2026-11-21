@@ -8,67 +8,6 @@ enum BlogLayoutMode {
     ByTopic,
 }
 
-/// Compact Eugene Yan-style "Writing" preview strip on the homepage that opens the dedicated Blog page.
-#[component]
-pub fn WritingPreviewSection(on_open_blog: EventHandler<()>) -> Element {
-    rsx! {
-        section { id: "writing-preview",
-            div { class: "wrap",
-                div { class: "latest-header",
-                    div {
-                        div { class: "eyebrow", "Notebook" }
-                        h2 { "Notes I'm working on" }
-                    }
-                    button {
-                        class: "latest-all-btn",
-                        r#type: "button",
-                        onclick: move |_| on_open_blog.call(()),
-                        if BLOG_POSTS.is_empty() {
-                            "Visit the blog →"
-                        } else {
-                            "Read all {BLOG_POSTS.len()} posts →"
-                        }
-                    }
-                }
-
-                if BLOG_POSTS.is_empty() {
-                    div { class: "latest-list",
-                        for item in PLANNED_BLOG_TOPICS.iter().take(3) {
-                            button {
-                                key: "{item.title}",
-                                class: "latest-row",
-                                r#type: "button",
-                                onclick: move |_| on_open_blog.call(()),
-                                span { class: "latest-date", "{item.date_label}" }
-                                div { class: "latest-content",
-                                    div { class: "latest-title", "{item.title}" }
-                                    p { class: "latest-sub", "{item.subtitle}" }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    div { class: "latest-list",
-                        for post in BLOG_POSTS.iter().take(4) {
-                            button {
-                                key: "{post.slug}",
-                                class: "latest-row",
-                                r#type: "button",
-                                onclick: move |_| on_open_blog.call(()),
-                                span { class: "latest-date", "{post.date}" }
-                                div { class: "latest-content",
-                                    div { class: "latest-title", "{post.title}" }
-                                    p { class: "latest-sub", "{post.subtitle}" }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 /// Dedicated standalone Blog / Writing page with:
 /// 1) Chronological Timeline (timestamp on the left, newest first — inspired by iamtrask / eugeneyan / mccormickml)
 /// 2) By-Topic Indented Tree Index (grouped by subject with vertical guides & year)
