@@ -37,7 +37,6 @@ pub struct DeepDiveSection {
 
 pub struct DeepDiveProject {
     pub id: &'static str,
-    pub index: &'static str,
     pub company: &'static str,
     pub company_id: &'static str,
     pub period: &'static str,
@@ -199,7 +198,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
 pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     DeepDiveProject {
         id: "bb-search-rust",
-        index: "01",
         company: "Best Buy",
         company_id: "bestbuy",
         period: "May 2025 – Present",
@@ -275,7 +273,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "bb-search-onnx-esci",
-        index: "02",
         company: "Best Buy",
         company_id: "bestbuy",
         period: "May 2025 – Present",
@@ -339,7 +336,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "bb-agentic-ai",
-        index: "03",
         company: "Best Buy",
         company_id: "bestbuy",
         period: "May 2025 – Present",
@@ -395,7 +391,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "fl-search-ltr",
-        index: "04",
         company: "Falabella",
         company_id: "falabella",
         period: "Apr 2023 – Apr 2025",
@@ -459,7 +454,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "fl-ab-testing",
-        index: "05",
         company: "Falabella",
         company_id: "falabella",
         period: "Apr 2023 – Apr 2025",
@@ -502,7 +496,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "ac-telecom-3g",
-        index: "06",
         company: "Accenture AI",
         company_id: "accenture",
         period: "Dec 2020 – Apr 2023",
@@ -537,7 +530,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
     DeepDiveProject {
         id: "ac-gcp-terraform",
-        index: "07",
         company: "Accenture AI",
         company_id: "accenture",
         period: "Dec 2020 – Apr 2023",

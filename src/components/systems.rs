@@ -67,29 +67,26 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     class: "{row_class}",
                                     r#type: "button",
                                     onclick: move |_| selected_project.set(Some(pid)),
-                                    div { class: "dd-row-left",
-                                        span { class: "dd-idx", "{project.index}" }
-                                        div { class: "dd-row-main",
-                                            div { class: "dd-meta",
-                                                span { class: "dd-company", "{project.company}" }
-                                                span { class: "dd-sep", "·" }
-                                                span { "{project.category}" }
-                                                span { class: "dd-sep", "·" }
-                                                span { "{project.period}" }
-                                            }
-                                            h3 { class: "dd-title", "{project.title}" }
-                                            p { class: "dd-oneliner", "{project.one_liner}" }
-                                            div { class: "t-gains",
-                                                for (label, tone) in project.headline_badges {
-                                                    span {
-                                                        key: "{label}",
-                                                        class: match tone {
-                                                            MetricTone::Signal => "t-gain signal",
-                                                            MetricTone::Accent => "t-gain accent",
-                                                            MetricTone::Default => "t-gain",
-                                                        },
-                                                        "{label}"
-                                                    }
+                                    div { class: "dd-row-main",
+                                        div { class: "dd-meta",
+                                            span { class: "dd-company", "{project.company}" }
+                                            span { class: "dd-sep", "·" }
+                                            span { "{project.category}" }
+                                            span { class: "dd-sep", "·" }
+                                            span { "{project.period}" }
+                                        }
+                                        h3 { class: "dd-title", "{project.title}" }
+                                        p { class: "dd-oneliner", "{project.one_liner}" }
+                                        div { class: "t-gains",
+                                            for (label, tone) in project.headline_badges {
+                                                span {
+                                                    key: "{label}",
+                                                    class: match tone {
+                                                        MetricTone::Signal => "t-gain signal",
+                                                        MetricTone::Accent => "t-gain accent",
+                                                        MetricTone::Default => "t-gain",
+                                                    },
+                                                    "{label}"
                                                 }
                                             }
                                         }
@@ -131,7 +128,6 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                     div { class: "drawer-header",
                         div {
                             div { class: "drawer-kicker",
-                                span { class: "dd-idx", "{proj.index}" }
                                 span { class: "dd-company", "{proj.company}" }
                                 span { "· {proj.category} · {proj.period}" }
                             }
