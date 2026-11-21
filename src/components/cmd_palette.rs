@@ -1,11 +1,12 @@
 use dioxus::prelude::*;
 
-use crate::AppView;
+use crate::{AppView, ResumeStyle};
 
 #[derive(Clone, Copy)]
 enum CmdAction {
     Section(&'static str),
-    Resume,
+    ResumeStyled,
+    ResumeAts,
     CopyEmail,
     ToggleTheme,
 }
@@ -21,9 +22,11 @@ const ITEMS: &[CmdItem] = &[
     CmdItem { label: "Jump to Selected Systems", hint: "#systems", action: CmdAction::Section("#systems") },
     CmdItem { label: "Jump to Experience Timeline", hint: "#journey", action: CmdAction::Section("#journey") },
     CmdItem { label: "Jump to Technical Stack", hint: "#stack", action: CmdAction::Section("#stack") },
+    CmdItem { label: "Jump to Engineering Blog", hint: "#blog", action: CmdAction::Section("#blog") },
     CmdItem { label: "Jump to Education & Certifications", hint: "#credentials", action: CmdAction::Section("#credentials") },
     CmdItem { label: "Jump to Contact", hint: "#contact", action: CmdAction::Section("#contact") },
-    CmdItem { label: "Open Printable / ATS Résumé", hint: "View", action: CmdAction::Resume },
+    CmdItem { label: "Open Styled Résumé", hint: "Styled", action: CmdAction::ResumeStyled },
+    CmdItem { label: "Open Plain / ATS-Compliant Résumé", hint: "ATS", action: CmdAction::ResumeAts },
     CmdItem { label: "Copy Email Address", hint: "Clipboard", action: CmdAction::CopyEmail },
     CmdItem { label: "Toggle Dark / Light Theme", hint: "Theme", action: CmdAction::ToggleTheme },
 ];
@@ -32,6 +35,7 @@ const ITEMS: &[CmdItem] = &[
 pub fn CommandPalette(
     open: Signal<bool>,
     view: Signal<AppView>,
+    resume_style: Signal<ResumeStyle>,
     on_copy_email: EventHandler<()>,
     on_toggle_theme: EventHandler<()>,
 ) -> Element {
@@ -62,7 +66,13 @@ pub fn CommandPalette(
                 );
                 document::eval(&js);
             }
-            CmdAction::Resume => {
+            CmdAction::ResumeStyled => {
+                resume_style.set(ResumeStyle::Styled);
+                view.set(AppView::Resume);
+                document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
+            }
+            CmdAction::ResumeAts => {
+                resume_style.set(ResumeStyle::Ats);
                 view.set(AppView::Resume);
                 document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
             }
@@ -102,7 +112,7 @@ pub fn CommandPalette(
                         class: "cmd-input",
                         r#type: "text",
                         autofocus: true,
-                        placeholder: "Jump to section, open résumé, copy email...",
+                        placeholder: "Jump to section, styled/ATS résumé, blog, copy email...",
                         value: "{query}",
                         oninput: move |evt| query.set(evt.value()),
                         onkeydown: move |evt| {

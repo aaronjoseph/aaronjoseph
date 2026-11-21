@@ -5,22 +5,20 @@ pub enum MetricTone {
     Signal,
 }
 
-pub struct TelemetryMetric {
-    pub label: &'static str,
-    pub value: &'static str,
-    pub detail: &'static str,
-    pub tone: MetricTone,
+pub struct TelemetryWorkstream {
+    pub index: &'static str,
+    pub title: &'static str,
+    pub pipeline: &'static str,
+    pub advantage: &'static str,
+    pub gains: &'static [(&'static str, MetricTone)],
 }
 
-pub struct TelemetryTab {
+pub struct TelemetryProject {
     pub id: &'static str,
     pub label: &'static str,
-    pub arch_prefix: &'static str,
-    pub arch_highlight: &'static str,
-    pub arch_mid: &'static str,
-    pub arch_signal: &'static str,
-    pub metrics: &'static [TelemetryMetric],
-    pub note: &'static str,
+    pub context: &'static str,
+    pub workstreams: &'static [TelemetryWorkstream],
+    pub stack_summary: &'static str,
 }
 
 pub struct ImpactMeter {
@@ -83,6 +81,17 @@ pub struct Certification {
     pub url: &'static str,
 }
 
+#[allow(dead_code)]
+pub struct BlogPost {
+    pub slug: &'static str,
+    pub title: &'static str,
+    pub date: &'static str,
+    pub read_time: &'static str,
+    pub tags: &'static [&'static str],
+    pub summary: &'static str,
+    pub paragraphs: &'static [&'static str],
+}
+
 pub const EMAIL: &str = "aaronjosephmathew@gmail.com";
 pub const PHONE: &str = "+91 9844348064";
 pub const LINKEDIN_URL: &str = "https://www.linkedin.com/in/aaron-joseph-mathew-4b425b71/";
@@ -91,112 +100,108 @@ pub const X_URL: &str = "https://twitter.com/AaronJosephMath";
 
 pub const SUMMARY: &str = "Senior AI Engineer with 9+ years across analytics, machine learning and AI engineering, focused on production search, ranking and reliable ML systems. Worked on search systems handling up to 12,000 requests per second, with reliability work across data pipelines and APIs. Halved Search 2.0 P50 latency from 700 ms to 350 ms. Experience includes learning-to-rank pipelines, LLM evaluation, observability for agentic workflows, and Python and Rust services.";
 
-pub const TELEMETRY_TABS: &[TelemetryTab] = &[
-    TelemetryTab {
-        id: "search",
+pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
+    TelemetryProject {
+        id: "search-2.0",
         label: "search-2.0",
-        arch_prefix: "Flask → FastAPI → ",
-        arch_highlight: "Rust + Axum",
-        arch_mid: " · ",
-        arch_signal: "Hexagonal Arch",
-        metrics: &[
-            TelemetryMetric {
-                label: "Search P50 Latency",
-                value: "350 ms",
-                detail: "down from 700 ms (−50%)",
-                tone: MetricTone::Signal,
+        context: "Best Buy · Semantic Search & Ranking Stack (up to 12,000 RPS)",
+        stack_summary: "Rust · Axum · ONNX · GKE C4A",
+        workstreams: &[
+            TelemetryWorkstream {
+                index: "01",
+                title: "Flask → FastAPI → Rust (Axum)",
+                pipeline: "Hexagonal Architecture · C4A GKE",
+                advantage: "Separated core search logic from infra adapters and removed Python runtime overhead, enabling C4A-highcpu-4 right-sizing and clean holiday HPA scaling.",
+                gains: &[
+                    ("700 → 350 ms P50", MetricTone::Signal),
+                    ("28× less compute", MetricTone::Accent),
+                    ("190× less RAM", MetricTone::Accent),
+                    ("−83% non-peak GKE (~$100K/yr)", MetricTone::Default),
+                ],
             },
-            TelemetryMetric {
-                label: "Memory Footprint",
-                value: "190× less",
-                detail: "28× lower compute cost",
-                tone: MetricTone::Accent,
+            TelemetryWorkstream {
+                index: "02",
+                title: "LTR Inference → ONNX",
+                pipeline: "Python Ranker → ONNX Runtime",
+                advantage: "Eliminated Python inference bottlenecks in the ranking stage for predictable, single-digit-millisecond scoring under peak load.",
+                gains: &[
+                    ("3× faster inference", MetricTone::Signal),
+                    ("2 ms P50 · 4 ms P95", MetricTone::Default),
+                ],
             },
-            TelemetryMetric {
-                label: "Non-Peak GKE Spend",
-                value: "−83%",
-                detail: "78% lower min node-pool",
-                tone: MetricTone::Signal,
-            },
-            TelemetryMetric {
-                label: "Projected Savings",
-                value: "~$100K/yr",
-                detail: "annualised at scale",
-                tone: MetricTone::Default,
-            },
-        ],
-        note: "Re-architected Best Buy's semantic search serving layer to decouple core ranking logic from infrastructure and right-size C4A GKE node pools.",
-    },
-    TelemetryTab {
-        id: "ltr",
-        label: "ltr-onnx",
-        arch_prefix: "Python LTR → ",
-        arch_highlight: "ONNX Runtime",
-        arch_mid: " · GPU ESCI → ",
-        arch_signal: "Async Write-Back",
-        metrics: &[
-            TelemetryMetric {
-                label: "LTR Inference P50",
-                value: "2 ms",
-                detail: "4 ms P95 (3× faster)",
-                tone: MetricTone::Signal,
-            },
-            TelemetryMetric {
-                label: "ESCI Spike Fix",
-                value: "<200 ms",
-                detail: "down from 5,000 ms",
-                tone: MetricTone::Accent,
-            },
-            TelemetryMetric {
-                label: "LTR Retraining",
-                value: "<15 min",
-                detail: "down from 24 hours",
-                tone: MetricTone::Signal,
-            },
-            TelemetryMetric {
-                label: "Cloud ML Cost",
-                value: "−20%+",
-                detail: "across 5 business units",
-                tone: MetricTone::Default,
+            TelemetryWorkstream {
+                index: "03",
+                title: "ESCI Async Write-Back Caching",
+                pipeline: "GPU ESCI · Reduced Logging Overhead",
+                advantage: "Eliminated GPU-hosted ESCI tail-latency spikes that were stalling Search requests through async write-back caching and leaner logging.",
+                gains: &[
+                    ("5,000 ms → <200 ms", MetricTone::Signal),
+                    ("25× lower tail spikes", MetricTone::Accent),
+                ],
             },
         ],
-        note: "End-to-end ranking speedups across training and serving — optimizing NDCG, RPV, and CTR while stabilizing GPU inference under peak load.",
     },
-    TelemetryTab {
+    TelemetryProject {
         id: "askblue",
-        label: "askblue-eval",
-        arch_prefix: "",
-        arch_highlight: "LLM-as-a-Judge",
-        arch_mid: " · Cloud Trace · ",
-        arch_signal: "Streamlit → Dioxus",
-        metrics: &[
-            TelemetryMetric {
-                label: "Product Validation",
-                value: "<1 hr",
-                detail: "down from 1–2 days",
-                tone: MetricTone::Signal,
+        label: "askblue",
+        context: "Best Buy · Agentic AI Evaluation, Observability & Tooling",
+        stack_summary: "Gemini · Gemma · Cloud Trace · Dioxus",
+        workstreams: &[
+            TelemetryWorkstream {
+                index: "01",
+                title: "LLM-as-a-Judge & API Comparator",
+                pipeline: "Regression Evals · Endpoint Smoke Tests",
+                advantage: "Replaced slow manual release checks with automated LLM-as-a-judge regression suites and self-service performance testing before formal perf runs.",
+                gains: &[
+                    ("1–2 days → <1 hr validation", MetricTone::Signal),
+                    ("Self-service perf testing", MetricTone::Default),
+                ],
             },
-            TelemetryMetric {
-                label: "UI Compute Cost",
-                value: "27× less",
-                detail: "Streamlit → Rust Dioxus",
-                tone: MetricTone::Accent,
+            TelemetryWorkstream {
+                index: "02",
+                title: "Agentic Tracing & Model Dashboards",
+                pipeline: "Google Cloud Trace · Structured Logs",
+                advantage: "Established org-wide request-level tracing across AskBlue agentic I/O with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
+                gains: &[
+                    ("End-to-end agentic I/O traces", MetricTone::Accent),
+                    ("Gemma vs. Gemini dashboards", MetricTone::Default),
+                ],
             },
-            TelemetryMetric {
-                label: "Image Build Time",
-                value: "~1 min",
-                detail: "5× faster (slim-trixie)",
-                tone: MetricTone::Signal,
-            },
-            TelemetryMetric {
-                label: "Model Tracing",
-                value: "Gemma vs Gemini",
-                detail: "agentic I/O diagnostics",
-                tone: MetricTone::Default,
+            TelemetryWorkstream {
+                index: "03",
+                title: "Streamlit → Rust Dioxus & CI Builds",
+                pipeline: "Dioxus WASM · slim-trixie Base/App Split",
+                advantage: "Cut UI container compute dramatically by migrating from Streamlit to Dioxus, alongside 5× faster Docker image builds via split base/app stages.",
+                gains: &[
+                    ("27× lower UI compute", MetricTone::Signal),
+                    ("5–6 min → ~1 min builds", MetricTone::Accent),
+                ],
             },
         ],
-        note: "Established org-wide Google Cloud Trace diagnostics, automated regression evals, and self-service load testing for AskBlue's agentic workflows.",
     },
+];
+
+/// Add entries here to publish blog posts on the website.
+/// When empty, the Blog section displays an intentional "coming soon" state with planned topics.
+pub const BLOG_POSTS: &[BlogPost] = &[];
+
+pub const PLANNED_BLOG_TOPICS: &[(&str, &str)] = &[
+    (
+        "Systems",
+        "Migrating Semantic Search from Flask to FastAPI to Rust (Axum) with Hexagonal Architecture",
+    ),
+    (
+        "Ranking",
+        "Single-Digit-Millisecond Learning to Rank: Moving Python Inference to ONNX",
+    ),
+    (
+        "Reliability",
+        "Taming 5-Second GPU ESCI Spikes with Async Write-Back Caching",
+    ),
+    (
+        "Applied AI",
+        "Observability & LLM-as-a-Judge Regression Suites for Agentic Workflows",
+    ),
 ];
 
 pub const IMPACT_CARDS: &[ImpactCard] = &[

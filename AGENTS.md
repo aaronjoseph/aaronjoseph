@@ -31,14 +31,15 @@ This repository serves two roles:
     └── components/
         ├── mod.rs
         ├── navbar.rs                # Sticky navbar, theme toggle, Cmd+K button, mobile drawer
-        ├── hero.rs                  # Split Hero + interactive Production Telemetry tabs (search-2.0 / ltr-onnx / askblue-eval)
+        ├── hero.rs                  # Split Hero + 2-project Production Telemetry workstreams (search-2.0 / askblue)
         ├── impact.rs                # Asymmetric Before → After Bento Grid with proportional visual delta bars
         ├── systems.rs               # Architecture Deep-Dive Case Study cards
         ├── journey.rs               # Narrative + interactive expandable 6-role Career Timeline
         ├── stack.rs                 # Filterable Technical Stack Matrix
+        ├── blog.rs                  # Engineering Blog section (empty-state planned topics + post cards/reader when BLOG_POSTS is populated)
         ├── credentials.rs           # Education (Georgia Tech MS, BMSIT) + Verified Certification links
         ├── contact.rs               # Contact CTA card, one-click copy email, social links, Footer
-        ├── resume.rs                # Dedicated Print / ATS-Ready Résumé view (compact toggle + window.print())
+        ├── resume.rs                # Dual-mode Résumé view: Styled + Plain/ATS-Compliant (with compact toggle & window.print())
         └── cmd_palette.rs           # Interactive Cmd/Ctrl+K quick-jump & action palette
 ```
 

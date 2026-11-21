@@ -46,6 +46,7 @@ pub fn Navbar(
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#systems"), "Systems" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#stack"), "Stack" }
+                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#blog"), "Blog" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#credentials"), "Credentials" }
                     button {
                         class: if is_resume { "nav-link-btn active" } else { "nav-link-btn" },
@@ -137,6 +138,7 @@ pub fn Navbar(
                 button { r#type: "button", onclick: move |_| jump_to("#systems"), "Selected Systems" }
                 button { r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                 button { r#type: "button", onclick: move |_| jump_to("#stack"), "Technical Stack" }
+                button { r#type: "button", onclick: move |_| jump_to("#blog"), "Blog & Writing" }
                 button { r#type: "button", onclick: move |_| jump_to("#credentials"), "Education & Certs" }
                 button {
                     r#type: "button",
@@ -145,7 +147,7 @@ pub fn Navbar(
                         view.set(AppView::Resume);
                         document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
                     },
-                    "Printable Résumé"
+                    "Résumé (Styled / ATS)"
                 }
                 button { r#type: "button", onclick: move |_| jump_to("#contact"), "Contact" }
             }

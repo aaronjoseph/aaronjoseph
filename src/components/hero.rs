@@ -1,14 +1,14 @@
 use dioxus::prelude::*;
 
-use crate::data::{MetricTone, TELEMETRY_TABS};
+use crate::data::{MetricTone, TELEMETRY_PROJECTS};
 
 #[component]
 pub fn Hero(
     on_open_resume: EventHandler<()>,
     on_copy_email: EventHandler<()>,
 ) -> Element {
-    let mut active_tab = use_signal(|| 0usize);
-    let current = &TELEMETRY_TABS[active_tab()];
+    let mut active_project = use_signal(|| 0usize);
+    let current = &TELEMETRY_PROJECTS[active_project()];
 
     rsx! {
         section { class: "hero", id: "top",
@@ -87,7 +87,7 @@ pub fn Hero(
                                 path { d: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" }
                                 path { d: "M14 2v6h6M16 13H8M16 17H8M10 9H8" }
                             }
-                            span { "Printable Résumé" }
+                            span { "Résumé (Styled / ATS)" }
                         }
                         button {
                             class: "btn btn-ghost",
@@ -129,7 +129,7 @@ pub fn Hero(
                     }
                 }
 
-                aside { class: "telemetry-card", aria_label: "Production systems benchmarks",
+                aside { class: "telemetry-card", aria_label: "Production systems impact breakdown",
                     div { class: "telemetry-head",
                         div { class: "telemetry-title",
                             svg {
@@ -148,51 +148,55 @@ pub fn Hero(
                         span { class: "telemetry-badge", "VERIFIED IMPACT" }
                     }
 
-                    div { class: "telemetry-tabs", role: "tablist", aria_label: "System benchmarks",
-                        for (idx, tab) in TELEMETRY_TABS.iter().enumerate() {
+                    div { class: "telemetry-tabs", role: "tablist", aria_label: "Production projects",
+                        for (idx, project) in TELEMETRY_PROJECTS.iter().enumerate() {
                             button {
-                                key: "{tab.id}",
-                                class: if active_tab() == idx { "t-tab active" } else { "t-tab" },
+                                key: "{project.id}",
+                                class: if active_project() == idx { "t-tab active" } else { "t-tab" },
                                 r#type: "button",
                                 role: "tab",
-                                aria_selected: "{active_tab() == idx}",
-                                onclick: move |_| active_tab.set(idx),
-                                "{tab.label}"
+                                aria_selected: "{active_project() == idx}",
+                                onclick: move |_| active_project.set(idx),
+                                "{project.label}"
                             }
                         }
                     }
 
                     div { class: "telemetry-body", key: "{current.id}",
-                        div { class: "t-arch",
-                            span { "{current.arch_prefix}" }
-                            span { class: "hl", "{current.arch_highlight}" }
-                            span { "{current.arch_mid}" }
-                            span { class: "ok", "{current.arch_signal}" }
-                        }
+                        div { class: "t-context", "{current.context}" }
 
-                        div { class: "t-metrics",
-                            for m in current.metrics {
-                                div { class: "t-metric", key: "{m.label}",
-                                    div { class: "t-metric-k", "{m.label}" }
-                                    div {
-                                        class: match m.tone {
-                                            MetricTone::Signal => "t-metric-v signal",
-                                            MetricTone::Accent => "t-metric-v accent",
-                                            MetricTone::Default => "t-metric-v",
-                                        },
-                                        "{m.value}"
+                        div { class: "t-streams",
+                            for ws in current.workstreams {
+                                div { class: "t-stream", key: "{ws.index}-{ws.title}",
+                                    div { class: "t-stream-head",
+                                        span { class: "t-stream-idx", "{ws.index}" }
+                                        div { class: "t-stream-titles",
+                                            div { class: "t-stream-title", "{ws.title}" }
+                                            div { class: "t-stream-pipe", "{ws.pipeline}" }
+                                        }
                                     }
-                                    div { class: "t-metric-d", "{m.detail}" }
+                                    p { class: "t-stream-why", "{ws.advantage}" }
+                                    div { class: "t-gains",
+                                        for (label, tone) in ws.gains {
+                                            span {
+                                                key: "{label}",
+                                                class: match tone {
+                                                    MetricTone::Signal => "t-gain signal",
+                                                    MetricTone::Accent => "t-gain accent",
+                                                    MetricTone::Default => "t-gain",
+                                                },
+                                                "{label}"
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
-
-                        p { class: "t-note", "{current.note}" }
                     }
 
                     div { class: "telemetry-foot",
-                        span { "Interactive telemetry · built in Rust/Dioxus" }
-                        span { "GCP · GKE · Rust · Python" }
+                        span { "{current.stack_summary}" }
+                        span { "Rust + Dioxus WASM" }
                     }
                 }
             }

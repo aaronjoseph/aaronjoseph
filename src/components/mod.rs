@@ -1,3 +1,4 @@
+pub mod blog;
 pub mod cmd_palette;
 pub mod contact;
 pub mod credentials;

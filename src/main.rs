@@ -4,9 +4,9 @@ mod data;
 use dioxus::prelude::*;
 
 use components::{
-    cmd_palette::CommandPalette, contact::ContactSection, credentials::CredentialsSection,
-    hero::Hero, impact::ImpactSection, journey::JourneySection, navbar::Navbar,
-    resume::ResumeView, stack::StackSection, systems::SystemsSection,
+    blog::BlogSection, cmd_palette::CommandPalette, contact::ContactSection,
+    credentials::CredentialsSection, hero::Hero, impact::ImpactSection, journey::JourneySection,
+    navbar::Navbar, resume::ResumeView, stack::StackSection, systems::SystemsSection,
 };
 use data::EMAIL;
 
@@ -19,6 +19,12 @@ pub enum AppView {
     Resume,
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+pub enum ResumeStyle {
+    Styled,
+    Ats,
+}
+
 fn main() {
     dioxus::launch(App);
 }
@@ -27,6 +33,7 @@ fn main() {
 fn App() -> Element {
     let mut theme = use_signal(|| "dark".to_string());
     let mut view = use_signal(|| AppView::Portfolio);
+    let resume_style = use_signal(|| ResumeStyle::Styled);
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
@@ -153,6 +160,7 @@ fn App() -> Element {
                     SystemsSection {}
                     JourneySection {}
                     StackSection {}
+                    BlogSection {}
                     CredentialsSection {}
                     ContactSection {
                         on_copy_email: copy_email,
@@ -161,6 +169,7 @@ fn App() -> Element {
                 }
             } else {
                 ResumeView {
+                    style_mode: resume_style,
                     on_back: move |_| {
                         view.set(AppView::Portfolio);
                         document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
@@ -171,6 +180,7 @@ fn App() -> Element {
             CommandPalette {
                 open: cmd_open,
                 view,
+                resume_style,
                 on_copy_email: copy_email,
                 on_toggle_theme: toggle_theme,
             }
