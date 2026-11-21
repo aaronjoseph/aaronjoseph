@@ -196,13 +196,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
     },
 ];
 
-pub const DEEP_DIVE_COMPANIES: &[(&str, &str)] = &[
-    ("all", "All Projects"),
-    ("bestbuy", "Best Buy"),
-    ("falabella", "Falabella"),
-    ("accenture", "Accenture AI"),
-];
-
 pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     DeepDiveProject {
         id: "bb-search-rust",

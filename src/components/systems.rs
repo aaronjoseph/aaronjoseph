@@ -1,10 +1,17 @@
 use dioxus::prelude::*;
 
-use crate::data::{DEEP_DIVE_COMPANIES, DEEP_DIVE_PROJECTS, MetricTone};
+use crate::data::{DEEP_DIVE_PROJECTS, MetricTone};
 
 #[component]
 pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element {
     let mut company_filter = use_signal(|| "all");
+
+    let mut companies: Vec<(&'static str, &'static str)> = vec![("all", "All Projects")];
+    for p in DEEP_DIVE_PROJECTS {
+        if !companies.iter().any(|(id, _)| *id == p.company_id) {
+            companies.push((p.company_id, p.company));
+        }
+    }
 
     let active_idx = selected_project().and_then(|id| {
         DEEP_DIVE_PROJECTS.iter().position(|p| p.id == id)
@@ -16,17 +23,16 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
         section { id: "systems",
             div { class: "wrap",
                 div { class: "sec-head",
-                    div { class: "eyebrow", "Selected Work" }
+                    div { class: "eyebrow", "Key Work" }
                     h2 { "Things I've built (and why they mattered)" }
                     p { class: "sec-sub",
-                        "A quiet engineering log from Best Buy, Falabella, and Accenture AI. Pick any project to open the full breakdown on the side."
+                        "A quiet engineering log of systems I've built over the years. Pick any project to open the full breakdown on the side."
                     }
                 }
 
                 div { class: "filter-bar", role: "group", aria_label: "Filter projects by company",
-                    for (cid, label) in DEEP_DIVE_COMPANIES {
+                    for (cid, label) in companies {
                         {
-                            let cid = *cid;
                             let count = if cid == "all" {
                                 DEEP_DIVE_PROJECTS.len()
                             } else {

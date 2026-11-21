@@ -101,7 +101,7 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
 
         if mobile_open() {
             nav { class: "mobile-drawer", aria_label: "Mobile Navigation",
-                button { r#type: "button", onclick: move |_| jump_to("#systems"), "Selected Work" }
+                button { r#type: "button", onclick: move |_| jump_to("#systems"), "Key Work" }
                 button { r#type: "button", onclick: move |_| jump_to("#journey"), "The Story So Far" }
                 button { r#type: "button", onclick: move |_| jump_to("#stack"), "Toolbox" }
                 button { r#type: "button", onclick: move |_| open_page(AppView::Blog), "Blog & Notes" }
