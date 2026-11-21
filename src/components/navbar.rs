@@ -5,6 +5,7 @@ use crate::AppView;
 #[component]
 pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
     let mut mobile_open = use_signal(|| false);
+    let is_home = view() == AppView::Portfolio;
     let is_blog = view() == AppView::Blog;
     let is_resume = view() == AppView::Resume;
 
@@ -42,20 +43,26 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
                     }
                 }
 
-                nav { class: "nav-links", aria_label: "Primary",
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#systems"), "Work" }
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#stack"), "Toolbox" }
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Story" }
+                // Clean page-level segmented switcher (only real top-level pages — no mixed scroll anchors)
+                nav { class: "nav-links", aria_label: "Pages",
+                    button {
+                        class: if is_home { "nav-link-btn active" } else { "nav-link-btn" },
+                        r#type: "button",
+                        aria_current: if is_home { "page" } else { "false" },
+                        onclick: move |_| open_page(AppView::Portfolio),
+                        "Home"
+                    }
                     button {
                         class: if is_blog { "nav-link-btn active" } else { "nav-link-btn" },
                         r#type: "button",
+                        aria_current: if is_blog { "page" } else { "false" },
                         onclick: move |_| open_page(AppView::Blog),
                         "Blog"
                     }
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#credentials"), "Background" }
                     button {
                         class: if is_resume { "nav-link-btn active" } else { "nav-link-btn" },
                         r#type: "button",
+                        aria_current: if is_resume { "page" } else { "false" },
                         onclick: move |_| open_page(AppView::Resume),
                         "Résumé"
                     }
@@ -65,9 +72,9 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
                     button {
                         class: "kbd-btn",
                         r#type: "button",
-                        title: "Quick search (Cmd/Ctrl+K)",
+                        title: "Quick jump & search (Cmd/Ctrl+K)",
                         onclick: move |_| cmd_open.set(true),
-                        span { "Search" }
+                        span { "Jump" }
                         span { "⌘K" }
                     }
 
@@ -101,12 +108,33 @@ pub fn Navbar(view: Signal<AppView>, cmd_open: Signal<bool>) -> Element {
 
         if mobile_open() {
             nav { class: "mobile-drawer", aria_label: "Mobile Navigation",
-                button { r#type: "button", onclick: move |_| jump_to("#systems"), "Key Work" }
-                button { r#type: "button", onclick: move |_| jump_to("#stack"), "Toolbox" }
-                button { r#type: "button", onclick: move |_| jump_to("#journey"), "The Story So Far" }
-                button { r#type: "button", onclick: move |_| open_page(AppView::Blog), "Blog & Notes" }
-                button { r#type: "button", onclick: move |_| jump_to("#credentials"), "Background" }
-                button { r#type: "button", onclick: move |_| open_page(AppView::Resume), "Résumé (Styled / ATS)" }
+                button {
+                    class: if is_home { "mobile-nav-active" } else { "" },
+                    r#type: "button",
+                    onclick: move |_| open_page(AppView::Portfolio),
+                    "Home"
+                }
+                button {
+                    class: if is_blog { "mobile-nav-active" } else { "" },
+                    r#type: "button",
+                    onclick: move |_| open_page(AppView::Blog),
+                    "Blog & Notes"
+                }
+                button {
+                    class: if is_resume { "mobile-nav-active" } else { "" },
+                    r#type: "button",
+                    onclick: move |_| open_page(AppView::Resume),
+                    "Résumé (Styled / ATS)"
+                }
+                div { class: "mobile-drawer-sep" }
+                button {
+                    r#type: "button",
+                    onclick: move |_| {
+                        mobile_open.set(false);
+                        cmd_open.set(true);
+                    },
+                    "Quick Jump / Search"
+                }
                 button { r#type: "button", onclick: move |_| jump_to("#contact"), "Say hello" }
             }
         }
