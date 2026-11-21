@@ -34,7 +34,7 @@ pub fn Navbar(
                         view.set(AppView::Portfolio);
                         document::eval("window.scrollTo({ top: 0, behavior: 'smooth' });");
                     },
-                    span { class: "brand-mark", "AJ" }
+                    span { class: "brand-mark", "AJM" }
                     span {
                         "Aaron "
                         span { class: "brand-sub", "Mathew" }

@@ -18,12 +18,12 @@ This repository serves two roles:
 .
 ├── Cargo.toml                       # Dioxus 0.7 ("web" feature), release profile tuned for WASM size
 ├── Dioxus.toml                      # App title, watcher paths, web.resource + web.resource.dev
-├── index.html                       # Custom HTML shell with instant "AJ" monogram splash loader & theme pre-init
+├── index.html                       # Custom HTML shell with instant "AJM" monogram splash loader & theme pre-init
 ├── README.md                        # GitHub Profile README + quick start
 ├── AGENTS.md                        # This guide
 ├── .github/workflows/deploy.yml     # CI build (dx build --release) & GitHub Pages deployment
 ├── assets/
-│   ├── favicon.svg                  # Custom geometric "AJ" monogram icon
+│   ├── favicon.svg                  # Custom geometric "AJM" monogram icon
 │   └── main.css                     # Full design system (Dark + Light theme + @media print résumé CSS)
 └── src/
     ├── main.rs                      # App shell, theme state (localStorage), Portfolio/Résumé view switch, Cmd+K, Toast
