@@ -15,22 +15,7 @@ pub fn Hero(
                 div { class: "hero-editorial",
                     h1 { class: "hero-title",
                         "Hi, I'm "
-                        span { class: "squiggle-name",
-                            "Aaron Joseph Mathew."
-                            svg {
-                                class: "squiggle-svg",
-                                view_box: "0 0 320 14",
-                                fill: "none",
-                                preserve_aspect_ratio: "none",
-                                "aria-hidden": "true",
-                                path {
-                                    d: "M3 9.5C34 2.5 64 13 96 7.5C128 2 162 12.5 196 7C230 1.5 264 12 317 6",
-                                    stroke: "#d97c60",
-                                    stroke_width: "4.5",
-                                    stroke_linecap: "round",
-                                }
-                            }
-                        }
+                        span { class: "squiggle-name", "Aaron Joseph Mathew." }
                     }
 
                     div { class: "hero-badge-row",

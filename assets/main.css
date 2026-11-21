@@ -505,18 +505,12 @@ code {
 }
 
 .squiggle-name {
-  position: relative;
   display: inline-block;
-}
-
-.squiggle-svg {
-  position: absolute;
-  left: -2px;
-  right: -2px;
-  bottom: -7px;
-  width: calc(100% + 4px);
-  height: 13px;
-  pointer-events: none;
+  color: var(--sage);
+  background: linear-gradient(120deg, #3a7762 0%, #3d6f82 55%, #72688f 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-serif-lead {
@@ -532,10 +526,8 @@ code {
 .hero-serif-lead strong {
   font-family: var(--font-display);
   font-weight: 700;
-  text-decoration: underline;
-  text-decoration-color: var(--orange);
-  text-decoration-thickness: 2.5px;
-  text-underline-offset: 4px;
+  color: var(--sage);
+  text-decoration: none;
 }
 
 .hero-inline-nav {
