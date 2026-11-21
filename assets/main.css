@@ -1462,44 +1462,256 @@ section h2 {
 
 .career-layout {
   display: grid;
-  grid-template-columns: 0.9fr 1.35fr;
+  grid-template-columns: 0.96fr 1.3fr;
   gap: 32px;
   align-items: start;
 }
 
 .about-panel {
   background: linear-gradient(155deg, var(--blush-soft) 0%, var(--khaki) 100%);
-  border: 1px solid rgba(44, 42, 53, 0.05);
+  border: 1px solid rgba(44, 42, 53, 0.06);
   border-radius: var(--radius-lg);
-  padding: 28px;
+  padding: 24px;
   position: sticky;
-  top: 94px;
+  top: 90px;
   box-shadow: var(--shadow-sm);
+  transition: background 0.45s ease, border-color 0.35s ease;
+}
+
+/* Subtle warm company-tinted story backdrop shifts */
+.story-panel.story-tone-bestbuy    { background: linear-gradient(155deg, #fde8e0 0%, #f3ebe0 100%); }
+.story-panel.story-tone-falabella  { background: linear-gradient(155deg, #e7f4ec 0%, #f3ede2 100%); }
+.story-panel.story-tone-accenture  { background: linear-gradient(155deg, #f1ebf6 0%, #f2ece3 100%); }
+.story-panel.story-tone-kaleidofin { background: linear-gradient(155deg, #e2f4f2 0%, #f3ede2 100%); }
+.story-panel.story-tone-fundsindia { background: linear-gradient(155deg, #e7effc 0%, #f3ede2 100%); }
+.story-panel.story-tone-musigma    { background: linear-gradient(155deg, #fae7e4 0%, #f4ece0 100%); }
+
+.story-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.story-kicker {
+  font-family: var(--font-mono);
+  font-size: 0.69rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #b44a2f;
+}
+
+.story-period-chip {
+  font-family: var(--font-mono);
+  font-size: 0.69rem;
+  color: var(--text-3);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.story-progress-track {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(44, 42, 53, 0.09);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.story-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--sage), var(--orange));
+  transition: width 0.42s var(--ease-smooth);
+}
+
+.story-stage {
+  animation: storyStageIn 0.36s var(--ease-smooth) both;
+}
+
+@keyframes storyStageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.story-art {
+  margin-bottom: 16px;
+}
+
+.story-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(44, 42, 53, 0.06);
+}
+
+.sg-spin-slow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sgSpin 22s linear infinite;
+}
+
+.sg-dash-flow {
+  animation: sgDash 1.8s linear infinite;
+}
+
+.sg-draw-line {
+  stroke-dasharray: 420;
+  stroke-dashoffset: 420;
+  animation: sgDraw 0.9s var(--ease-smooth) forwards;
+}
+
+.sg-pulse-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sgPulse 2.1s ease-in-out infinite;
+}
+
+.sg-float {
+  animation: sgFloat 3s ease-in-out infinite;
+}
+
+.sg-bar-rise {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: sgRise 0.55s var(--ease-smooth) both;
+}
+
+.sg-bar-grow {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: sgGrow 0.55s var(--ease-smooth) both;
+}
+
+@keyframes sgSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes sgDash {
+  to { stroke-dashoffset: -18; }
+}
+@keyframes sgDraw {
+  to { stroke-dashoffset: 0; }
+}
+@keyframes sgPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50%      { transform: scale(1.22); opacity: 1; }
+}
+@keyframes sgFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+@keyframes sgRise {
+  from { transform: scaleY(0.15); opacity: 0.3; }
+  to   { transform: scaleY(1); opacity: 1; }
+}
+@keyframes sgGrow {
+  from { transform: scaleX(0.25); opacity: 0.35; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+
+.story-co-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
 .about-panel h3 {
-  margin: 0 0 14px;
+  margin: 0;
   font-family: var(--font-display);
-  font-size: 1.32rem;
+  font-size: 1.2rem;
+  line-height: 1.24;
   letter-spacing: -0.02em;
   color: var(--ink);
 }
 
-.about-panel p {
+.about-panel .story-body {
   margin: 0 0 14px;
-  font-size: 0.96rem;
-  line-height: 1.7;
+  font-size: 0.92rem;
+  line-height: 1.66;
   color: var(--text-2);
 }
 
-.about-panel p:last-child {
-  margin-bottom: 0;
+.story-takeaway {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(44, 42, 53, 0.08);
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.story-takeaway-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--orange);
+  flex-shrink: 0;
+}
+
+.story-chapters {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(44, 42, 53, 0.08);
+}
+
+.story-ch-btn {
+  display: grid;
+  place-items: center;
+  height: 36px;
+  border-radius: 11px;
+  border: 1.5px solid transparent;
+  background: rgba(255, 255, 255, 0.6);
+  opacity: 0.62;
+  cursor: pointer;
+  transition: transform 0.16s ease, opacity 0.16s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.story-ch-btn:hover {
+  opacity: 1;
+  background: #ffffff;
+  transform: translateY(-2px);
+}
+
+.story-ch-btn.active {
+  opacity: 1;
+  background: #ffffff;
+  border-color: var(--orange);
+  box-shadow: 0 4px 12px rgba(240, 139, 109, 0.24);
+  transform: translateY(-2px);
 }
 
 .timeline-controls {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
   margin-bottom: 12px;
+}
+
+.timeline-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-3);
 }
 
 .text-btn {
@@ -1545,12 +1757,17 @@ section h2 {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s var(--ease-smooth), box-shadow 0.2s ease;
+  transition: transform 0.22s var(--ease-smooth), box-shadow 0.22s ease, border-color 0.22s ease;
 }
 
 .role-card:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
+}
+
+.role-card.active-story {
+  border-color: rgba(240, 139, 109, 0.45);
+  box-shadow: 0 12px 30px rgba(240, 139, 109, 0.14), 0 4px 12px rgba(44, 42, 53, 0.05);
 }
 
 .role-card::before {
@@ -1563,14 +1780,57 @@ section h2 {
   border-radius: 50%;
   border: 2.5px solid var(--bg);
   background: var(--blush);
+  transition: transform 0.24s var(--ease-smooth), background-color 0.24s ease, box-shadow 0.24s ease;
 }
 
-.role-card:nth-child(1)::before { background: var(--orange); box-shadow: 0 0 0 4px var(--blush-soft); }
-.role-card:nth-child(2)::before { background: var(--blush); }
+.role-card:nth-child(1)::before { background: var(--orange); }
+.role-card:nth-child(2)::before { background: var(--sage); }
 .role-card:nth-child(3)::before { background: var(--lavender); }
-.role-card:nth-child(4)::before { background: var(--sage); }
-.role-card:nth-child(5)::before { background: var(--khaki-deep); }
-.role-card:nth-child(6)::before { background: var(--khaki-deep); }
+.role-card:nth-child(4)::before { background: #35b3ac; }
+.role-card:nth-child(5)::before { background: #2563ff; }
+.role-card:nth-child(6)::before { background: #a21c14; }
+
+.role-card.active-story::before {
+  transform: scale(1.28);
+  box-shadow: 0 0 0 5px var(--blush-soft);
+}
+
+.role-ch-pill {
+  background: var(--khaki);
+  color: var(--ink);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.role-body-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.36s var(--ease-smooth), opacity 0.28s ease;
+}
+
+.role-body-wrap.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.role-body-inner {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sg-spin-slow,
+  .sg-dash-flow,
+  .sg-draw-line,
+  .sg-pulse-node,
+  .sg-float,
+  .sg-bar-rise,
+  .sg-bar-grow,
+  .story-stage {
+    animation: none;
+  }
+}
 
 .role-trigger {
   width: 100%;
