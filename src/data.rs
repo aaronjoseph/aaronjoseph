@@ -102,8 +102,8 @@ pub const SUMMARY: &str = "Senior AI Engineer with 9+ years across analytics, ma
 
 pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
     TelemetryProject {
-        id: "search-2.0",
-        label: "search-2.0",
+        id: "search-system",
+        label: "Search System",
         context: "Best Buy · Semantic Search & Ranking Stack (up to 12,000 RPS)",
         stack_summary: "Rust · Axum · ONNX · GKE C4A",
         workstreams: &[
@@ -142,8 +142,8 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
         ],
     },
     TelemetryProject {
-        id: "askblue",
-        label: "askblue",
+        id: "agentic-ai",
+        label: "Agentic AI",
         context: "Best Buy · Agentic AI Evaluation, Observability & Tooling",
         stack_summary: "Gemini · Gemma · Cloud Trace · Dioxus",
         workstreams: &[
@@ -161,7 +161,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
                 index: "02",
                 title: "Agentic Tracing & Model Dashboards",
                 pipeline: "Google Cloud Trace · Structured Logs",
-                advantage: "Established org-wide request-level tracing across AskBlue agentic I/O with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
+                advantage: "Established org-wide request-level tracing across agentic AI inputs & outputs with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
                 gains: &[
                     ("End-to-end agentic I/O traces", MetricTone::Accent),
                     ("Gemma vs. Gemini dashboards", MetricTone::Default),
