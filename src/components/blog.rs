@@ -286,16 +286,280 @@ fn HexagonalNotebookSketch() -> Element {
     }
 }
 
+/// Interactive Article Reader with a moving sticky Left Reading Rail:
+/// highlights the active subsection, marks completed ones with sage checks,
+/// shows remaining sections left to read, and animates a continuous progress spine.
+#[component]
+fn ArticleReader(slug: &'static str, on_back: EventHandler<()>) -> Element {
+    let Some(post) = BLOG_POSTS.iter().find(|p| p.slug == slug) else {
+        return rsx! {};
+    };
+
+    let mut active_sec = use_signal(|| 0usize);
+    let mut read_pct = use_signal(|| 0u32);
+
+    // Collect Overview + every Heading block in order
+    let mut sections: Vec<(usize, &'static str)> = vec![(0, "Overview")];
+    let mut heading_counter = 0usize;
+    let mut block_heading_ids: Vec<Option<usize>> = Vec::with_capacity(post.blocks.len());
+    for block in post.blocks {
+        if let ArticleBlock::Heading(h) = block {
+            heading_counter += 1;
+            sections.push((heading_counter, *h));
+            block_heading_ids.push(Some(heading_counter));
+        } else {
+            block_heading_ids.push(None);
+        }
+    }
+
+    let total_sections = sections.len();
+
+    use_effect(move || {
+        spawn(async move {
+            let mut eval = document::eval(
+                r#"
+                if (window.__ajmArticleScrollHandler) {
+                    window.removeEventListener('scroll', window.__ajmArticleScrollHandler);
+                }
+
+                let lastSec = -1;
+                let lastPct = -1;
+                let ticking = false;
+
+                const evaluate = () => {
+                    ticking = false;
+                    const art = document.getElementById('article-shell');
+                    if (!art) return;
+
+                    const artRect = art.getBoundingClientRect();
+                    const scrollable = Math.max(1, art.offsetHeight - window.innerHeight * 0.55);
+                    const scrolled = Math.max(0, 120 - artRect.top);
+                    const atBottom = (window.innerHeight + window.scrollY) >= (document.documentElement.scrollHeight - 24);
+                    const pct = atBottom ? 100 : Math.min(100, Math.max(0, Math.round((scrolled / scrollable) * 100)));
+
+                    const anchors = Array.from(art.querySelectorAll('[data-art-sec]'));
+                    let curSec = 0;
+                    if (atBottom && anchors.length > 0) {
+                        curSec = anchors.length - 1;
+                    } else {
+                        const threshold = 165;
+                        anchors.forEach((el, i) => {
+                            if (el.getBoundingClientRect().top <= threshold) {
+                                curSec = i;
+                            }
+                        });
+                    }
+
+                    if (curSec !== lastSec || pct !== lastPct) {
+                        lastSec = curSec;
+                        lastPct = pct;
+                        dioxus.send([curSec, pct]);
+                    }
+                };
+
+                const onScroll = () => {
+                    if (!ticking) {
+                        ticking = true;
+                        requestAnimationFrame(evaluate);
+                    }
+                };
+
+                window.__ajmArticleScrollHandler = onScroll;
+                window.addEventListener('scroll', onScroll, { passive: true });
+                requestAnimationFrame(evaluate);
+                "#,
+            );
+
+            while let Ok((sec, pct)) = eval.recv::<(usize, u32)>().await {
+                if sec < total_sections {
+                    active_sec.set(sec);
+                }
+                read_pct.set(pct);
+            }
+        });
+    });
+
+    let cur = active_sec();
+    let pct = read_pct();
+    let remaining = total_sections.saturating_sub(cur + 1);
+    let status_text = if pct >= 96 {
+        "Finished reading ✓".to_string()
+    } else if remaining == 0 {
+        "Final section".to_string()
+    } else if remaining == 1 {
+        "1 section left to read".to_string()
+    } else {
+        format!("{remaining} sections left to read")
+    };
+
+    rsx! {
+        div { class: "blog-top-bar",
+            button {
+                class: "text-btn",
+                r#type: "button",
+                onclick: move |_| {
+                    document::eval(
+                        "if (window.__ajmArticleScrollHandler) { window.removeEventListener('scroll', window.__ajmArticleScrollHandler); } window.scrollTo({ top: 0, behavior: 'instant' });",
+                    );
+                    on_back.call(());
+                },
+                "← All posts"
+            }
+            span { class: "blog-meta-mono", "{post.date} · {post.read_time}" }
+        }
+
+        div { class: "article-layout",
+            // Sticky moving Left Reading Rail
+            aside { class: "article-toc", aria_label: "Article sections",
+                div { class: "toc-head",
+                    span { class: "toc-kicker", "Reading Guide" }
+                    span { class: "toc-pct", "{pct}%" }
+                }
+
+                div { class: "toc-bar-track", aria_hidden: "true",
+                    div { class: "toc-bar-fill", style: "width: {pct}%;" }
+                }
+
+                nav { class: "toc-list",
+                    div { class: "toc-spine", aria_hidden: "true",
+                        div { class: "toc-spine-fill", style: "height: {pct}%;" }
+                    }
+                    for (sec_idx, title) in sections {
+                        {
+                            let state_cls = if sec_idx < cur {
+                                "toc-item is-done"
+                            } else if sec_idx == cur {
+                                "toc-item is-active"
+                            } else {
+                                "toc-item is-upcoming"
+                            };
+                            let target_id = format!("art-sec-{sec_idx}");
+                            rsx! {
+                                button {
+                                    key: "toc-{sec_idx}",
+                                    class: "{state_cls}",
+                                    r#type: "button",
+                                    aria_current: if sec_idx == cur { "location" } else { "false" },
+                                    onclick: move |_| {
+                                        active_sec.set(sec_idx);
+                                        let js = format!(
+                                            "const el = document.getElementById('{target_id}'); if (el) el.scrollIntoView({{ behavior: 'smooth', block: 'start' }});"
+                                        );
+                                        document::eval(&js);
+                                    },
+                                    span { class: "toc-node", aria_hidden: "true",
+                                        if sec_idx < cur { "✓" } else { "" }
+                                    }
+                                    span { class: "toc-label", "{title}" }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                div {
+                    class: if pct >= 96 { "toc-foot is-complete" } else { "toc-foot" },
+                    "{status_text}"
+                }
+            }
+
+            article { id: "article-shell", class: "article-shell",
+                header { id: "art-sec-0", class: "article-head", "data-art-sec": "0",
+                    div { class: "article-topic", "{post.topic}" }
+                    h1 { class: "article-title",
+                        RichTitle { title: post.title }
+                    }
+                    p { class: "article-subtitle", "{post.subtitle}" }
+                    div { class: "chip-row",
+                        for tag in post.tags {
+                            span { class: "chip", key: "{tag}", "{tag}" }
+                        }
+                    }
+                }
+
+                div { class: "article-prose",
+                    for (idx, block) in post.blocks.iter().enumerate() {
+                        match block {
+                            ArticleBlock::Heading(h) => {
+                                let hid = block_heading_ids[idx].unwrap_or(0);
+                                let el_id = format!("art-sec-{hid}");
+                                rsx! {
+                                    h2 {
+                                        key: "h-{idx}",
+                                        id: "{el_id}",
+                                        class: "article-h2",
+                                        "data-art-sec": "{hid}",
+                                        "{h}"
+                                    }
+                                }
+                            }
+                            ArticleBlock::Paragraph(p) => rsx! {
+                                p { key: "p-{idx}", "{p}" }
+                            },
+                            ArticleBlock::ArchitectureFlow(flow) => rsx! {
+                                div { key: "f-{idx}", class: "article-flow-wrap",
+                                    div { class: "drawer-block-label", "Architecture Flow" }
+                                    div { class: "drawer-flow", "{flow}" }
+                                }
+                            },
+                            ArticleBlock::HexagonalSketch => rsx! {
+                                div { key: "s-{idx}", class: "article-nb-wrap",
+                                    HexagonalNotebookSketch {}
+                                }
+                            },
+                            ArticleBlock::Bullets(items) => rsx! {
+                                div { key: "b-{idx}", class: "article-point-grid",
+                                    for (pi, (label, body)) in items.iter().enumerate() {
+                                        {
+                                            let tone_cls = match pi % 4 {
+                                                0 => "article-point-card pt-sage",
+                                                1 => "article-point-card pt-lavender",
+                                                2 => "article-point-card pt-peach",
+                                                _ => "article-point-card pt-butter",
+                                            };
+                                            rsx! {
+                                                div { key: "{label}", class: "{tone_cls}",
+                                                    div { class: "article-point-head",
+                                                        span { class: "article-point-badge", "{label}" }
+                                                    }
+                                                    p { class: "article-point-body", "{body}" }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            ArticleBlock::FieldNotes {
+                                stamp,
+                                comparisons,
+                                callouts,
+                                sticky_notes,
+                            } => rsx! {
+                                div { key: "n-{idx}", class: "article-nb-wrap",
+                                    NotebookFieldNotes {
+                                        stamp: *stamp,
+                                        comparisons: *comparisons,
+                                        callouts: *callouts,
+                                        sticky_notes: *sticky_notes,
+                                    }
+                                }
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 /// Dedicated standalone Blog / Writing page with:
 /// 1) Chronological Timeline (timestamp on the left, newest first)
 /// 2) By-Topic Indented Tree Index (grouped by subject with vertical guides & year)
-/// 3) Rich serif Article Reader with inline Architecture Field Notes
+/// 3) Rich serif Article Reader with moving Left Reading Rail & Architecture Field Notes
 #[component]
 pub fn BlogView(on_back: EventHandler<()>) -> Element {
     let mut layout_mode = use_signal(|| BlogLayoutMode::Timeline);
     let mut active_slug = use_signal(|| Option::<&'static str>::None);
-
-    let active_post = active_slug().and_then(|slug| BLOG_POSTS.iter().find(|p| p.slug == slug));
 
     // Unique topic groups in insertion order
     let mut published_topics: Vec<&'static str> = Vec::new();
@@ -312,98 +576,20 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
         }
     }
 
+    let wrap_cls = if active_slug().is_some() {
+        "blog-wrap reading-mode"
+    } else {
+        "blog-wrap"
+    };
+
     rsx! {
         div { class: "blog-page",
-            div { class: "blog-wrap",
-                if let Some(post) = active_post {
-                    // Rich serif Article Reader with inline Architecture Field Notes
-                    div { class: "blog-top-bar",
-                        button {
-                            class: "text-btn",
-                            r#type: "button",
-                            onclick: move |_| {
-                                active_slug.set(None);
-                                document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
-                            },
-                            "← All posts"
-                        }
-                        span { class: "blog-meta-mono", "{post.date} · {post.read_time}" }
-                    }
-
-                    article { class: "article-shell",
-                        header { class: "article-head",
-                            div { class: "article-topic", "{post.topic}" }
-                            h1 { class: "article-title",
-                                RichTitle { title: post.title }
-                            }
-                            p { class: "article-subtitle", "{post.subtitle}" }
-                            div { class: "chip-row",
-                                for tag in post.tags {
-                                    span { class: "chip", key: "{tag}", "{tag}" }
-                                }
-                            }
-                        }
-
-                        div { class: "article-prose",
-                            for (idx, block) in post.blocks.iter().enumerate() {
-                                match block {
-                                    ArticleBlock::Heading(h) => rsx! {
-                                        h2 { key: "h-{idx}", class: "article-h2", "{h}" }
-                                    },
-                                    ArticleBlock::Paragraph(p) => rsx! {
-                                        p { key: "p-{idx}", "{p}" }
-                                    },
-                                    ArticleBlock::ArchitectureFlow(flow) => rsx! {
-                                        div { key: "f-{idx}", class: "article-flow-wrap",
-                                            div { class: "drawer-block-label", "Architecture Flow" }
-                                            div { class: "drawer-flow", "{flow}" }
-                                        }
-                                    },
-                                    ArticleBlock::HexagonalSketch => rsx! {
-                                        div { key: "s-{idx}", class: "article-nb-wrap",
-                                            HexagonalNotebookSketch {}
-                                        }
-                                    },
-                                    ArticleBlock::Bullets(items) => rsx! {
-                                        div { key: "b-{idx}", class: "article-point-grid",
-                                            for (pi, (label, body)) in items.iter().enumerate() {
-                                                {
-                                                    let tone_cls = match pi % 4 {
-                                                        0 => "article-point-card pt-sage",
-                                                        1 => "article-point-card pt-lavender",
-                                                        2 => "article-point-card pt-peach",
-                                                        _ => "article-point-card pt-butter",
-                                                    };
-                                                    rsx! {
-                                                        div { key: "{label}", class: "{tone_cls}",
-                                                            div { class: "article-point-head",
-                                                                span { class: "article-point-badge", "{label}" }
-                                                            }
-                                                            p { class: "article-point-body", "{body}" }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    ArticleBlock::FieldNotes {
-                                        stamp,
-                                        comparisons,
-                                        callouts,
-                                        sticky_notes,
-                                    } => rsx! {
-                                        div { key: "n-{idx}", class: "article-nb-wrap",
-                                            NotebookFieldNotes {
-                                                stamp: *stamp,
-                                                comparisons: *comparisons,
-                                                callouts: *callouts,
-                                                sticky_notes: *sticky_notes,
-                                            }
-                                        }
-                                    },
-                                }
-                            }
-                        }
+            div { class: "{wrap_cls}",
+                if let Some(slug) = active_slug() {
+                    ArticleReader {
+                        key: "{slug}",
+                        slug,
+                        on_back: move |_| active_slug.set(None),
                     }
                 } else {
                     // Blog Index Header
