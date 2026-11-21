@@ -117,6 +117,7 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
                 pipeline: "Hexagonal Architecture · C4A GKE",
                 advantage: "Separated core search logic from infra adapters and removed Python runtime overhead, enabling C4A-highcpu-4 right-sizing and clean holiday HPA scaling.",
                 gains: &[
+                    ("Up to 12,000 RPS", MetricTone::Signal),
                     ("700 → 350 ms P50", MetricTone::Signal),
                     ("28× less compute", MetricTone::Accent),
                     ("190× less RAM", MetricTone::Accent),
@@ -203,6 +204,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         title: "Flask → FastAPI → Rust (Axum) & GKE C4A",
         one_liner: "Re-architected semantic search into hexagonal Rust/Axum, right-sized C4A GKE node pools, and tuned holiday RPS autoscaling.",
         headline_badges: &[
+            ("Up to 12,000 RPS", MetricTone::Signal),
             ("700 → 350 ms P50", MetricTone::Signal),
             ("28× compute · 190× RAM", MetricTone::Accent),
         ],
@@ -226,12 +228,12 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
         ],
         key_outcomes: &[
+            ("12,000 RPS", "Peak search throughput", MetricTone::Signal),
             ("28×", "Lower compute cost", MetricTone::Accent),
             ("190×", "Lower memory footprint", MetricTone::Accent),
             (">1 s", "Max latency cut", MetricTone::Signal),
             ("~$100K/yr", "Projected GKE savings", MetricTone::Signal),
             ("−78%", "Min node-pool compute", MetricTone::Default),
-            ("−30% / −20%", "C4A upgrade latency / pods", MetricTone::Default),
         ],
         sections: &[
             DeepDiveSection {

@@ -20,8 +20,8 @@ pub fn Hero(
                     }
 
                     h1 {
-                        "Search & AI systems engineered for "
-                        span { class: "grad-text", "real-world latency." }
+                        "Search & AI systems built for "
+                        span { class: "grad-text", "high throughput & low latency." }
                     }
 
                     p { class: "hero-lead",
@@ -29,15 +29,17 @@ pub fn Hero(
                         strong { "Aaron Joseph Mathew" }
                         " — a Senior AI Engineer with "
                         strong { "9+ years" }
-                        " across analytics, machine learning, and production AI. I build and harden high-throughput search, ranking, and agentic platforms where milliseconds and cloud spend actually matter."
+                        " across analytics, machine learning, and production AI. I architect and harden production search, ranking, and agentic platforms handling up to "
+                        strong { "12,000 RPS" }
+                        " — where throughput, tail latency, and cloud spend all matter."
                     }
 
                     ul { class: "hero-pillars",
                         li {
                             span { class: "pillar-marker", "01/" }
                             span {
-                                strong { "Low-Latency Search & Ranking" }
-                                " — semantic search, Learning to Rank (ONNX/XGBoost), NER & ESCI serving up to 12,000 RPS."
+                                strong { "High-Throughput, Low-Latency Search" }
+                                " — semantic search, Learning to Rank (ONNX/XGBoost), NER & ESCI scaled up to 12,000 RPS with RPS-aware HPA."
                             }
                         }
                         li {
