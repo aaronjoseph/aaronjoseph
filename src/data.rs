@@ -130,14 +130,6 @@ pub struct BlogPost {
     pub blocks: &'static [ArticleBlock],
 }
 
-pub struct PlannedTopic {
-    pub date_label: &'static str,
-    pub year: &'static str,
-    pub topic: &'static str,
-    pub title: &'static str,
-    pub subtitle: &'static str,
-}
-
 pub const EMAIL: &str = "aaronjosephmathew@gmail.com";
 pub const PHONE: &str = "+91 9844348064";
 pub const LINKEDIN_URL: &str = "https://www.linkedin.com/in/aaron-joseph-mathew-4b425b71/";
@@ -1354,16 +1346,6 @@ BlogPost {
         ),
     ],
 }];
-
-pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
-    PlannedTopic {
-        date_label: "Draft",
-        year: "Upcoming",
-        topic: "Agentic AI & Evaluation",
-        title: "Observability & LLM-as-a-Judge Suites for Agentic Workflows",
-        subtitle: "Designing end-to-end distributed tracing, model comparison dashboards, and automated regression checks for agentic systems.",
-    },
-];
 
 pub const ROLES: &[Role] = &[
     Role {

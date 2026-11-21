@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::components::systems::{NotebookFieldNotes, RichTitle};
-use crate::data::{ArticleBlock, BLOG_POSTS, PLANNED_BLOG_TOPICS};
+use crate::data::{ArticleBlock, BLOG_POSTS};
 
 #[derive(Clone, Copy, PartialEq, Eq)]
 enum BlogLayoutMode {
@@ -1452,13 +1452,6 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
         }
     }
 
-    let mut planned_topics: Vec<&'static str> = Vec::new();
-    for item in PLANNED_BLOG_TOPICS {
-        if !planned_topics.contains(&item.topic) {
-            planned_topics.push(item.topic);
-        }
-    }
-
     let wrap_cls = if active_slug().is_some() {
         "blog-wrap reading-mode"
     } else {
@@ -1542,22 +1535,6 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                                 }
                             }
                         }
-
-                        if !PLANNED_BLOG_TOPICS.is_empty() {
-                            div { class: "blog-drafts-divider", "Upcoming Drafts" }
-                            div { class: "blog-timeline-list",
-                                for item in PLANNED_BLOG_TOPICS {
-                                    div { class: "blog-tl-row is-draft", key: "{item.title}",
-                                        div { class: "blog-tl-date", "{item.date_label}" }
-                                        div { class: "blog-tl-body",
-                                            div { class: "blog-tl-topic", "{item.topic}" }
-                                            h2 { class: "blog-tl-title", "{item.title}" }
-                                            p { class: "blog-tl-sub", "{item.subtitle}" }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     } else {
                         div { class: "topic-tree",
                             div { class: "tree-root-label", "Published Articles" }
@@ -1581,25 +1558,6 @@ pub fn BlogView(on_back: EventHandler<()>) -> Element {
                                                             span { class: "tree-item-title", "{post.title}" }
                                                             span { class: "tree-item-year", " ({post.year})" }
                                                         }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            if !PLANNED_BLOG_TOPICS.is_empty() {
-                                div { class: "tree-root-label", style: "margin-top: 26px;", "Upcoming Drafts" }
-                                div { class: "tree-branch",
-                                    for group in planned_topics {
-                                        div { class: "tree-group", key: "draft-{group}",
-                                            div { class: "tree-group-title", "{group}" }
-                                            div { class: "tree-items",
-                                                for item in PLANNED_BLOG_TOPICS.iter().filter(|t| t.topic == group) {
-                                                    div { class: "tree-item is-draft", key: "{item.title}",
-                                                        span { class: "tree-item-title", "{item.title}" }
-                                                        span { class: "tree-item-year", " ({item.year})" }
                                                     }
                                                 }
                                             }
