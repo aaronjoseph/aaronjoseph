@@ -1036,11 +1036,16 @@ section h2 {
 
 .drawer-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 22px 26px 28px;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 22px;
-  align-content: start;
+}
+
+.drawer-body > * {
+  flex-shrink: 0;
 }
 
 .drawer-block {
@@ -1167,19 +1172,20 @@ section h2 {
   );
   border: 1px solid rgba(44, 42, 53, 0.12);
   border-radius: 18px;
-  padding: 20px 22px 22px 34px;
+  padding: 20px 22px 24px 34px;
   box-shadow: var(--shadow-sm);
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 16px;
-  overflow: hidden;
+  flex-shrink: 0;
 }
 
 /* Classic notebook vertical coral margin rule */
 .nb-sheet::before {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: 2px;
+  bottom: 2px;
   left: 20px;
   width: 1.5px;
   background: rgba(240, 139, 109, 0.36);
