@@ -984,24 +984,82 @@ pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
         ArticleBlock::Paragraph(
             "Modeling candidates, features, scores, and grouped results directly as typed Rust structs, borrowed slices, and zero-cost iterators keeps hot data contiguous and cache-friendly while cutting allocator churn. Pairing that data model with an aggressive release profile — full optimization across dependencies, Fat LTO, and a single codegen unit — allows LLVM to inline cleanly across hexagonal crate boundaries and emit lean ARM machine code.",
         ),
-        ArticleBlock::Heading("5. Parity Verification, Cold-Start Safety & Right-Sizing"),
+        ArticleBlock::Heading("5. Parity Verification & Cold-Start Safety"),
         ArticleBlock::Paragraph(
-            "The last mile of any migration is building confidence that the new binary behaves identically under real traffic and scales cleanly when clusters expand:",
+            "Before shifting production traffic onto the new binary, focus on two operational safeguards — proving behavioral equivalence and keeping rapid scale-outs crash-free:",
         ),
         ArticleBlock::Bullets(&[
             (
                 "Automated Parity Checks",
-                "Replay curated queries side-by-side against FastAPI and Rust, diffing ranked outputs, response envelopes, and structured stage logs before shifting live traffic.",
+                "Replay curated queries side-by-side against FastAPI and Rust, diffing ranked outputs, response envelopes, and structured stage logs before moving live traffic.",
             ),
             (
                 "Scale-Out Startup Safety",
                 "When many pods start together during spikes, racing ahead of the service-mesh proxy or cloud metadata server causes avoidable boot crashes. Holding startup until the proxy is ready — paired with a bounded metadata readiness wait — keeps autoscaling smooth.",
             ),
-            (
-                "Right-Sizing Node Shapes",
-                "Once a compiled binary dramatically lowers memory requirements compared to Python workers, memory-heavy node pools are often over-provisioned. Shifting toward leaner, CPU-focused ARM profiles keeps clusters light off-peak while scaling cleanly for peak events.",
-            ),
         ]),
+        ArticleBlock::Heading("6. Right-Sizing GKE Compute & Node Capacity"),
+        ArticleBlock::Paragraph(
+            "One of the most overlooked savings after moving from Python to Rust happens in your Kubernetes node pools. Multi-worker Python services usually force you onto standard or memory-heavy machines just to keep worker processes from OOM-killing. A compiled Rust binary flips that equation completely: CPU becomes the primary constraint while memory usage drops to a fraction of what it used to be.",
+        ),
+        ArticleBlock::Paragraph(
+            "If you run on GKE, revisit both your machine shape and your per-node size. Across Google Cloud's general-purpose machine tiers — high-CPU, standard, and high-memory — high-CPU is the cheapest option. For the exact same amount of vCPU compute, choosing high-CPU over standard saves roughly 15% right out of the gate, simply because you stop paying for gigabytes of RAM your Rust pods never touch. Just as important: right-size the node capacity itself. You rarely need oversized nodes when pods are lean — smaller node sizes scale in finer increments, cut idle baseline waste off-peak, and reduce blast radius during rollouts.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "GKE Cost & Right-Sizing Notes",
+            comparisons: &[
+                NotebookComparison {
+                    label: "Same-vCPU Machine Shape",
+                    before: "standard (~4 GB / vCPU)",
+                    after: "highcpu (~2 GB / vCPU)",
+                    delta: "~15% cheaper compute",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "General-Purpose Cost Tier",
+                    before: "highmem > standard",
+                    after: "highcpu (cheapest tier)",
+                    delta: "Zero wasted RAM spend",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Per-Node Capacity Sizing",
+                    before: "Oversized nodes per pool",
+                    after: "Right-sized smaller nodes",
+                    delta: "Tighter autoscaling & lower idle burn",
+                    tone: MetricTone::Accent,
+                },
+            ],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Cost Rule · Pair Rust's Low Memory Footprint with GKE high-CPU Nodes",
+                body: "Among Google Cloud's general-purpose tiers (high-CPU, standard, and high-memory), high-CPU gives you the lowest cost per vCPU — about 15% less than standard for identical compute. Once Rust strips away Python's memory overhead, downsizing from standard to high-CPU and picking right-sized nodes locks in recurring infrastructure savings without touching application logic.",
+                link: Some((
+                    "Reference: GCP General-Purpose Pricing ↗",
+                    "https://cloud.google.com/products/compute/pricing/general-purpose",
+                )),
+            }],
+            sticky_notes: &[
+                StickyNote {
+                    tone: StickyTone::Yellow,
+                    title: "Cost Outline: Picking the Tier",
+                    items: &[
+                        "high-CPU: Cheapest tier (~15% below standard for the same vCPU) — ideal default for memory-lean Rust services",
+                        "standard: Balanced CPU-to-RAM ratio — only pay for it if in-process caches or models genuinely need the extra RAM",
+                        "high-memory: Most expensive per vCPU — reserve strictly for memory-bound workloads, never web/search APIs",
+                    ],
+                },
+                StickyNote {
+                    tone: StickyTone::Pink,
+                    title: "Right-Sizing Node Capacity",
+                    items: &[
+                        "Skip giant per-node machines when pods are small — oversized nodes strand idle capacity off-peak",
+                        "Size nodes to fit a clean multiple of your pod requests + DaemonSet overhead so bin-packing stays tight",
+                        "Smaller nodes give Cluster Autoscaler finer steps down at night and limit blast radius on upgrades",
+                    ],
+                },
+            ],
+        },
     ],
 },
 BlogPost {
