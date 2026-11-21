@@ -67,13 +67,13 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 rect { x: "136", y: "24", width: "160", height: "28", rx: "9", fill: "#fcebe6" }
                 text { x: "147", y: "41.5", fill: "#b44a2f", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "−95% CPU · −98% RAM" }
 
-                // Row 2: Cost / turn 21c -> 18c
+                // Row 2: Cost / turn reduction (%)
                 rect { x: "136", y: "60", width: "160", height: "28", rx: "9", fill: "#e4f2ec" }
-                text { x: "147", y: "77.5", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "21¢ → 18¢ / agent turn" }
+                text { x: "147", y: "77.5", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "−14% agent cost / turn" }
 
-                // Row 3: Annual savings + TTFT
+                // Row 3: Latency & TTFT wins (%)
                 rect { x: "136", y: "96", width: "160", height: "28", rx: "9", fill: "#f1edf5" }
-                text { x: "147", y: "113.5", fill: "#69587a", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "~$180K/yr · 15→12s TTFT" }
+                text { x: "147", y: "113.5", fill: "#69587a", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "−50% P50 · −20% TTFT" }
             }
         },
         "falabella" => rsx! {

@@ -28,7 +28,7 @@ pub fn Hero(
                     }
 
                     p { class: "hero-serif-lead",
-                        "I'm an AI & search engineer who enjoys taking slow, expensive ML systems and making them feel effortless — whether that means rewriting a search path in Rust, tracking down a stubborn 5-second GPU spike, or keeping things steady at "
+                        "I'm an AI & search engineer who enjoys taking slow, expensive ML systems and making them feel effortless — whether that means rewriting a search path in Rust, tracking down a stubborn GPU tail-latency spike, or keeping things steady at "
                         strong { "12,000 requests a second" }
                         "."
                     }
@@ -125,7 +125,7 @@ pub fn Hero(
                     }
                     div { class: "sticker-stat s-lavender",
                         div { class: "qstat-val", "50%" }
-                        div { class: "qstat-lbl", "Search P50 latency cut (700→350 ms)" }
+                        div { class: "qstat-lbl", "Search P50 latency reduction" }
                     }
                 }
             }

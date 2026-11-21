@@ -10,8 +10,8 @@ Currently at **Best Buy** (Bengaluru) working on **AskBlue** and **Search 2.0**,
 
 ### Production Impact Highlights
 
-- **Search 2.0 (Flask → FastAPI → Rust/Axum):** Introduced hexagonal architecture, cut compute costs **28×** and memory usage **190×**, halved P50 latency (**700 ms → 350 ms**), reduced max latency by **>1 s**, and cut non-peak GKE CPU/RAM spend by **83%** (**~US$100K** projected annualised savings).
-- **Low-Latency Ranking & GPU Stability:** Migrated Python LTR inference to **ONNX** (**2 ms P50 / 4 ms P95**, 3× faster), resolved GPU-hosted ESCI latency spikes (**5 s → <200 ms**) via async write-back caching, and compressed LTR retraining from **24 hours → <15 minutes** across 5 business units.
+- **Search 2.0 (Flask → FastAPI → Rust/Axum):** Introduced hexagonal monolith + per-service bulkheads, cut CPU by **95%** and RAM by **98%**, halved Search P50 latency (**−50%**), cut agentic cost per turn by **~14%**, and right-sized idle GKE ARM C4A pools (**−57%** idle per-node cost).
+- **Low-Latency Ranking & GPU Stability:** Migrated Python LTR inference to **ONNX** (**3× faster**, single-digit ms), resolved GPU-hosted ESCI tail-latency spikes (**25× / −96% tail reduction**) via async write-back caching, and compressed LTR retraining from **24 hours → <15 minutes** across 5 business units.
 - **Agentic AI Observability & Eval:** Established org-wide **Google Cloud Trace** + structured logging for AskBlue agentic I/O, built **LLM-as-a-judge** regression evals & API comparators (**1–2 days → <1 hr** product validation), and built Gemma vs. Gemini comparison dashboards.
 - **Infrastructure & Developer Velocity:** Drove a 3-gen **C4A** upgrade (**−30%** latency, **−20%** pods), cut Python Docker builds **5×** (**5–6 min → ~1 min** via `slim-trixie` base/app splits), and migrated Streamlit tooling to **Rust Dioxus** (**27×** lower compute).
 

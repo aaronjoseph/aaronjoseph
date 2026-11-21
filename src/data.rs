@@ -140,7 +140,7 @@ pub const LINKEDIN_URL: &str = "https://www.linkedin.com/in/aaron-joseph-mathew-
 pub const GITHUB_URL: &str = "https://github.com/aaronjoseph";
 pub const X_URL: &str = "https://twitter.com/AaronJosephMath";
 
-pub const SUMMARY: &str = "Senior AI Engineer with 9+ years across analytics, machine learning and AI engineering, focused on production search, ranking and reliable ML systems. Worked on search systems handling up to 12,000 requests per second, with reliability work across data pipelines and APIs. Halved Search 2.0 P50 latency from 700 ms to 350 ms. Experience includes learning-to-rank pipelines, LLM evaluation, observability for agentic workflows, and Python and Rust services.";
+pub const SUMMARY: &str = "Senior AI Engineer with 9+ years across analytics, machine learning and AI engineering, focused on production search, ranking and reliable ML systems. Worked on search systems handling up to 12,000 requests per second, with reliability work across data pipelines and APIs. Cut Search 2.0 median (P50) latency by 50% and compute footprint by 95% via Rust migration. Experience includes learning-to-rank pipelines, LLM evaluation, observability for agentic workflows, and Python and Rust services.";
 
 pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     DeepDiveProject {
@@ -152,18 +152,18 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         title: "Flask → FastAPI → Rust (Axum) & GKE ARM C4A",
         one_liner: "Migrated GKE from x86 n1-standard-16 to ARM C4A, consolidated search microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized idle node pools.",
         headline_badges: &[
-            ("21¢ → 18¢ / turn (−3¢)", MetricTone::Signal),
+            ("−14% agent cost / turn", MetricTone::Signal),
             ("−30% ARM C4A latency", MetricTone::Signal),
             ("−95% CPU · −98% RAM", MetricTone::Accent),
-            ("−57% idle node cost · ~$180K/yr", MetricTone::Default),
+            ("−50% P50 · −57% idle cost", MetricTone::Default),
         ],
         flow: "Client Traffic → GKE ARM C4A HPA → Rust/Axum Monolith (api → domain ← infra) → Bulkhead Pools [Product Search | Recall Fan-Out | Metadata | LTR | ESCI]",
         comparisons: &[
             NotebookComparison {
-                label: "AskBlue Agent Cost / Turn",
-                before: "21¢ / turn",
-                after: "18¢ / turn",
-                delta: "−3¢ / turn",
+                label: "Agentic Cost / Turn",
+                before: "Python search baseline",
+                after: "Rust/Axum search path",
+                delta: "−14% cost / turn",
                 tone: MetricTone::Signal,
             },
             NotebookComparison {
@@ -175,8 +175,8 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
             NotebookComparison {
                 label: "Search P50 Latency",
-                before: "700 ms (Python)",
-                after: "350 ms (Rust/Axum)",
+                before: "Python baseline",
+                after: "Rust/Axum monolith",
                 delta: "−50% P50",
                 tone: MetricTone::Signal,
             },
@@ -216,8 +216,8 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                 items: &[
                     "−95% CPU & −98% RAM usage",
                     "~$180K/yr saved (~$500/day)",
-                    "AskBlue agent cost/turn: 21¢ → 18¢ (−3¢)",
-                    "700 ms → 350 ms P50 (>1 s max cut)",
+                    "~14% lower cost per agent turn",
+                    "−50% Search P50 latency",
                 ],
             },
             StickyNote {
@@ -231,10 +231,10 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
         ],
         key_outcomes: &[
-            ("21¢ → 18¢", "Agent cost/turn (−3¢)", MetricTone::Signal),
+            ("−14%", "Agent cost per turn", MetricTone::Signal),
             ("−30%", "Immediate ARM C4A latency drop", MetricTone::Signal),
             ("−95% / −98%", "CPU & RAM cut (Rust)", MetricTone::Accent),
-            ("~$180K/yr", "Est. savings (~$500/day)", MetricTone::Signal),
+            ("−50%", "Search P50 latency cut", MetricTone::Signal),
             ("−57%", "Idle node cost (highcpu-8)", MetricTone::Accent),
         ],
         sections: &[
@@ -248,7 +248,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             DeepDiveSection {
                 heading: "2 · Microservices → Hexagonal Rust Monolith + Bulkheads",
                 points: &[
-                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving P50 latency (700 ms → 350 ms), and driving ~$180K/yr (~$500/day) in savings — which directly reduced the end-to-end cost per turn of the agentic shopping assistant (AskBlue) by 3¢, from 21¢ down to 18¢ per turn.",
+                    "Migrated Flask → FastAPI → Rust (Axum) with strict compile-time hexagonal layering (api → domain ← infra), cutting CPU by 95%, RAM by 98%, halving Search P50 latency (−50%), and driving ~$180K/yr (~$500/day) in savings — reducing end-to-end cost per turn for the agentic shopping assistant by ~14%.",
                     "Collapsed separate Python search/recall/reranker microservices into a single in-process Rust binary to remove internal HTTP serialization overhead while preserving distinct OpenTelemetry spans per stage.",
                     "Designed per-service bulkhead connection pools (isolating product-search, ESCI cache, reranker metadata, and LTR Redis managers) so large metadata batches never head-of-line-block small LTR lookups, paired with order-preserving concurrent fan-out for multi-tier recall.",
                 ],
@@ -288,25 +288,25 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "ONNX LTR Inference & GPU ESCI Caching",
-        one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime and resolved 5-second GPU ESCI latency spikes via async write-back caching.",
+        one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime (3× faster) and resolved severe GPU ESCI tail-latency spikes (>95% drop) via async write-back caching.",
         headline_badges: &[
-            ("2 ms P50 / 4 ms P95 LTR", MetricTone::Signal),
-            ("5 s → <200 ms ESCI", MetricTone::Accent),
+            ("3× faster LTR (single-digit ms)", MetricTone::Signal),
+            ("25× lower ESCI tail spikes", MetricTone::Accent),
         ],
         flow: "Search Query → [NER · Sparse Retrieval · GPU ESCI + Async Write-Back Cache] → ONNX Runtime LTR Ranker",
         comparisons: &[
             NotebookComparison {
                 label: "GPU ESCI Tail Latency",
-                before: "5,000 ms spikes",
-                after: "<200 ms steady",
-                delta: "25× faster tail",
+                before: "Multi-second spikes",
+                after: "Sub-second steady",
+                delta: "25× faster tail (−96%)",
                 tone: MetricTone::Signal,
             },
             NotebookComparison {
                 label: "LTR Inference Latency",
                 before: "Python scorer",
-                after: "2 ms P50 · 4 ms P95",
-                delta: "3× faster",
+                after: "ONNX Runtime (single-digit ms)",
+                delta: "3× faster (−67%)",
                 tone: MetricTone::Accent,
             },
         ],
@@ -318,24 +318,23 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         }],
         sticky_notes: &[],
         key_outcomes: &[
-            ("2 ms", "LTR ONNX P50", MetricTone::Signal),
-            ("4 ms", "LTR ONNX P95", MetricTone::Signal),
-            ("3×", "Faster LTR inference", MetricTone::Accent),
-            ("<200 ms", "ESCI post-fix latency", MetricTone::Signal),
+            ("3×", "Faster LTR inference", MetricTone::Signal),
+            ("−96%", "ESCI tail-latency reduction", MetricTone::Accent),
+            ("Single-digit", "Millisecond LTR scoring", MetricTone::Signal),
         ],
         sections: &[
             DeepDiveSection {
                 heading: "Problem & Context",
                 points: &[
                     "Python-based Learning-to-Rank inference added avoidable scoring latency on every search query.",
-                    "Intermittent 5-second spikes on the GPU-hosted ESCI relevance model cascaded into overall Search slowdowns and stability issues.",
+                    "Intermittent multi-second spikes on the GPU-hosted ESCI relevance model cascaded into overall Search slowdowns and stability issues.",
                 ],
             },
             DeepDiveSection {
                 heading: "Architecture & Key Decisions",
                 points: &[
-                    "Migrated Python LTR inference to ONNX Runtime, achieving 3× lower inference latency with 2 ms P50 and 4 ms P95.",
-                    "Introduced asynchronous write-back caching and stripped unnecessary logging overhead on the GPU-hosted ESCI service, bringing latency down from 5 s to <200 ms.",
+                    "Migrated Python LTR inference to ONNX Runtime, achieving 3× lower inference latency with predictable single-digit-millisecond scoring.",
+                    "Introduced asynchronous write-back caching and stripped unnecessary logging overhead on the GPU-hosted ESCI service, slashing tail-latency spikes by ~96% (25× improvement).",
                     "Supported production setup and ongoing upgrades of NER, sparse, and ESCI models across the search stack.",
                 ],
             },
@@ -356,9 +355,9 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Agentic AI · Observability",
         title: "Agentic Tracing (Arize Phoenix → Cloud Trace), TTFT & On-Call",
-        one_liner: "Migrated agentic tracing from an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace, uncovered latency spikes to cut pre-launch TTFT from 15 s to 12 s, and wired Cloud Monitoring + GoAlert on-call routines.",
+        one_liner: "Migrated agentic tracing from an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace, uncovered latency spikes to cut pre-launch TTFT by 20%, and wired Cloud Monitoring + GoAlert on-call routines.",
         headline_badges: &[
-            ("15 s → 12 s TTFT (−20%)", MetricTone::Signal),
+            ("−20% pre-launch TTFT", MetricTone::Signal),
             ("Arize Phoenix → Cloud Trace", MetricTone::Accent),
             ("Cloud Monitoring · GoAlert", MetricTone::Default),
         ],
@@ -373,9 +372,9 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             },
             NotebookComparison {
                 label: "Pre-Launch Agent TTFT",
-                before: "15 s time-to-first-token",
-                after: "12 s time-to-first-token",
-                delta: "−3 s (−20% TTFT)",
+                before: "Pre-launch baseline",
+                after: "Optimized critical path",
+                delta: "−20% TTFT",
                 tone: MetricTone::Signal,
             },
             NotebookComparison {
@@ -396,7 +395,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             NotebookCallout {
                 style: CalloutStyle::GreenCheck,
                 title: "Pre-Launch Latency Triage & On-Call Readiness",
-                body: "Pinpointed the exact agentic spans causing latency spikes to drop pre-launch TTFT from 15 s to 12 s, and coupled live dashboards with Cloud Alerting + GoAlert rotations so engineers and scientists can triage production issues cleanly.",
+                body: "Pinpointed the exact agentic spans causing latency spikes to cut pre-launch TTFT by 20%, and coupled live dashboards with Cloud Alerting + GoAlert rotations so engineers and scientists can triage production issues cleanly.",
                 link: None,
             },
         ],
@@ -410,7 +409,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
             ],
         }],
         key_outcomes: &[
-            ("15 s → 12 s", "Pre-launch TTFT (−20%)", MetricTone::Signal),
+            ("−20%", "Pre-launch TTFT reduction", MetricTone::Signal),
             ("Cloud Trace", "Replaced Cloud Run Phoenix", MetricTone::Accent),
             ("GoAlert", "Eng & DS on-call routing", MetricTone::Signal),
             ("Gemma vs Gemini", "Live model dashboards", MetricTone::Default),
@@ -424,10 +423,10 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
                 ],
             },
             DeepDiveSection {
-                heading: "2 · Pre-Launch Latency Diagnostics (15 s → 12 s TTFT)",
+                heading: "2 · Pre-Launch Latency Diagnostics (−20% TTFT)",
                 points: &[
                     "Used request-level Cloud Trace waterfalls to uncover bottlenecks in the agentic orchestration where latencies were spiking.",
-                    "Eliminated critical-path stalls during initial pre-launch testing, cutting Time to First Token (TTFT) from 15 seconds down to 12 seconds.",
+                    "Eliminated critical-path stalls during initial pre-launch testing, cutting Time to First Token (TTFT) by 20% ahead of initial release.",
                 ],
             },
             DeepDiveSection {
@@ -1018,16 +1017,16 @@ pub const ROLES: &[Role] = &[
         current: true,
         story_kicker: "Full-Stack AI & Cost Impact",
         story_headline: "Bringing nine years of lessons together at scale",
-        story_body: "Everything I've learned across analytics, finance, MLOps, and high-RPS search comes together here — turning engineering fundamentals into massive cost and speed wins. Moving GKE to ARM C4A (−30% latency), rewriting search & UI paths in Rust (Axum & Dioxus) to cut CPU by 95%, RAM by 98%, ~$180K/yr, and agent cost from 21¢ to 18¢ per turn, plus Cloud Trace observability (15 s → 12 s TTFT) and LLM-as-a-judge evals.",
-        story_takeaway: "−95% CPU · ~$180K/yr saved · 21¢ → 18¢ / agent turn",
+        story_body: "Everything I've learned across analytics, finance, MLOps, and high-RPS search comes together here — turning engineering fundamentals into massive cost and speed wins. Moving GKE to ARM C4A (−30% latency), rewriting search & UI paths in Rust (Axum & Dioxus) to cut CPU by 95%, RAM by 98%, Search P50 latency by 50%, and agent cost per turn by ~14%, plus Cloud Trace observability (−20% pre-launch TTFT) and LLM-as-a-judge evals.",
+        story_takeaway: "−95% CPU · −50% Search P50 · −14% agent cost / turn",
         bullets: &[
-            "Migrated the Search 2.0 semantic search platform from Flask to FastAPI, then to Rust with Axum, consolidating microservices into a hexagonal monolith with bulkhead connection pools and concurrent recall fan-out. Cut CPU by 95% and RAM by 98%, halved P50 latency from 700 ms to 350 ms, cut max observed latency by >1 s, drove ~$180K/yr (~$500/day) in savings, and cut AskBlue agent cost from 21¢ to 18¢ per turn.",
+            "Migrated the Search 2.0 semantic search platform from Flask to FastAPI, then to Rust with Axum, consolidating microservices into a hexagonal monolith with bulkhead connection pools and concurrent recall fan-out. Cut CPU by 95%, RAM by 98%, Search P50 latency by 50%, drove ~$180K/yr (~$500/day) in savings, and reduced end-to-end agentic cost per turn by ~14%.",
             "Independently identified a 3-generation GKE migration from x86 n1-standard-16 to ARM c4a-standard-16 (Google Cloud Titanium) and partnered with the Platform team for adoption across AML, achieving an immediate 30% latency drop and 20% pod reduction; later right-sized node pools to c4a-highcpu-8, cutting idle per-node cost by 57%.",
-            "Migrated Python-based LTR inference to ONNX, reducing inference latency threefold, with P50 of 2 ms and P95 of 4 ms.",
+            "Migrated Python-based LTR inference to ONNX Runtime, reducing inference latency 3× to predictable single-digit-millisecond scoring.",
             "Supported the setup of NER, sparse, and ESCI models in the search stack and managed ongoing model upgrades.",
             "Optimised holiday-season infrastructure costs by tuning Kubernetes HPA, adding requests-per-second (RPS) scaling, and right-sizing CPU and GPU deployments.",
-            "Migrated agentic tracing off an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace + structured logs, diagnosing latency spikes to cut pre-launch TTFT from 15 s to 12 s, alongside Gemma vs. Gemini dashboards and Cloud Monitoring + GoAlert on-call routines.",
-            "Resolved latency spikes in the GPU-hosted ESCI model from 5 seconds to under 200 ms through asynchronous write-back caching and reduced logging overhead.",
+            "Migrated agentic tracing off an inefficient Cloud Run Arize Phoenix collector to Google Cloud Trace + structured logs, diagnosing latency spikes to cut pre-launch TTFT by 20%, alongside Gemma vs. Gemini dashboards and Cloud Monitoring + GoAlert on-call routines.",
+            "Resolved multi-second tail-latency spikes in the GPU-hosted ESCI model (~96% / 25× tail reduction) through asynchronous write-back caching and reduced logging overhead.",
             "Set up LLM-as-a-judge regression evaluation, an API comparator, endpoint smoke tests, and self-service performance testing — cutting product validation from 1–2 days to under 1 hour.",
             "Evolved a plain chat-only Chainlit / Streamlit UI into a unified Rust Dioxus suite under a single endpoint (Chat Comparator, Perf Testing, Regression Evals, and utilities), reducing UI compute costs by 27×.",
         ],
