@@ -2421,6 +2421,12 @@ section h2 {
   line-height: 1.55;
 }
 
+.nb-sketch-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .blog-read-cue {
   display: inline-flex;
   align-items: center;

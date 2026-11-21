@@ -101,10 +101,12 @@ pub struct Certification {
     pub url: &'static str,
 }
 
+#[allow(dead_code)]
 pub enum ArticleBlock {
     Heading(&'static str),
     Paragraph(&'static str),
     ArchitectureFlow(&'static str),
+    HexagonalSketch,
     Bullets(&'static [&'static str]),
     FieldNotes {
         stamp: &'static str,
@@ -916,9 +918,7 @@ pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
         ArticleBlock::Paragraph(
             "In a multi-stage search pipeline — query understanding, multi-tier retrieval, metadata hydration, and learning-to-rank reranking — splitting every stage into its own Python microservice means paying network latency and JSON encode/decode overhead on every hop. Collapsing those stages into one Rust/Axum binary lets them pass typed structs in memory.",
         ),
-        ArticleBlock::ArchitectureFlow(
-            "Incoming Request → Axum HTTP Layer (api) → Search & Ranking Orchestration (domain) ← External Adapters & Bulkhead Pools (infra)",
-        ),
+        ArticleBlock::HexagonalSketch,
         ArticleBlock::Paragraph(
             "To keep a single binary modular as the codebase grows, we leaned on Cargo workspace boundaries so compile-time dependencies only ever flow inward (api → domain ← infra):",
         ),
