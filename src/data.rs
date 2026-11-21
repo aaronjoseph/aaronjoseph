@@ -637,10 +637,10 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         category: "Cloud & MLOps",
         title: "GCP Terraform MLOps Automation",
         tech_steps: &[],
-        one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows and helped win $2M in CPG & banking proposals.",
+        one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows for consistent, repeatable deployments.",
         headline_badges: &[
             ("−50% manual setup", MetricTone::Signal),
-            ("$2M GCP contracts", MetricTone::Accent),
+            ("dev · stage · prod IaC", MetricTone::Default),
         ],
         flow: "Terraform Modules (IaC) → Automated GCP Provisioning [dev · stage · prod] → Reproducible ML Workloads",
         comparisons: &[NotebookComparison {
@@ -654,14 +654,12 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         sticky_notes: &[],
         key_outcomes: &[
             ("−50%", "Manual GCP setup effort", MetricTone::Signal),
-            ("$2M", "Client contracts supported", MetricTone::Accent),
             ("3 envs", "dev / stage / prod parity", MetricTone::Default),
         ],
         sections: &[DeepDiveSection {
-            heading: "Infrastructure Automation & Proposals",
+            heading: "Infrastructure Automation",
             points: &[
                 "Constructed robust Terraform automation workflows for GCP resource management across dev, stage, and prod ecosystems, cutting manual setup effort by 50% and improving cross-project consistency.",
-                "Collaborated with CPG and banking clients to design tailored GCP ML architecture proposals, contributing to securing $2 million in contracts.",
             ],
         }],
         stack: &[
