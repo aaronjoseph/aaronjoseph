@@ -51,16 +51,16 @@ This repository serves two roles:
 
 ## 3. Design System
 
-- **Aesthetic:** *Smooth Multi-Layer Cream & Sunset Blush Editorial* (inspired by `aliabdaal.com`) — three smooth visual layers with soft diffused shadows instead of heavy borders:
-  1. **Base Layer:** Warm Cream canvas (`#faf7f2`) with organic pastel swooshes
-  2. **Pastel Band Layer:** Light Khaki (`#f1eae0`) & Blush Peach (`#f7cec5` / `#fcebe6`) containers and highlights
-  3. **Elevated Layer:** Crisp Floating White (`#ffffff`) cards with generous `20px–28px` radii
-- **Theme:** Light-only (no dark mode toggle).
+- **Aesthetic:** *Soothing Warm Oat, Eucalyptus Sage & Terracotta Clay* — friendly, low-glare surfaces with playful tactile spring micro-interactions and zero harsh `#ffffff` screen brightness:
+  1. **Base Layer:** Soft Warm Oat Linen (`#f2eee6`) with gentle muted sage, dusty peach, and lavender canvas swooshes
+  2. **Pastel Band Layer:** Warm Pebble (`#e7e0d3`), Dusty Blush (`#e8cdc2` / `#f3e7e1`), Eucalyptus Sage Mist (`#e1ede7`), and Soft Chamomile (`#f2e8cd`)
+  3. **Elevated Layer:** Soft Warm Ivory (`#faf8f3`) floating cards with generous `22px–30px` radii and springy hover lifts
+- **Theme:** Light-only, low-glare warm palette (no dark mode toggle).
 - **Palette:**
-  - Base Cream: `#faf7f2` · Light Khaki: `#f1eae0` · Floating Card: `#ffffff`
-  - Blush Peach: `#f7cec5` · Light Orange CTA: `#f08b6d` · Dusk Lavender: `#877796`
-  - Botanical Sage: `#2e7d63` · Warm Charcoal Ink: `#2c2a35`
-- **Typography:** `Fraunces` with `'SOFT' 100, 'WONK' 0` (upright Recoleta-style soft warm display headings inspired by `aliabdaal.com`), `DM Sans` (clean airy body & hero intro copy), `Newsreader` (literary editorial serif for blog reading inspired by `eugeneyan.com`), `IBM Plex Mono` (timestamps, metrics, chips).
+  - Base Oat Linen: `#f2eee6` · Warm Pebble: `#e7e0d3` · Floating Warm Ivory: `#faf8f3`
+  - Dusty Blush: `#e8cdc2` · Warm Terracotta Peach CTA: `#d97c60` · Misty Lavender: `#7b7296`
+  - Eucalyptus Sage: `#3f7c66` · Warm Slate Charcoal Ink: `#32323d`
+- **Typography:** `Plus Jakarta Sans` (friendly rounded-geometric headings), `Nunito Sans` (soft, zero-fatigue humanist body copy), `Lora` (gentle bookish serif for long-form blog reading), `JetBrains Mono` (friendly rounded monospace for timestamps, metrics, chips).
 - **Mobile Polish:** Full-width spacious buttons on mobile (`min-height: 46px`), horizontal swipeable filter pills, full-width segmented mode switches, and an uncrowded mobile navbar.
 - **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 

@@ -9,12 +9,12 @@
   <meta property="og:title" content="Aaron Joseph Mathew — Senior AI & Search Systems Engineer" />
   <meta property="og:description" content="Production search, ranking, LLM evaluation, and Rust/Python ML systems built for high throughput and low latency." />
   <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#faf7f2" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='18' fill='%23f7cec5'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%232c2a35' font-family='Georgia,serif' font-weight='700' font-size='20' letter-spacing='-0.5'%3EAJM%3C/text%3E%3Ccircle cx='50' cy='14' r='4.2' fill='%23f08b6d'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#f2eee6" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='18' fill='%23e8cdc2'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%2332323d' font-family='system-ui,sans-serif' font-weight='800' font-size='20' letter-spacing='-0.5'%3EAJM%3C/text%3E%3Ccircle cx='50' cy='14' r='4.2' fill='%23d97c60'/%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:opsz,wght,SOFT,WONK@9..144,600..800,100,0&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Nunito+Sans:ital,opsz,wght@0,6..12,400;0,6..12,500;0,6..12,600;0,6..12,700;1,6..12,400&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" />
 
   <style>
     html {
@@ -24,8 +24,8 @@
       margin: 0;
       padding: 0;
       min-height: 100%;
-      background-color: #faf7f2;
-      color: #2c2a35;
+      background-color: #f2eee6;
+      color: #32323d;
     }
     #main {
       opacity: 0;
@@ -44,13 +44,13 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      background-color: #faf7f2;
+      background-color: #f2eee6;
       background-image:
-        radial-gradient(ellipse 68% 42% at 14% 6%, rgba(247, 206, 197, 0.42), transparent 68%),
-        radial-gradient(ellipse 62% 44% at 88% 12%, rgba(241, 234, 224, 0.92), transparent 70%),
-        radial-gradient(ellipse 58% 38% at 78% 82%, rgba(247, 206, 197, 0.26), transparent 68%),
-        radial-gradient(ellipse 52% 38% at 18% 76%, rgba(241, 234, 224, 0.75), transparent 68%);
-      font-family: system-ui, -apple-system, sans-serif;
+        radial-gradient(ellipse 68% 42% at 14% 8%, rgba(232, 205, 194, 0.42), transparent 68%),
+        radial-gradient(ellipse 62% 44% at 88% 12%, rgba(206, 224, 214, 0.44), transparent 70%),
+        radial-gradient(ellipse 58% 38% at 78% 82%, rgba(218, 211, 232, 0.34), transparent 68%),
+        radial-gradient(ellipse 52% 38% at 18% 76%, rgba(231, 224, 211, 0.72), transparent 68%);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       z-index: 9999;
       opacity: 1;
       visibility: visible;
@@ -74,13 +74,13 @@
       height: 86px;
       display: grid;
       place-items: center;
-      animation: aj-float 2s ease-in-out infinite;
+      animation: aj-float 2.2s ease-in-out infinite;
     }
     .aj-logo-svg {
       width: 86px;
       height: 86px;
-      border-radius: 24px;
-      box-shadow: 0 18px 42px rgba(240, 139, 109, 0.22), 0 4px 12px rgba(44, 42, 53, 0.06);
+      border-radius: 26px;
+      box-shadow: 0 16px 38px rgba(217, 124, 96, 0.18), 0 4px 12px rgba(50, 50, 61, 0.06);
     }
     .aj-dots {
       display: flex;
@@ -92,10 +92,10 @@
       border-radius: 50%;
       animation: aj-bounce 1.25s ease-in-out infinite;
     }
-    .aj-dots span:nth-child(1) { background: #f7cec5; animation-delay: 0s; }
-    .aj-dots span:nth-child(2) { background: #f08b6d; animation-delay: 0.16s; }
-    .aj-dots span:nth-child(3) { background: #e8dfd0; animation-delay: 0.32s; }
-    .aj-dots span:nth-child(4) { background: #877796; animation-delay: 0.48s; }
+    .aj-dots span:nth-child(1) { background: #e8cdc2; animation-delay: 0s; }
+    .aj-dots span:nth-child(2) { background: #d97c60; animation-delay: 0.16s; }
+    .aj-dots span:nth-child(3) { background: #8bb9a4; animation-delay: 0.32s; }
+    .aj-dots span:nth-child(4) { background: #9b92b5; animation-delay: 0.48s; }
     @keyframes aj-float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-6px); }
@@ -118,10 +118,10 @@
   <div id="aj-splash" class="aj-splash" role="status" aria-label="Loading Aaron Joseph Mathew">
     <div class="aj-logo-wrap">
       <svg class="aj-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <rect width="64" height="64" rx="18" fill="#ffffff" />
-        <rect x="4" y="4" width="56" height="56" rx="14" fill="#fae1da" />
-        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#2c2a35" font-family="Georgia, serif" font-weight="700" font-size="19" letter-spacing="-0.5">AJM</text>
-        <circle cx="50" cy="14" r="4" fill="#f08b6d" />
+        <rect width="64" height="64" rx="18" fill="#faf8f3" />
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="#f3e3db" />
+        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#32323d" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-weight="800" font-size="18.5" letter-spacing="-0.6">AJM</text>
+        <circle cx="50" cy="14" r="4" fill="#d97c60" />
       </svg>
     </div>
     <div class="aj-dots" aria-hidden="true">

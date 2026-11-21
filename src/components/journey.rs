@@ -14,7 +14,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Rotating Rust-inspired performance gear on left
                 g { class: "sg-spin-slow",
@@ -56,7 +56,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 path {
                     class: "sg-dash-flow",
                     d: "M 96 64 H 130",
-                    stroke: "#f08b6d",
+                    stroke: "#d97c60",
                     stroke_width: "2.2",
                     stroke_dasharray: "5 4",
                     stroke_linecap: "round",
@@ -69,7 +69,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
 
                 // Row 2: Cost / turn 21c -> 18c
                 rect { x: "136", y: "60", width: "160", height: "28", rx: "9", fill: "#e4f2ec" }
-                text { x: "147", y: "77.5", fill: "#2e7d63", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "21¢ → 18¢ / agent turn" }
+                text { x: "147", y: "77.5", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "21¢ → 18¢ / agent turn" }
 
                 // Row 3: Annual savings + TTFT
                 rect { x: "136", y: "96", width: "160", height: "28", rx: "9", fill: "#f1edf5" }
@@ -83,7 +83,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Subtle grid lines
                 line { x1: "24", y1: "42", x2: "296", y2: "42", stroke: "rgba(44,42,53,0.06)", stroke_dasharray: "3 4" }
@@ -98,19 +98,19 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 path {
                     class: "sg-draw-line",
                     d: "M 24 98 C 56 98, 70 80, 96 66 C 122 52, 146 34, 178 36 C 210 38, 224 62, 252 48 C 272 38, 284 32, 296 30",
-                    stroke: "#2e7d63",
+                    stroke: "#3f7c66",
                     stroke_width: "2.8",
                     stroke_linecap: "round",
                 }
-                circle { class: "sg-pulse-node", cx: "178", cy: "36", r: "5", fill: "#f08b6d" }
-                circle { class: "sg-pulse-node", cx: "296", cy: "30", r: "4.5", fill: "#2e7d63" }
+                circle { class: "sg-pulse-node", cx: "178", cy: "36", r: "5", fill: "#d97c60" }
+                circle { class: "sg-pulse-node", cx: "296", cy: "30", r: "4.5", fill: "#3f7c66" }
 
                 // Floating callout pills
                 rect { x: "24", y: "18", width: "108", height: "24", rx: "12", fill: "#fcebe6" }
                 text { x: "78", y: "33.5", text_anchor: "middle", fill: "#b44a2f", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "UP TO 15K RPS" }
 
                 rect { x: "142", y: "108", width: "154", height: "24", rx: "12", fill: "#e4f2ec" }
-                text { x: "219", y: "123.5", text_anchor: "middle", fill: "#2e7d63", font_family: "ui-monospace, monospace", font_size: "9.2", font_weight: "700", "LTR: 24h → 15m (Polars)" }
+                text { x: "219", y: "123.5", text_anchor: "middle", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "9.2", font_weight: "700", "LTR: 24h → 15m (Polars)" }
 
                 text { x: "24", y: "123.5", fill: "#87808f", font_family: "ui-monospace, monospace", font_size: "8.8", font_weight: "600", "Async FastAPI" }
             }
@@ -122,7 +122,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Terraform IaC source block on left
                 rect { x: "22", y: "42", width: "84", height: "64", rx: "12", fill: "#f1edf5", stroke: "rgba(135,119,150,0.35)" }
@@ -131,21 +131,21 @@ fn StoryGraphic(role_id: &'static str) -> Element {
 
                 // Animated branching provisioning lines
                 path { class: "sg-dash-flow", d: "M 106 74 H 136 L 154 36 H 184", stroke: "#877796", stroke_width: "2", stroke_dasharray: "5 4", stroke_linecap: "round" }
-                path { class: "sg-dash-flow", d: "M 106 74 H 184", stroke: "#f08b6d", stroke_width: "2", stroke_dasharray: "5 4", stroke_linecap: "round" }
-                path { class: "sg-dash-flow", d: "M 106 74 H 136 L 154 112 H 184", stroke: "#2e7d63", stroke_width: "2", stroke_dasharray: "5 4", stroke_linecap: "round" }
+                path { class: "sg-dash-flow", d: "M 106 74 H 184", stroke: "#d97c60", stroke_width: "2", stroke_dasharray: "5 4", stroke_linecap: "round" }
+                path { class: "sg-dash-flow", d: "M 106 74 H 136 L 154 112 H 184", stroke: "#3f7c66", stroke_width: "2", stroke_dasharray: "5 4", stroke_linecap: "round" }
 
                 // 3 provisioned GCP env cards
-                rect { x: "184", y: "21", width: "112", height: "28", rx: "9", fill: "#faf7f2", stroke: "rgba(44,42,53,0.1)" }
+                rect { x: "184", y: "21", width: "112", height: "28", rx: "9", fill: "#f2eee6", stroke: "rgba(44,42,53,0.1)" }
                 circle { cx: "199", cy: "35", r: "4", fill: "#877796" }
                 text { x: "211", y: "38.5", fill: "#2c2a35", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "600", "dev · GCP" }
 
                 rect { x: "184", y: "60", width: "112", height: "28", rx: "9", fill: "#fcebe6", stroke: "rgba(240,139,109,0.28)" }
-                circle { cx: "199", cy: "74", r: "4", fill: "#f08b6d" }
+                circle { cx: "199", cy: "74", r: "4", fill: "#d97c60" }
                 text { x: "211", y: "77.5", fill: "#2c2a35", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "600", "stage · GCP" }
 
                 rect { x: "184", y: "99", width: "112", height: "28", rx: "9", fill: "#e4f2ec", stroke: "rgba(46,125,99,0.28)" }
-                circle { cx: "199", cy: "113", r: "4", fill: "#2e7d63" }
-                text { x: "211", y: "116.5", fill: "#2e7d63", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "prod · −50%" }
+                circle { cx: "199", cy: "113", r: "4", fill: "#3f7c66" }
+                text { x: "211", y: "116.5", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "9.5", font_weight: "700", "prod · −50%" }
             }
         },
         "kaleidofin" => rsx! {
@@ -155,7 +155,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Axes (Risk vs Return)
                 line { x1: "32", y1: "114", x2: "196", y2: "114", stroke: "rgba(44,42,53,0.18)", stroke_width: "1.4" }
@@ -171,8 +171,8 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                     stroke_linecap: "round",
                 }
                 // Safe mutual fund dots
-                circle { cx: "56", cy: "92", r: "4.5", fill: "#2e7d63" }
-                circle { cx: "82", cy: "75", r: "4.5", fill: "#2e7d63" }
+                circle { cx: "56", cy: "92", r: "4.5", fill: "#3f7c66" }
+                circle { cx: "82", cy: "75", r: "4.5", fill: "#3f7c66" }
                 circle { cx: "112", cy: "63", r: "4.5", fill: "#35b3ac" }
                 circle { cx: "140", cy: "56", r: "4.5", fill: "#35b3ac" }
 
@@ -186,18 +186,18 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                     path {
                         d: "M 254 26 L 286 38 V 68 C 286 89 271 104 254 112 C 237 104 222 89 222 68 V 38 Z",
                         fill: "#e4f2ec",
-                        stroke: "#2e7d63",
+                        stroke: "#3f7c66",
                         stroke_width: "2.2",
                     }
                     path {
                         d: "M 242 68 L 250 76 L 267 58",
-                        stroke: "#2e7d63",
+                        stroke: "#3f7c66",
                         stroke_width: "3",
                         stroke_linecap: "round",
                         stroke_linejoin: "round",
                     }
                 }
-                text { x: "254", y: "130", text_anchor: "middle", fill: "#2e7d63", font_family: "ui-monospace, monospace", font_size: "8.5", font_weight: "700", "$3.4B AVOIDED" }
+                text { x: "254", y: "130", text_anchor: "middle", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "8.5", font_weight: "700", "$3.4B AVOIDED" }
             }
         },
         "fundsindia" => rsx! {
@@ -207,7 +207,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Stepped product conversion funnel bars
                 rect { class: "sg-bar-grow", x: "24", y: "24", width: "164", height: "20", rx: "7", fill: "#e6eefc" }
@@ -219,12 +219,12 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 rect { class: "sg-bar-grow", x: "54", y: "80", width: "104", height: "20", rx: "7", fill: "#fcebe6" }
                 text { x: "64", y: "93.5", fill: "#b44a2f", font_family: "ui-monospace, monospace", font_size: "8.8", font_weight: "700", "INVESTMENT" }
 
-                rect { class: "sg-bar-grow", x: "68", y: "108", width: "76", height: "18", rx: "7", fill: "#2e7d63" }
+                rect { class: "sg-bar-grow", x: "68", y: "108", width: "76", height: "18", rx: "7", fill: "#3f7c66" }
                 text { x: "106", y: "120", text_anchor: "middle", fill: "#ffffff", font_family: "ui-monospace, monospace", font_size: "8.5", font_weight: "700", "+15% CONV" }
 
                 // Product & Design metric card on right
-                rect { x: "206", y: "28", width: "92", height: "94", rx: "12", fill: "#faf7f2", stroke: "rgba(44,42,53,0.09)" }
-                text { x: "252", y: "54", text_anchor: "middle", fill: "#2e7d63", font_family: "Georgia, serif", font_size: "20", font_weight: "700", "+15%" }
+                rect { x: "206", y: "28", width: "92", height: "94", rx: "12", fill: "#f2eee6", stroke: "rgba(44,42,53,0.09)" }
+                text { x: "252", y: "54", text_anchor: "middle", fill: "#3f7c66", font_family: "Georgia, serif", font_size: "20", font_weight: "700", "+15%" }
                 text { x: "252", y: "70", text_anchor: "middle", fill: "#5b5663", font_family: "ui-monospace, monospace", font_size: "8", "FUNNEL LIFT" }
                 line { x1: "222", y1: "82", x2: "282", y2: "82", stroke: "rgba(44,42,53,0.09)" }
                 text { x: "252", y: "100", text_anchor: "middle", fill: "#2563ff", font_family: "ui-monospace, monospace", font_size: "8.8", font_weight: "700", "−10% DROPS" }
@@ -238,7 +238,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 view_box: "0 0 320 148",
                 fill: "none",
                 "aria-hidden": "true",
-                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#ffffff", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "6", y: "6", width: "308", height: "136", rx: "16", fill: "#faf8f3", stroke: "rgba(50,50,61,0.08)" }
 
                 // Mini window dots
                 circle { cx: "24", cy: "22", r: "3", fill: "#f7cec5" }
@@ -250,7 +250,7 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 // Animated rising bar chart
                 rect { class: "sg-bar-rise", x: "30", y: "88", width: "22", height: "34", rx: "5", fill: "#f1eae0" }
                 rect { class: "sg-bar-rise", x: "62", y: "74", width: "22", height: "48", rx: "5", fill: "#f7cec5" }
-                rect { class: "sg-bar-rise", x: "94", y: "60", width: "22", height: "62", rx: "5", fill: "#f08b6d" }
+                rect { class: "sg-bar-rise", x: "94", y: "60", width: "22", height: "62", rx: "5", fill: "#d97c60" }
                 rect { class: "sg-bar-rise", x: "126", y: "48", width: "22", height: "74", rx: "5", fill: "#a21c14" }
 
                 // Rising trend sparkline
@@ -264,11 +264,11 @@ fn StoryGraphic(role_id: &'static str) -> Element {
                 circle { cx: "137", cy: "40", r: "3.5", fill: "#2c2a35" }
 
                 // KPI side tile
-                rect { x: "172", y: "46", width: "126", height: "76", rx: "12", fill: "#faf7f2", stroke: "rgba(44,42,53,0.08)" }
+                rect { x: "172", y: "46", width: "126", height: "76", rx: "12", fill: "#f2eee6", stroke: "rgba(44,42,53,0.08)" }
                 text { x: "186", y: "70", fill: "#a21c14", font_family: "Georgia, serif", font_size: "17", font_weight: "700", "~$1.2M/yr" }
                 text { x: "186", y: "86", fill: "#5b5663", font_family: "ui-monospace, monospace", font_size: "8.2", "PRICING INSIGHTS" }
                 rect { x: "186", y: "96", width: "96", height: "17", rx: "8.5", fill: "#e4f2ec" }
-                text { x: "234", y: "107.5", text_anchor: "middle", fill: "#2e7d63", font_family: "ui-monospace, monospace", font_size: "8", font_weight: "700", "NEXT → FINANCE" }
+                text { x: "234", y: "107.5", text_anchor: "middle", fill: "#3f7c66", font_family: "ui-monospace, monospace", font_size: "8", font_weight: "700", "NEXT → FINANCE" }
             }
         },
     }
