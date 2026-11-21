@@ -1680,19 +1680,35 @@ section h2 {
 }
 
 .filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
   background: var(--surface);
   border: 1px solid var(--border);
   color: var(--text-2);
   font-family: var(--font-mono);
   font-size: 0.77rem;
   font-weight: 500;
-  padding: 9px 16px;
+  padding: 8px 15px;
   min-height: 38px;
   border-radius: 999px;
   box-shadow: var(--shadow-xs);
   white-space: nowrap;
   flex-shrink: 0;
   transition: background-color 0.16s ease, color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.co-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.co-logo-svg {
+  display: block;
+  flex-shrink: 0;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(44, 42, 53, 0.10);
 }
 
 .filter-pill:hover {

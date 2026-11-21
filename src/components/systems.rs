@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 
+use crate::components::company_logo::CompanyLogo;
 use crate::data::{
     CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, StickyTone, TechKind,
 };
@@ -109,7 +110,10 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     class: if company_filter() == cid { "filter-pill active" } else { "filter-pill" },
                                     r#type: "button",
                                     onclick: move |_| company_filter.set(cid),
-                                    "{label} ({count})"
+                                    if cid != "all" {
+                                        CompanyLogo { company_id: cid, size: 16 }
+                                    }
+                                    span { "{label} ({count})" }
                                 }
                             }
                         }
@@ -134,7 +138,10 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     onclick: move |_| selected_project.set(Some(pid)),
                                     div { class: "dd-row-main",
                                         div { class: "dd-meta",
-                                            span { class: "dd-company", "{project.company}" }
+                                            span { class: "co-inline",
+                                                CompanyLogo { company_id: project.company_id, size: 20 }
+                                                span { class: "dd-company", "{project.company}" }
+                                            }
                                             span { class: "dd-sep", "·" }
                                             span { "{project.category}" }
                                             span { class: "dd-sep", "·" }
@@ -196,7 +203,10 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                     div { class: "drawer-header",
                         div {
                             div { class: "drawer-kicker",
-                                span { class: "dd-company", "{proj.company}" }
+                                span { class: "co-inline",
+                                    CompanyLogo { company_id: proj.company_id, size: 20 }
+                                    span { class: "dd-company", "{proj.company}" }
+                                }
                                 span { "· {proj.category} · {proj.period}" }
                             }
                             if !proj.tech_steps.is_empty() {

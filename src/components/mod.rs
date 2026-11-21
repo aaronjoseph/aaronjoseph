@@ -1,5 +1,6 @@
 pub mod blog;
 pub mod cmd_palette;
+pub mod company_logo;
 pub mod contact;
 pub mod credentials;
 pub mod hero;

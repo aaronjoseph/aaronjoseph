@@ -2,6 +2,7 @@ use std::collections::HashSet;
 
 use dioxus::prelude::*;
 
+use crate::components::company_logo::CompanyLogo;
 use crate::data::ROLES;
 
 #[component]
@@ -87,7 +88,10 @@ pub fn JourneySection() -> Element {
                                                         span { "{role.period} · {role.location}" }
                                                     }
                                                     h3 { class: "role-title", "{role.title}" }
-                                                    div { class: "role-company", "{role.company}" }
+                                                    div { class: "role-company co-inline",
+                                                        CompanyLogo { company_id: role.id, size: 19 }
+                                                        span { "{role.company}" }
+                                                    }
                                                 }
                                                 span {
                                                     class: if is_open { "role-chevron open" } else { "role-chevron" },
