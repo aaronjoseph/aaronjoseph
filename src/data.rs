@@ -5,22 +5,6 @@ pub enum MetricTone {
     Signal,
 }
 
-pub struct TelemetryWorkstream {
-    pub index: &'static str,
-    pub title: &'static str,
-    pub pipeline: &'static str,
-    pub advantage: &'static str,
-    pub gains: &'static [(&'static str, MetricTone)],
-}
-
-pub struct TelemetryProject {
-    pub id: &'static str,
-    pub label: &'static str,
-    pub context: &'static str,
-    pub workstreams: &'static [TelemetryWorkstream],
-    pub stack_summary: &'static str,
-}
-
 pub struct NotebookComparison {
     pub label: &'static str,
     pub before: &'static str,
@@ -138,90 +122,6 @@ pub const GITHUB_URL: &str = "https://github.com/aaronjoseph";
 pub const X_URL: &str = "https://twitter.com/AaronJosephMath";
 
 pub const SUMMARY: &str = "Senior AI Engineer with 9+ years across analytics, machine learning and AI engineering, focused on production search, ranking and reliable ML systems. Worked on search systems handling up to 12,000 requests per second, with reliability work across data pipelines and APIs. Halved Search 2.0 P50 latency from 700 ms to 350 ms. Experience includes learning-to-rank pipelines, LLM evaluation, observability for agentic workflows, and Python and Rust services.";
-
-pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
-    TelemetryProject {
-        id: "search-system",
-        label: "Search System",
-        context: "Best Buy · Semantic Search & Ranking Stack",
-        stack_summary: "Rust · Axum · ONNX · GKE ARM C4A",
-        workstreams: &[
-            TelemetryWorkstream {
-                index: "01",
-                title: "Flask → FastAPI → Rust (Axum)",
-                pipeline: "Monolith + Bulkheads · ARM C4A GKE",
-                advantage: "Moved x86 n1-standard-16 → ARM c4a-standard-16 (−30% latency), consolidated microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized to c4a-highcpu-8.",
-                gains: &[
-                    ("21¢ → 18¢ / agent turn (−3¢)", MetricTone::Signal),
-                    ("−30% ARM C4A latency", MetricTone::Signal),
-                    ("700 → 350 ms P50", MetricTone::Signal),
-                    ("−95% CPU · −98% RAM", MetricTone::Accent),
-                    ("~$180K/yr (~$500/day)", MetricTone::Default),
-                ],
-            },
-            TelemetryWorkstream {
-                index: "02",
-                title: "LTR Inference → ONNX",
-                pipeline: "Python Ranker → ONNX Runtime",
-                advantage: "Eliminated Python inference bottlenecks in the ranking stage for predictable, single-digit-millisecond scoring under peak load.",
-                gains: &[
-                    ("3× faster inference", MetricTone::Signal),
-                    ("2 ms P50 · 4 ms P95", MetricTone::Default),
-                ],
-            },
-            TelemetryWorkstream {
-                index: "03",
-                title: "ESCI Async Write-Back Caching",
-                pipeline: "GPU ESCI · Reduced Logging Overhead",
-                advantage: "Eliminated GPU-hosted ESCI tail-latency spikes that were stalling Search requests through async write-back caching and leaner logging.",
-                gains: &[
-                    ("5,000 ms → <200 ms", MetricTone::Signal),
-                    ("25× lower tail spikes", MetricTone::Accent),
-                ],
-            },
-        ],
-    },
-    TelemetryProject {
-        id: "agentic-ai",
-        label: "Agentic AI",
-        context: "Best Buy · Agentic AI Evaluation, Observability & Tooling",
-        stack_summary: "Gemini · Gemma · Cloud Trace · Dioxus",
-        workstreams: &[
-            TelemetryWorkstream {
-                index: "01",
-                title: "LLM-as-a-Judge & API Comparator",
-                pipeline: "Regression Evals · Endpoint Smoke Tests",
-                advantage: "Replaced slow manual release checks with automated LLM-as-a-judge regression suites and self-service performance testing before formal perf runs.",
-                gains: &[
-                    ("1–2 days → <1 hr validation", MetricTone::Signal),
-                    ("Self-service perf testing", MetricTone::Default),
-                ],
-            },
-            TelemetryWorkstream {
-                index: "02",
-                title: "Arize Phoenix → Cloud Trace & On-Call",
-                pipeline: "Google Cloud Trace · Monitoring · GoAlert",
-                advantage: "Migrated agentic tracing off an inefficient Cloud Run Arize Phoenix collector to Cloud Trace, diagnosed latency spikes to cut pre-launch TTFT from 15 s to 12 s, and set up Gemma/Gemini dashboards + GoAlert on-call routines.",
-                gains: &[
-                    ("15 s → 12 s TTFT (−20%)", MetricTone::Signal),
-                    ("Arize Phoenix → Cloud Trace", MetricTone::Accent),
-                    ("Monitoring + GoAlert on-call", MetricTone::Default),
-                ],
-            },
-            TelemetryWorkstream {
-                index: "03",
-                title: "Chainlit → Unified Rust Dioxus Suite",
-                pipeline: "Dioxus WASM · Single-Endpoint Suite",
-                advantage: "Evolved a plain chat-only Chainlit UI into an all-in-one Rust/Dioxus suite — Chat Comparator, Perf Testing, Regression Evals, and team utilities under a single endpoint.",
-                gains: &[
-                    ("27× lower UI compute", MetricTone::Signal),
-                    ("Comparator · Perf · Regression", MetricTone::Accent),
-                    ("Single unified endpoint", MetricTone::Default),
-                ],
-            },
-        ],
-    },
-];
 
 pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     DeepDiveProject {

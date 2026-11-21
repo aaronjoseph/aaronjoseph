@@ -1,8 +1,6 @@
 use dioxus::prelude::*;
 
 use crate::components::company_logo::CompanyLogo;
-use crate::components::systems::RichTitle;
-use crate::data::{MetricTone, TELEMETRY_PROJECTS};
 
 #[component]
 pub fn Hero(
@@ -10,9 +8,6 @@ pub fn Hero(
     on_open_blog: EventHandler<()>,
     on_copy_email: EventHandler<()>,
 ) -> Element {
-    let mut active_project = use_signal(|| 0usize);
-    let current = &TELEMETRY_PROJECTS[active_project()];
-
     rsx! {
         section { class: "hero", id: "top",
             div { class: "wrap",
@@ -146,79 +141,6 @@ pub fn Hero(
                     div { class: "sticker-stat s-lavender",
                         div { class: "qstat-val", "50%" }
                         div { class: "qstat-lbl", "Search P50 latency cut (700→350 ms)" }
-                    }
-                }
-
-                // Playful Folder-Tabbed "What I've been working on" Horizontal Deck
-                div { class: "notebook-deck", aria_label: "Recent production workstreams",
-                    div { class: "deck-top",
-                        div { class: "folder-tabs", role: "tablist", aria_label: "Production projects",
-                            for (idx, project) in TELEMETRY_PROJECTS.iter().enumerate() {
-                                {
-                                    let tab_tone = if idx == 0 { "folder-tab ft-yellow" } else { "folder-tab ft-lavender" };
-                                    rsx! {
-                                        button {
-                                            key: "{project.id}",
-                                            class: if active_project() == idx { format!("{tab_tone} active") } else { tab_tone.to_string() },
-                                            r#type: "button",
-                                            role: "tab",
-                                            aria_selected: "{active_project() == idx}",
-                                            onclick: move |_| active_project.set(idx),
-                                            "{project.label}"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        div { class: "deck-caption",
-                            span { class: "deck-caption-label", "What I've been working on" }
-                            span { class: "deck-caption-sep", "·" }
-                            span { "{current.context}" }
-                        }
-                    }
-
-                    div { class: "deck-surface", key: "{current.id}",
-                        div { class: "deck-grid",
-                            for (idx, ws) in current.workstreams.iter().enumerate() {
-                                {
-                                    let card_tint = match idx % 3 {
-                                        0 => "stream-card sc-peach",
-                                        1 => "stream-card sc-lime",
-                                        _ => "stream-card sc-lavender",
-                                    };
-                                    rsx! {
-                                        div { class: "{card_tint}", key: "{ws.index}-{ws.title}",
-                                            div { class: "stream-top",
-                                                span { class: "stream-badge", "{ws.index}" }
-                                                span { class: "stream-pipe", "{ws.pipeline}" }
-                                            }
-                                            h3 { class: "stream-title",
-                                                RichTitle { title: ws.title }
-                                            }
-                                            p { class: "stream-why", "{ws.advantage}" }
-                                            div { class: "t-gains",
-                                                for (label, tone) in ws.gains {
-                                                    span {
-                                                        key: "{label}",
-                                                        class: match tone {
-                                                            MetricTone::Signal => "t-gain signal",
-                                                            MetricTone::Accent => "t-gain accent",
-                                                            MetricTone::Default => "t-gain",
-                                                        },
-                                                        "{label}"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        div { class: "deck-foot",
-                            span { "{current.stack_summary}" }
-                            a { href: "#systems", class: "deck-more-link", "Open full project breakdowns ↓" }
-                        }
                     }
                 }
             }
