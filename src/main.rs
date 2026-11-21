@@ -4,9 +4,16 @@ mod data;
 use dioxus::prelude::*;
 
 use components::{
-    blog::BlogSection, cmd_palette::CommandPalette, contact::ContactSection,
-    credentials::CredentialsSection, hero::Hero, journey::JourneySection, navbar::Navbar,
-    resume::ResumeView, stack::StackSection, systems::SystemsSection,
+    blog::{BlogView, WritingPreviewSection},
+    cmd_palette::CommandPalette,
+    contact::ContactSection,
+    credentials::CredentialsSection,
+    hero::Hero,
+    journey::JourneySection,
+    navbar::Navbar,
+    resume::ResumeView,
+    stack::StackSection,
+    systems::SystemsSection,
 };
 use data::EMAIL;
 
@@ -16,6 +23,7 @@ const MAIN_CSS: Asset = asset!("/assets/main.css");
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub enum AppView {
     Portfolio,
+    Blog,
     Resume,
 }
 
@@ -31,20 +39,20 @@ fn main() {
 
 #[component]
 fn App() -> Element {
-    let mut theme = use_signal(|| "dark".to_string());
+    let mut theme = use_signal(|| "light".to_string());
     let mut view = use_signal(|| AppView::Portfolio);
     let resume_style = use_signal(|| ResumeStyle::Styled);
     let mut selected_project = use_signal(|| Option::<&'static str>::None);
     let mut cmd_open = use_signal(|| false);
     let mut toast = use_signal(|| Option::<String>::None);
 
-    // Load saved theme from localStorage on mount & dismiss the AJ splash loader
+    // Load saved theme from localStorage on mount & dismiss the AJM splash loader
     use_effect(move || {
         spawn(async move {
             let mut eval = document::eval(
                 r#"
-                const saved = localStorage.getItem('ajm-theme');
-                const activeTheme = (saved === 'light' || saved === 'dark') ? saved : 'dark';
+                const saved = localStorage.getItem('ajm-theme-v2');
+                const activeTheme = (saved === 'light' || saved === 'dark') ? saved : 'light';
                 document.documentElement.setAttribute('data-theme', activeTheme);
                 const splash = document.getElementById('aj-splash');
                 if (splash) {
@@ -125,7 +133,7 @@ fn App() -> Element {
         let next = if theme() == "dark" { "light" } else { "dark" };
         theme.set(next.to_string());
         let js = format!(
-            "document.documentElement.setAttribute('data-theme', '{next}'); try {{ localStorage.setItem('ajm-theme', '{next}'); }} catch(e) {{}}"
+            "document.documentElement.setAttribute('data-theme', '{next}'); try {{ localStorage.setItem('ajm-theme-v2', '{next}'); }} catch(e) {{}}"
         );
         document::eval(&js);
     };
@@ -149,13 +157,24 @@ fn App() -> Element {
         document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
     };
 
+    let open_blog = move |_| {
+        selected_project.set(None);
+        view.set(AppView::Blog);
+        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
+    };
+
+    let go_home = move |_| {
+        view.set(AppView::Portfolio);
+        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
+    };
+
     rsx! {
         document::Link { rel: "icon", r#type: "image/svg+xml", href: FAVICON }
         document::Link { rel: "preconnect", href: "https://fonts.googleapis.com" }
         document::Link { rel: "preconnect", href: "https://fonts.gstatic.com" }
         document::Link {
             rel: "stylesheet",
-            href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap",
+            href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap",
         }
         document::Stylesheet { href: MAIN_CSS }
 
@@ -169,30 +188,38 @@ fn App() -> Element {
                 on_toggle_theme: toggle_theme,
             }
 
-            if view() == AppView::Portfolio {
-                main {
-                    Hero {
-                        on_open_resume: open_resume,
-                        on_copy_email: copy_email,
+            match view() {
+                AppView::Portfolio => rsx! {
+                    main {
+                        Hero {
+                            on_open_resume: open_resume,
+                            on_open_blog: open_blog,
+                            on_copy_email: copy_email,
+                        }
+                        SystemsSection { selected_project }
+                        JourneySection {}
+                        StackSection {}
+                        WritingPreviewSection { on_open_blog: open_blog }
+                        CredentialsSection {}
+                        ContactSection {
+                            on_copy_email: copy_email,
+                            on_open_resume: open_resume,
+                        }
                     }
-                    SystemsSection { selected_project }
-                    JourneySection {}
-                    StackSection {}
-                    BlogSection {}
-                    CredentialsSection {}
-                    ContactSection {
-                        on_copy_email: copy_email,
-                        on_open_resume: open_resume,
+                },
+                AppView::Blog => rsx! {
+                    main {
+                        BlogView { on_back: go_home }
                     }
-                }
-            } else {
-                ResumeView {
-                    style_mode: resume_style,
-                    on_back: move |_| {
-                        view.set(AppView::Portfolio);
-                        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
-                    },
-                }
+                },
+                AppView::Resume => rsx! {
+                    main {
+                        ResumeView {
+                            style_mode: resume_style,
+                            on_back: go_home,
+                        }
+                    }
+                },
             }
 
             CommandPalette {

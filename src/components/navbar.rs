@@ -11,6 +11,7 @@ pub fn Navbar(
 ) -> Element {
     let mut mobile_open = use_signal(|| false);
     let is_dark = theme() == "dark";
+    let is_blog = view() == AppView::Blog;
     let is_resume = view() == AppView::Resume;
 
     let mut jump_to = move |anchor: &'static str| {
@@ -20,6 +21,12 @@ pub fn Navbar(
             "setTimeout(() => {{ const el = document.querySelector('{anchor}'); if (el) el.scrollIntoView({{ behavior: 'smooth' }}); }}, 20);"
         );
         document::eval(&js);
+    };
+
+    let mut open_page = move |target: AppView| {
+        mobile_open.set(false);
+        view.set(target);
+        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
     };
 
     rsx! {
@@ -45,16 +52,17 @@ pub fn Navbar(
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#systems"), "Systems" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#stack"), "Stack" }
-                    button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#blog"), "Blog" }
+                    button {
+                        class: if is_blog { "nav-link-btn active" } else { "nav-link-btn" },
+                        r#type: "button",
+                        onclick: move |_| open_page(AppView::Blog),
+                        "Blog"
+                    }
                     button { class: "nav-link-btn", r#type: "button", onclick: move |_| jump_to("#credentials"), "Credentials" }
                     button {
                         class: if is_resume { "nav-link-btn active" } else { "nav-link-btn" },
                         r#type: "button",
-                        onclick: move |_| {
-                            mobile_open.set(false);
-                            view.set(AppView::Resume);
-                            document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
-                        },
+                        onclick: move |_| open_page(AppView::Resume),
                         "Résumé"
                     }
                 }
@@ -65,7 +73,7 @@ pub fn Navbar(
                         r#type: "button",
                         title: "Quick jump (Cmd/Ctrl+K)",
                         onclick: move |_| cmd_open.set(true),
-                        span { "Jump" }
+                        span { "Search" }
                         span { "⌘K" }
                     }
 
@@ -73,7 +81,7 @@ pub fn Navbar(
                         class: "icon-btn",
                         r#type: "button",
                         aria_label: "Toggle color theme",
-                        title: if is_dark { "Switch to light mode" } else { "Switch to dark mode" },
+                        title: if is_dark { "Switch to warm light mode" } else { "Switch to dark mode" },
                         onclick: move |_| on_toggle_theme.call(()),
                         if is_dark {
                             svg {
@@ -107,7 +115,7 @@ pub fn Navbar(
                         class: "nav-cta",
                         r#type: "button",
                         onclick: move |_| jump_to("#contact"),
-                        "Get in touch"
+                        "Say hello"
                     }
 
                     button {
@@ -136,18 +144,10 @@ pub fn Navbar(
                 button { r#type: "button", onclick: move |_| jump_to("#systems"), "Architecture & Outcomes" }
                 button { r#type: "button", onclick: move |_| jump_to("#journey"), "Experience" }
                 button { r#type: "button", onclick: move |_| jump_to("#stack"), "Technical Stack" }
-                button { r#type: "button", onclick: move |_| jump_to("#blog"), "Blog & Writing" }
+                button { r#type: "button", onclick: move |_| open_page(AppView::Blog), "Blog & Writing" }
                 button { r#type: "button", onclick: move |_| jump_to("#credentials"), "Education & Certs" }
-                button {
-                    r#type: "button",
-                    onclick: move |_| {
-                        mobile_open.set(false);
-                        view.set(AppView::Resume);
-                        document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
-                    },
-                    "Résumé (Styled / ATS)"
-                }
-                button { r#type: "button", onclick: move |_| jump_to("#contact"), "Contact" }
+                button { r#type: "button", onclick: move |_| open_page(AppView::Resume), "Résumé (Styled / ATS)" }
+                button { r#type: "button", onclick: move |_| jump_to("#contact"), "Say hello" }
             }
         }
     }

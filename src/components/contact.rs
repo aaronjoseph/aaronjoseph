@@ -11,10 +11,20 @@ pub fn ContactSection(
         section { id: "contact",
             div { class: "wrap",
                 div { class: "contact-box",
-                    div { class: "eyebrow", style: "justify-content:center;", "Get in Touch" }
-                    h2 { "Let's build fast, reliable AI systems." }
-                    p {
-                        "Always happy to talk shop on production search, Rust for ML serving, LLM evaluation pipelines, or high-impact engineering collaborations."
+                    div { class: "eyebrow", style: "justify-content:center;", "Say Hello" }
+                    h2 {
+                        "Always happy to "
+                        span { class: "hl-mark", "chat & collaborate." }
+                    }
+                    p { class: "contact-serif",
+                        "Whether you want to swap notes on high-throughput search, Rust for ML serving, LLM evaluation pipelines, or just grab a coffee in Bengaluru — my inbox is always open."
+                    }
+
+                    div { class: "contact-topics",
+                        span { "Search & Ranking at Scale" }
+                        span { "Rust / Axum / ONNX" }
+                        span { "Agentic AI & Evals" }
+                        span { "Coffee in Bengaluru" }
                     }
 
                     div { class: "contact-actions",
@@ -37,7 +47,7 @@ pub fn ContactSection(
                             class: "btn btn-ghost",
                             r#type: "button",
                             onclick: move |_| on_copy_email.call(()),
-                            "Copy address"
+                            "Copy email"
                         }
                         button {
                             class: "btn btn-ghost",
@@ -110,7 +120,7 @@ pub fn ContactSection(
                 span { class: "dioxus-badge",
                     "Built with Rust + Dioxus (WASM) · Press "
                     code { "⌘K" }
-                    " to navigate"
+                    " to search"
                 }
             }
         }

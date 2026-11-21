@@ -88,12 +88,22 @@ pub struct Certification {
 #[allow(dead_code)]
 pub struct BlogPost {
     pub slug: &'static str,
-    pub title: &'static str,
-    pub date: &'static str,
+    pub date: &'static str,       // Displayed on the left, e.g. "Nov 21, 2026"
+    pub year: &'static str,       // Displayed in topic tree, e.g. "2026"
+    pub topic: &'static str,      // Grouping for By-Topic tree, e.g. "Search Systems"
     pub read_time: &'static str,
+    pub title: &'static str,
+    pub subtitle: &'static str,
     pub tags: &'static [&'static str],
-    pub summary: &'static str,
     pub paragraphs: &'static [&'static str],
+}
+
+pub struct PlannedTopic {
+    pub date_label: &'static str,
+    pub year: &'static str,
+    pub topic: &'static str,
+    pub title: &'static str,
+    pub subtitle: &'static str,
 }
 
 pub const EMAIL: &str = "aaronjosephmathew@gmail.com";
@@ -579,27 +589,39 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
     },
 ];
 
-/// Add entries here to publish blog posts on the website.
-/// When empty, the Blog section displays an intentional "coming soon" state with planned topics.
+/// Add entries here (newest first) to publish blog posts on the dedicated Writing page.
+/// New posts automatically appear at the top with their timestamp on the left and in the By-Topic index.
 pub const BLOG_POSTS: &[BlogPost] = &[];
 
-pub const PLANNED_BLOG_TOPICS: &[(&str, &str)] = &[
-    (
-        "Systems",
-        "Migrating Semantic Search from Flask to FastAPI to Rust (Axum) with Hexagonal Architecture",
-    ),
-    (
-        "Ranking",
-        "Single-Digit-Millisecond Learning to Rank: Moving Python Inference to ONNX",
-    ),
-    (
-        "Reliability",
-        "Taming 5-Second GPU ESCI Spikes with Async Write-Back Caching",
-    ),
-    (
-        "Applied AI",
-        "Observability & LLM-as-a-Judge Regression Suites for Agentic Workflows",
-    ),
+pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
+    PlannedTopic {
+        date_label: "Draft",
+        year: "Upcoming",
+        topic: "Search & Rust Systems",
+        title: "Migrating Semantic Search from Flask to FastAPI to Rust (Axum)",
+        subtitle: "Hexagonal architecture, halving P50 latency (700 ms → 350 ms), and right-sizing GKE C4A pools at up to 12,000 RPS.",
+    },
+    PlannedTopic {
+        date_label: "Draft",
+        year: "Upcoming",
+        topic: "Search & Rust Systems",
+        title: "Single-Digit-Millisecond Learning to Rank with ONNX Runtime",
+        subtitle: "Moving Python ranker inference to ONNX for 2 ms P50 and 4 ms P95 scoring under peak retail load.",
+    },
+    PlannedTopic {
+        date_label: "Draft",
+        year: "Upcoming",
+        topic: "Performance & Reliability",
+        title: "Taming 5-Second GPU ESCI Spikes with Async Write-Back Caching",
+        subtitle: "How caching and stripping logging overhead brought GPU model tail latency from 5 s to under 200 ms.",
+    },
+    PlannedTopic {
+        date_label: "Draft",
+        year: "Upcoming",
+        topic: "Agentic AI & Evaluation",
+        title: "Observability & LLM-as-a-Judge Suites for Agentic Workflows",
+        subtitle: "Combining Google Cloud Trace, Gemma vs. Gemini dashboards, and automated regression checks to validate releases in under an hour.",
+    },
 ];
 
 pub const ROLES: &[Role] = &[

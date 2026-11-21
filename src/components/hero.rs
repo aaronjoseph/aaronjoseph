@@ -5,6 +5,7 @@ use crate::data::{MetricTone, TELEMETRY_PROJECTS};
 #[component]
 pub fn Hero(
     on_open_resume: EventHandler<()>,
+    on_open_blog: EventHandler<()>,
     on_copy_email: EventHandler<()>,
 ) -> Element {
     let mut active_project = use_signal(|| 0usize);
@@ -13,54 +14,50 @@ pub fn Hero(
     rsx! {
         section { class: "hero", id: "top",
             div { class: "wrap hero-grid",
-                div {
+                div { class: "hero-intro",
                     div { class: "status-pill",
                         span { class: "pulse-dot", aria_hidden: "true" }
                         span { "Senior AI Engineer @ Best Buy · Bengaluru" }
                     }
 
                     h1 {
-                        "Search & AI systems built for "
-                        span { class: "grad-text", "high throughput & low latency." }
+                        "Hi, I'm "
+                        span { class: "hl-mark", "Aaron Joseph Mathew." }
                     }
 
-                    p { class: "hero-lead",
-                        "I'm "
-                        strong { "Aaron Joseph Mathew" }
-                        " — a Senior AI Engineer with "
-                        strong { "9+ years" }
-                        " across analytics, machine learning, and production AI. I architect and harden production search, ranking, and agentic platforms handling up to "
-                        strong { "12,000 RPS" }
-                        " — where throughput, tail latency, and cloud spend all matter."
+                    p { class: "hero-serif-lead",
+                        "I build production search, ranking, and AI systems engineered for "
+                        strong { "high throughput (up to 12,000 RPS)" }
+                        " and "
+                        strong { "low latency" }
+                        ". Over 9+ years across analytics, ML, and systems engineering, I've focused on making complex models fast, observable, and cost-effective in Python and Rust."
                     }
 
-                    ul { class: "hero-pillars",
-                        li {
-                            span { class: "pillar-marker", "01/" }
-                            span {
-                                strong { "High-Throughput, Low-Latency Search" }
-                                " — semantic search, Learning to Rank (ONNX/XGBoost), NER & ESCI scaled up to 12,000 RPS with RPS-aware HPA."
-                            }
+                    p { class: "hero-inline-nav",
+                        "Explore my "
+                        a { href: "#systems", class: "inline-hl", "architecture deep dives" }
+                        ", read my "
+                        button {
+                            class: "inline-hl-btn",
+                            r#type: "button",
+                            onclick: move |_| on_open_blog.call(()),
+                            "engineering notes"
                         }
-                        li {
-                            span { class: "pillar-marker", "02/" }
-                            span {
-                                strong { "Python to Rust Systems Engineering" }
-                                " — migrating bottlenecked ML services to Rust (Axum, Dioxus) and hexagonal architectures."
-                            }
+                        ", browse my "
+                        button {
+                            class: "inline-hl-btn",
+                            r#type: "button",
+                            onclick: move |_| on_open_resume.call(()),
+                            "styled or ATS résumé"
                         }
-                        li {
-                            span { class: "pillar-marker", "03/" }
-                            span {
-                                strong { "Agentic Observability & Eval" }
-                                " — LLM-as-a-judge regression suites, Cloud Trace diagnostics, and Gemma vs. Gemini benchmarking."
-                            }
-                        }
+                        ", or just "
+                        a { href: "#contact", class: "inline-hl", "say hello" }
+                        "."
                     }
 
                     div { class: "hero-cta-row",
                         a { class: "btn btn-primary", href: "#contact",
-                            span { "Let's talk" }
+                            span { "Say hello" }
                             svg {
                                 width: "16",
                                 height: "16",

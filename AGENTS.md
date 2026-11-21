@@ -26,18 +26,18 @@ This repository serves two roles:
 │   ├── favicon.svg                  # Custom geometric "AJM" monogram icon
 │   └── main.css                     # Full design system (Dark + Light theme + @media print résumé CSS)
 └── src/
-    ├── main.rs                      # App shell, theme state (localStorage), Portfolio/Résumé view switch, Cmd+K, Toast
-    ├── data.rs                      # Single source of truth for all resume, telemetry, impact, career & cert data
+    ├── main.rs                      # App shell, theme state (ajm-theme-v2), Portfolio/Blog/Résumé view switch, Cmd+K, Toast
+    ├── data.rs                      # Single source of truth for all resume, telemetry, deep-dives, blog, career & cert data
     └── components/
         ├── mod.rs
-        ├── navbar.rs                # Sticky navbar, theme toggle, Cmd+K button, mobile drawer
-        ├── hero.rs                  # Split Hero + 2-project Production Telemetry workstreams (Search System / Agentic AI)
+        ├── navbar.rs                # Sticky warm editorial navbar, theme toggle, Cmd+K button, mobile drawer
+        ├── hero.rs                  # Warm editorial intro (evanyou/eugeneyan style) + Search System / Agentic AI telemetry card
         ├── systems.rs               # Unified Architecture & Outcomes list (Best Buy → Falabella → Accenture AI) + slide-over Deep-Dive Drawer
         ├── journey.rs               # Narrative + interactive expandable 6-role Career Timeline
         ├── stack.rs                 # Filterable Technical Stack Matrix
-        ├── blog.rs                  # Engineering Blog section (empty-state planned topics + post cards/reader when BLOG_POSTS is populated)
+        ├── blog.rs                  # Standalone Blog page (left-timestamp Timeline + By-Topic Tree + serif Article Reader) + homepage Latest Writing strip
         ├── credentials.rs           # Education (Georgia Tech MS, BMSIT) + Verified Certification links
-        ├── contact.rs               # Contact CTA card, one-click copy email, social links, Footer
+        ├── contact.rs               # Warm "Say hello" CTA card, one-click copy email, social links, Footer
         ├── resume.rs                # Dual-mode Résumé view: Styled + Plain/ATS-Compliant (with compact toggle & window.print())
         └── cmd_palette.rs           # Interactive Cmd/Ctrl+K quick-jump, project inspector & action palette
 ```
@@ -51,13 +51,14 @@ This repository serves two roles:
 
 ## 3. Design System
 
-- **Aesthetic:** *Precision Systems Telemetry* — intentionally distinct from `ylnhari.github.io` (which uses dark-only navy/violet gradients).
-- **Themes:** Dark mode default (`#090a0d` obsidian charcoal) + Editorial Light mode (`#f7f6f2`), persisted in `localStorage` under key `ajm-theme`.
+- **Aesthetic:** *Warm Editorial & Engineering Notebook* — inspired by `eugeneyan.com` (typography & marker highlights), `evanyou.me` & `aliabdaal.com` (warm, approachable intro & contact), `iamtrask.github.io` (left-timestamp chronological blog), and `mccormickml.com` (clean distraction-free clarity).
+- **Themes:** Warm Paper Light mode default (`#faf8f3` cream paper, `#1c1917` warm ink) + Warm Espresso Dark mode (`#141311`), persisted in `localStorage` under key `ajm-theme-v2`.
 - **Palette:**
-  - Primary Accent: Rust Amber (`#f97316` dark / `#ea580c` light)
-  - Signal Accent: Telemetry Emerald (`#10b981` dark / `#059669` light)
-- **Typography:** `Space Grotesk` (display/headings), `Plus Jakarta Sans` (body), `IBM Plex Mono` (eyebrows, telemetry, chips, dates).
-- **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly document.
+  - Highlighter Wash: Sunlit Yellow (`#fef08a` light / `rgba(250, 204, 21, 0.22)` dark)
+  - Primary Accent: Warm Terracotta Amber (`#c2410c` light / `#fb923c` dark)
+  - Signal Accent: Sage Emerald (`#15803d` light / `#34d399` dark)
+- **Typography:** `Plus Jakarta Sans` (crisp bold display/headings & UI), `Newsreader` (warm literary optical serif for intro prose & blog reading), `IBM Plex Mono` (blog timestamps, telemetry, chips, dates).
+- **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 
 ---
 

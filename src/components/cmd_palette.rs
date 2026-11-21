@@ -7,6 +7,7 @@ use crate::{AppView, ResumeStyle};
 enum CmdAction {
     Section(&'static str),
     Project(&'static str),
+    Blog,
     ResumeStyled,
     ResumeAts,
     CopyEmail,
@@ -35,16 +36,16 @@ pub fn CommandPalette(
     }
 
     let mut items = vec![
+        CmdItem { label: "Open Writing / Blog Page".into(), hint: "Page", action: CmdAction::Blog },
         CmdItem { label: "Jump to Architecture & Outcomes".into(), hint: "#systems", action: CmdAction::Section("#systems") },
         CmdItem { label: "Jump to Experience Timeline".into(), hint: "#journey", action: CmdAction::Section("#journey") },
         CmdItem { label: "Jump to Technical Stack".into(), hint: "#stack", action: CmdAction::Section("#stack") },
-        CmdItem { label: "Jump to Engineering Blog".into(), hint: "#blog", action: CmdAction::Section("#blog") },
         CmdItem { label: "Jump to Education & Certifications".into(), hint: "#credentials", action: CmdAction::Section("#credentials") },
-        CmdItem { label: "Jump to Contact".into(), hint: "#contact", action: CmdAction::Section("#contact") },
+        CmdItem { label: "Jump to Say Hello / Contact".into(), hint: "#contact", action: CmdAction::Section("#contact") },
         CmdItem { label: "Open Styled Résumé".into(), hint: "Styled", action: CmdAction::ResumeStyled },
         CmdItem { label: "Open Plain / ATS-Compliant Résumé".into(), hint: "ATS", action: CmdAction::ResumeAts },
         CmdItem { label: "Copy Email Address".into(), hint: "Clipboard", action: CmdAction::CopyEmail },
-        CmdItem { label: "Toggle Dark / Light Theme".into(), hint: "Theme", action: CmdAction::ToggleTheme },
+        CmdItem { label: "Toggle Light / Dark Theme".into(), hint: "Theme", action: CmdAction::ToggleTheme },
     ];
 
     for p in DEEP_DIVE_PROJECTS {
@@ -84,6 +85,11 @@ pub fn CommandPalette(
                 document::eval(
                     "setTimeout(() => { const el = document.querySelector('#systems'); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 20);",
                 );
+            }
+            CmdAction::Blog => {
+                selected_project.set(None);
+                view.set(AppView::Blog);
+                document::eval("window.scrollTo({ top: 0, behavior: 'instant' });");
             }
             CmdAction::ResumeStyled => {
                 selected_project.set(None);
@@ -133,7 +139,7 @@ pub fn CommandPalette(
                         class: "cmd-input",
                         r#type: "text",
                         autofocus: true,
-                        placeholder: "Jump to section, inspect a project, open styled/ATS résumé...",
+                        placeholder: "Jump to section, open blog, inspect a project, styled/ATS résumé...",
                         value: "{query}",
                         oninput: move |evt| query.set(evt.value()),
                         onkeydown: move |evt| {
