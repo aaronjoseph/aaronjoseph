@@ -279,9 +279,10 @@ pub fn JourneySection() -> Element {
     let mut active_idx = use_signal(|| 0usize);
     let mut expand_all = use_signal(|| false);
 
-    // Scroll-linked storyteller: as the visitor scrolls down or up through #journey,
-    // automatically focus the centered company card (opening it, smoothly closing others)
-    // and cross-fade the sticky left story panel & animated graphic.
+    // Runway-progress scroll storyteller:
+    // Each of the 6 companies owns an exact equal 1/6 slice of `.career-runway`'s scroll distance,
+    // so scrolling down or up steps cleanly one chapter at a time regardless of how many bullets
+    // each company has — and the sticky stage keeps every chapter comfortably framed on screen.
     use_effect(move || {
         spawn(async move {
             let mut eval = document::eval(
@@ -291,33 +292,44 @@ pub fn JourneySection() -> Element {
                 }
                 window.__ajmStoryLockUntil = 0;
 
+                const TOTAL = 6;
                 let lastSent = 0;
                 let ticking = false;
 
                 const evaluate = () => {
                     ticking = false;
                     if (Date.now() < (window.__ajmStoryLockUntil || 0)) return;
-                    const sec = document.getElementById('journey');
-                    if (!sec) return;
-                    const secRect = sec.getBoundingClientRect();
-                    if (secRect.top > window.innerHeight * 0.78 || secRect.bottom < 120) return;
+                    const runway = document.getElementById('career-runway');
+                    if (!runway) return;
 
-                    const cards = Array.from(sec.querySelectorAll('.role-card[data-role-idx]'));
-                    if (!cards.length) return;
-
-                    const focalY = window.innerHeight * 0.40;
+                    // In "Expand all" mode or mobile stacked layout, fall back to card-position tracking
+                    const isRunwayMode = window.innerWidth > 960 && !runway.classList.contains('expanded-all');
                     let bestIdx = lastSent;
 
-                    if (cards[0].getBoundingClientRect().top > focalY) {
-                        bestIdx = 0;
-                    } else if (cards[cards.length - 1].getBoundingClientRect().top < focalY) {
-                        bestIdx = cards.length - 1;
+                    if (isRunwayMode) {
+                        const rect = runway.getBoundingClientRect();
+                        const stickyTop = 82;
+                        const scrollable = Math.max(1, runway.offsetHeight - window.innerHeight);
+                        const traveled = stickyTop - rect.top;
+
+                        if (traveled <= 0) {
+                            bestIdx = 0;
+                        } else if (traveled >= scrollable) {
+                            bestIdx = TOTAL - 1;
+                        } else {
+                            const progress = traveled / scrollable;
+                            bestIdx = Math.min(TOTAL - 1, Math.max(0, Math.floor(progress * TOTAL)));
+                        }
                     } else {
+                        const secRect = runway.getBoundingClientRect();
+                        if (secRect.top > window.innerHeight * 0.78 || secRect.bottom < 120) return;
+                        const cards = Array.from(runway.querySelectorAll('.role-card[data-role-idx]'));
+                        if (!cards.length) return;
+                        const focalY = window.innerHeight * 0.40;
                         let bestDist = Infinity;
                         cards.forEach((el, i) => {
                             const r = el.getBoundingClientRect();
-                            const anchor = r.top + Math.min(r.height * 0.25, 48);
-                            const d = Math.abs(anchor - focalY);
+                            const d = Math.abs((r.top + 36) - focalY);
                             if (d < bestDist) {
                                 bestDist = d;
                                 bestIdx = i;
@@ -327,7 +339,6 @@ pub fn JourneySection() -> Element {
 
                     if (bestIdx !== lastSent) {
                         lastSent = bestIdx;
-                        window.__ajmStoryLockUntil = Date.now() + 380;
                         dioxus.send(bestIdx);
                     }
                 };
@@ -356,16 +367,24 @@ pub fn JourneySection() -> Element {
     let current_role = &ROLES[active_idx()];
     let progress_pct = ((current_role.chapter as f32) / (ROLES.len() as f32) * 100.0).round() as u32;
 
-    // Helper to lock scroll-spy briefly when user manually selects a chapter
-    fn select_role(mut active_idx: Signal<usize>, idx: usize, scroll_to_card: bool) {
+    // Jump cleanly to the exact runway slice for chapter `idx`
+    fn select_role(mut active_idx: Signal<usize>, idx: usize, sync_scroll: bool) {
         active_idx.set(idx);
-        let js = if scroll_to_card {
+        let js = if sync_scroll {
             format!(
                 r#"
-                window.__ajmStoryLockUntil = Date.now() + 750;
+                window.__ajmStoryLockUntil = Date.now() + 700;
                 if (window.__ajmStorySetLast) window.__ajmStorySetLast({idx});
-                const card = document.querySelector('.role-card[data-role-idx="{idx}"]');
-                if (card) card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                const runway = document.getElementById('career-runway');
+                if (runway && window.innerWidth > 960 && !runway.classList.contains('expanded-all')) {{
+                    const runwayTop = runway.getBoundingClientRect().top + window.scrollY - 82;
+                    const scrollable = Math.max(1, runway.offsetHeight - window.innerHeight);
+                    const targetY = runwayTop + (({idx} + 0.5) / 6) * scrollable;
+                    window.scrollTo({{ top: targetY, behavior: 'smooth' }});
+                }} else {{
+                    const card = document.querySelector('.role-card[data-role-idx="{idx}"]');
+                    if (card) card.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                }}
                 "#
             )
         } else {
@@ -373,11 +392,24 @@ pub fn JourneySection() -> Element {
                 r#"
                 window.__ajmStoryLockUntil = Date.now() + 650;
                 if (window.__ajmStorySetLast) window.__ajmStorySetLast({idx});
+                const runway = document.getElementById('career-runway');
+                if (runway && window.innerWidth > 960 && !runway.classList.contains('expanded-all')) {{
+                    const runwayTop = runway.getBoundingClientRect().top + window.scrollY - 82;
+                    const scrollable = Math.max(1, runway.offsetHeight - window.innerHeight);
+                    const targetY = runwayTop + (({idx} + 0.5) / 6) * scrollable;
+                    window.scrollTo({{ top: targetY, behavior: 'smooth' }});
+                }}
                 "#
             )
         };
         document::eval(&js);
     }
+
+    let runway_class = if expand_all() {
+        "career-runway expanded-all"
+    } else {
+        "career-runway"
+    };
 
     rsx! {
         section { id: "journey",
@@ -386,150 +418,154 @@ pub fn JourneySection() -> Element {
                     div { class: "eyebrow", "The Story So Far" }
                     h2 { "Nine years of figuring things out" }
                     p { class: "sec-sub",
-                        "Scroll through the timeline (or jump to any chapter) — watch how each stop shaped the shift from analytics and finance into production AI systems."
+                        "Scroll steadily down (or back up) — each step advances cleanly to the next chapter, opening its story and animated visual side by side."
                     }
                 }
 
-                div { class: "career-layout",
-                    // Sticky animated story card on the left — updates dynamically per active company
-                    aside {
-                        class: format!("about-panel story-panel story-tone-{}", current_role.id),
-                        div { class: "story-top-bar",
-                            span { class: "story-kicker", "{current_role.story_kicker}" }
-                            span { class: "story-period-chip", "{current_role.period}" }
-                        }
+                div { id: "career-runway", class: "{runway_class}",
+                    div { class: "career-stage",
+                        div { class: "career-layout",
+                            // Sticky animated story card on the left — updates dynamically per active company
+                            aside {
+                                class: format!("about-panel story-panel story-tone-{}", current_role.id),
+                                div { class: "story-top-bar",
+                                    span { class: "story-kicker", "{current_role.story_kicker}" }
+                                    span { class: "story-period-chip", "{current_role.period}" }
+                                }
 
-                        div { class: "story-progress-track", aria_hidden: "true",
-                            div {
-                                class: "story-progress-fill",
-                                style: "width: {progress_pct}%;",
-                            }
-                        }
+                                div { class: "story-progress-track", aria_hidden: "true",
+                                    div {
+                                        class: "story-progress-fill",
+                                        style: "width: {progress_pct}%;",
+                                    }
+                                }
 
-                        // Keyed stage cross-fades cleanly whenever the active company changes
-                        div { class: "story-stage", key: "{current_role.id}",
-                            div { class: "story-art",
-                                StoryGraphic { role_id: current_role.id }
-                            }
+                                // Keyed stage cross-fades cleanly whenever the active company changes
+                                div { class: "story-stage", key: "{current_role.id}",
+                                    div { class: "story-art",
+                                        StoryGraphic { role_id: current_role.id }
+                                    }
 
-                            div { class: "story-co-head",
-                                CompanyLogo { company_id: current_role.id, size: 24 }
-                                h3 { "{current_role.story_headline}" }
-                            }
+                                    div { class: "story-co-head",
+                                        CompanyLogo { company_id: current_role.id, size: 24 }
+                                        h3 { "{current_role.story_headline}" }
+                                    }
 
-                            p { class: "story-body", "{current_role.story_body}" }
+                                    p { class: "story-body", "{current_role.story_body}" }
 
-                            div { class: "story-takeaway",
-                                span { class: "story-takeaway-dot", aria_hidden: "true" }
-                                span { "{current_role.story_takeaway}" }
-                            }
-                        }
+                                    div { class: "story-takeaway",
+                                        span { class: "story-takeaway-dot", aria_hidden: "true" }
+                                        span { "{current_role.story_takeaway}" }
+                                    }
+                                }
 
-                        // Chronological 1 -> 6 chapter switcher (MuSigma -> Best Buy)
-                        div { class: "story-chapters", role: "tablist", aria_label: "Jump to career chapter",
-                            for (rev_i, role) in ROLES.iter().enumerate().rev() {
-                                {
-                                    let is_cur = active_idx() == rev_i;
-                                    rsx! {
-                                        button {
-                                            key: "ch-{role.id}",
-                                            class: if is_cur { "story-ch-btn active" } else { "story-ch-btn" },
-                                            r#type: "button",
-                                            role: "tab",
-                                            aria_selected: "{is_cur}",
-                                            title: "Chapter {role.chapter}: {role.company}",
-                                            onclick: move |_| select_role(active_idx, rev_i, true),
-                                            CompanyLogo { company_id: role.id, size: 18 }
+                                // Chronological 1 -> 6 chapter switcher (MuSigma -> Best Buy)
+                                div { class: "story-chapters", role: "tablist", aria_label: "Jump to career chapter",
+                                    for (rev_i, role) in ROLES.iter().enumerate().rev() {
+                                        {
+                                            let is_cur = active_idx() == rev_i;
+                                            rsx! {
+                                                button {
+                                                    key: "ch-{role.id}",
+                                                    class: if is_cur { "story-ch-btn active" } else { "story-ch-btn" },
+                                                    r#type: "button",
+                                                    role: "tab",
+                                                    aria_selected: "{is_cur}",
+                                                    title: "Chapter {role.chapter}: {role.company}",
+                                                    onclick: move |_| select_role(active_idx, rev_i, true),
+                                                    CompanyLogo { company_id: role.id, size: 18 }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    }
 
-                    div {
-                        div { class: "timeline-controls",
-                            span { class: "timeline-hint",
-                                if expand_all() {
-                                    "Showing all roles · Scroll still updates the story"
-                                } else {
-                                    "Scroll or click any company to explore"
+                            div { class: "career-right",
+                                div { class: "timeline-controls",
+                                    span { class: "timeline-hint",
+                                        if expand_all() {
+                                            "Showing all roles"
+                                        } else {
+                                            "Scroll step-by-step or click any chapter"
+                                        }
+                                    }
+                                    button {
+                                        class: "text-btn",
+                                        r#type: "button",
+                                        onclick: move |_| expand_all.toggle(),
+                                        if expand_all() { "Step-by-step scroll mode" } else { "Expand all roles" }
+                                    }
                                 }
-                            }
-                            button {
-                                class: "text-btn",
-                                r#type: "button",
-                                onclick: move |_| expand_all.toggle(),
-                                if expand_all() { "Auto-focus on scroll" } else { "Expand all roles" }
-                            }
-                        }
 
-                        div { class: "timeline",
-                            for (idx, role) in ROLES.iter().enumerate() {
-                                {
-                                    let id = role.id;
-                                    let is_active = active_idx() == idx;
-                                    let is_open = expand_all() || is_active;
-                                    let card_cls = match (role.current, is_active) {
-                                        (true, true) => "role-card current active-story",
-                                        (true, false) => "role-card current",
-                                        (false, true) => "role-card active-story",
-                                        (false, false) => "role-card",
-                                    };
-                                    rsx! {
-                                        article {
-                                            key: "{id}",
-                                            class: "{card_cls}",
-                                            "data-role-idx": "{idx}",
-                                            button {
-                                                class: "role-trigger",
-                                                r#type: "button",
-                                                aria_expanded: "{is_open}",
-                                                onclick: move |_| {
-                                                    if expand_all() {
-                                                        expand_all.set(false);
-                                                    }
-                                                    select_role(active_idx, idx, false);
-                                                },
-                                                div {
-                                                    div { class: "role-meta",
-                                                        span { class: "role-ch-pill", "Ch. {role.chapter}" }
-                                                        if let Some(badge) = role.badge {
-                                                            span { class: "role-now", "{badge}" }
+                                div { class: "timeline",
+                                    for (idx, role) in ROLES.iter().enumerate() {
+                                        {
+                                            let id = role.id;
+                                            let is_active = active_idx() == idx;
+                                            let is_open = expand_all() || is_active;
+                                            let card_cls = match (role.current, is_active) {
+                                                (true, true) => "role-card current active-story",
+                                                (true, false) => "role-card current",
+                                                (false, true) => "role-card active-story",
+                                                (false, false) => "role-card",
+                                            };
+                                            rsx! {
+                                                article {
+                                                    key: "{id}",
+                                                    class: "{card_cls}",
+                                                    "data-role-idx": "{idx}",
+                                                    button {
+                                                        class: "role-trigger",
+                                                        r#type: "button",
+                                                        aria_expanded: "{is_open}",
+                                                        onclick: move |_| {
+                                                            if expand_all() {
+                                                                expand_all.set(false);
+                                                            }
+                                                            select_role(active_idx, idx, false);
+                                                        },
+                                                        div {
+                                                            div { class: "role-meta",
+                                                                span { class: "role-ch-pill", "Ch. {role.chapter}" }
+                                                                if let Some(badge) = role.badge {
+                                                                    span { class: "role-now", "{badge}" }
+                                                                }
+                                                                span { "{role.period} · {role.location}" }
+                                                            }
+                                                            h3 { class: "role-title", "{role.title}" }
+                                                            div { class: "role-company co-inline",
+                                                                CompanyLogo { company_id: role.id, size: 20 }
+                                                                span { "{role.company}" }
+                                                            }
                                                         }
-                                                        span { "{role.period} · {role.location}" }
+                                                        span {
+                                                            class: if is_open { "role-chevron open" } else { "role-chevron" },
+                                                            aria_hidden: "true",
+                                                            svg {
+                                                                width: "15",
+                                                                height: "15",
+                                                                view_box: "0 0 24 24",
+                                                                fill: "none",
+                                                                stroke: "currentColor",
+                                                                stroke_width: "2.2",
+                                                                stroke_linecap: "round",
+                                                                stroke_linejoin: "round",
+                                                                path { d: "m6 9 6 6 6-6" }
+                                                            }
+                                                        }
                                                     }
-                                                    h3 { class: "role-title", "{role.title}" }
-                                                    div { class: "role-company co-inline",
-                                                        CompanyLogo { company_id: role.id, size: 22 }
-                                                        span { "{role.company}" }
-                                                    }
-                                                }
-                                                span {
-                                                    class: if is_open { "role-chevron open" } else { "role-chevron" },
-                                                    aria_hidden: "true",
-                                                    svg {
-                                                        width: "15",
-                                                        height: "15",
-                                                        view_box: "0 0 24 24",
-                                                        fill: "none",
-                                                        stroke: "currentColor",
-                                                        stroke_width: "2.2",
-                                                        stroke_linecap: "round",
-                                                        stroke_linejoin: "round",
-                                                        path { d: "m6 9 6 6 6-6" }
-                                                    }
-                                                }
-                                            }
 
-                                            // Always mounted so CSS grid-template-rows animates open & closed smoothly
-                                            div {
-                                                class: if is_open { "role-body-wrap open" } else { "role-body-wrap" },
-                                                div { class: "role-body-inner",
-                                                    div { class: "role-body",
-                                                        ul { class: "role-list",
-                                                            for bullet in role.bullets {
-                                                                li { "{bullet}" }
+                                                    // Always mounted so CSS grid-template-rows animates open & closed smoothly
+                                                    div {
+                                                        class: if is_open { "role-body-wrap open" } else { "role-body-wrap" },
+                                                        div { class: "role-body-inner",
+                                                            div { class: "role-body",
+                                                                ul { class: "role-list",
+                                                                    for bullet in role.bullets {
+                                                                        li { "{bullet}" }
+                                                                    }
+                                                                }
                                                             }
                                                         }
                                                     }

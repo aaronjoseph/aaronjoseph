@@ -73,7 +73,7 @@ body {
   font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.65;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3,
@@ -1460,10 +1460,28 @@ section h2 {
    The Story So Far (Blush/Khaki Narrative Panel + Crisp White Career Cards)
    ========================================================================== */
 
+.career-runway {
+  position: relative;
+  min-height: calc(100vh + 1560px);
+}
+
+.career-runway.expanded-all {
+  min-height: auto;
+}
+
+.career-stage {
+  position: sticky;
+  top: 82px;
+}
+
+.career-runway.expanded-all .career-stage {
+  position: static;
+}
+
 .career-layout {
   display: grid;
   grid-template-columns: 0.96fr 1.3fr;
-  gap: 32px;
+  gap: 28px;
   align-items: start;
 }
 
@@ -1471,11 +1489,44 @@ section h2 {
   background: linear-gradient(155deg, var(--blush-soft) 0%, var(--khaki) 100%);
   border: 1px solid rgba(44, 42, 53, 0.06);
   border-radius: var(--radius-lg);
-  padding: 24px;
-  position: sticky;
-  top: 90px;
+  padding: 20px 22px;
   box-shadow: var(--shadow-sm);
   transition: background 0.45s ease, border-color 0.35s ease;
+}
+
+.career-runway.expanded-all .about-panel {
+  position: sticky;
+  top: 90px;
+}
+
+.career-runway:not(.expanded-all) .timeline {
+  gap: 8px;
+}
+
+.career-runway:not(.expanded-all) .role-trigger {
+  padding: 11px 16px;
+}
+
+.career-runway:not(.expanded-all) .role-card::before {
+  top: 17px;
+}
+
+.career-runway:not(.expanded-all) .role-title {
+  font-size: 1.02rem;
+}
+
+.career-runway:not(.expanded-all) .role-body {
+  padding: 0 18px 14px;
+  max-height: min(295px, 34vh);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.career-runway:not(.expanded-all) .role-list {
+  margin-top: 10px;
+  gap: 7px;
+  font-size: 0.87rem;
+  line-height: 1.52;
 }
 
 /* Subtle warm company-tinted story backdrop shifts */
@@ -3093,11 +3144,22 @@ footer {
   .deck-grid {
     grid-template-columns: 1fr;
   }
+  .career-runway {
+    min-height: auto;
+  }
+  .career-stage {
+    position: static;
+  }
   .career-layout {
     grid-template-columns: 1fr;
   }
-  .about-panel {
+  .about-panel,
+  .career-runway.expanded-all .about-panel {
     position: static;
+  }
+  .career-runway:not(.expanded-all) .role-body {
+    max-height: none;
+    overflow-y: visible;
   }
   .dd-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
