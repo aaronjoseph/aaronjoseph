@@ -286,6 +286,879 @@ fn HexagonalNotebookSketch() -> Element {
     }
 }
 
+/// Handcrafted ruled-notebook SVG sketch of GPU reranker async write-back caching.
+#[component]
+fn AsyncCacheNotebookSketch() -> Element {
+    rsx! {
+        div { class: "nb-sheet",
+            div { class: "nb-sheet-head",
+                span { class: "nb-stamp", "Async Write-Back Cache Sketch" }
+            }
+            svg {
+                class: "nb-sketch-svg",
+                view_box: "0 0 640 296",
+                fill: "none",
+                role: "img",
+                "aria-label": "Notebook sketch showing an early cache read overlapping recall, XXH3 hash freshness check routing hits directly to ordered response and misses to the GPU reranker, and a bounded async background batch queue with a memory watermark gate flushing to Redis",
+
+                // Top Fast Response Lane
+                rect {
+                    x: "12",
+                    y: "14",
+                    width: "616",
+                    height: "128",
+                    rx: "16",
+                    fill: "rgba(225, 237, 231, 0.45)",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.4",
+                    stroke_dasharray: "6 4",
+                }
+                rect {
+                    x: "26",
+                    y: "4",
+                    width: "218",
+                    height: "20",
+                    rx: "10",
+                    fill: "#e1ede7",
+                    stroke: "rgba(63, 124, 102, 0.3)",
+                }
+                text {
+                    x: "135",
+                    y: "17.5",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-mono)",
+                    font_size: "9",
+                    font_weight: "700",
+                    "CRITICAL PATH · FAST RESPONSE"
+                }
+
+                // Box 1: Early Cache Read
+                rect {
+                    x: "26",
+                    y: "40",
+                    width: "114",
+                    height: "78",
+                    rx: "13",
+                    fill: "#faf8f3",
+                    stroke: "#32323d",
+                    stroke_width: "1.5",
+                }
+                text {
+                    x: "83",
+                    y: "64",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Early Cache"
+                }
+                text {
+                    x: "83",
+                    y: "80",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Read"
+                }
+                text {
+                    x: "83",
+                    y: "100",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    "Overlaps recall"
+                }
+
+                // Arrow 1 -> 2
+                path {
+                    d: "M 140 79 H 164",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 159 74 L 166 79 L 159 84",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+
+                // Box 2: Hash Freshness Check
+                rect {
+                    x: "168",
+                    y: "40",
+                    width: "122",
+                    height: "78",
+                    rx: "13",
+                    fill: "#f2e8cd",
+                    stroke: "#b99c55",
+                    stroke_width: "1.5",
+                }
+                text {
+                    x: "229",
+                    y: "64",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Hash Freshness"
+                }
+                text {
+                    x: "229",
+                    y: "80",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Check"
+                }
+                text {
+                    x: "229",
+                    y: "100",
+                    text_anchor: "middle",
+                    fill: "#7c6222",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    "Override → XXH3"
+                }
+
+                // Hit bypass curved path
+                path {
+                    d: "M 290 58 C 343 32, 433 32, 494 58",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 487 52 L 495 58 L 487 62",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+                rect { x: "340", y: "28", width: "104", height: "18", rx: "9", fill: "#e1ede7" }
+                text {
+                    x: "392",
+                    y: "40",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    font_weight: "700",
+                    "HITS BYPASS GPU"
+                }
+
+                // Misses arrow -> GPU Reranker
+                path {
+                    d: "M 290 93 H 326",
+                    stroke: "#d97c60",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 321 88 L 328 93 L 321 98",
+                    stroke: "#d97c60",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+                text {
+                    x: "308",
+                    y: "85",
+                    text_anchor: "middle",
+                    fill: "#b44a2f",
+                    font_family: "var(--font-mono)",
+                    font_size: "8",
+                    font_weight: "700",
+                    "miss"
+                }
+
+                // Box 3: GPU Reranker
+                rect {
+                    x: "330",
+                    y: "62",
+                    width: "128",
+                    height: "62",
+                    rx: "13",
+                    fill: "#f3e7e1",
+                    stroke: "#d97c60",
+                    stroke_width: "1.6",
+                }
+                text {
+                    x: "394",
+                    y: "86",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "GPU Reranker"
+                }
+                text {
+                    x: "394",
+                    y: "104",
+                    text_anchor: "middle",
+                    fill: "#a95138",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.3",
+                    "Misses only · lean logs"
+                }
+
+                // Arrow GPU -> Ordered Response
+                path {
+                    d: "M 458 93 H 494",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 489 88 L 496 93 L 489 98",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+
+                // Box 4: Ordered Response
+                rect {
+                    x: "498",
+                    y: "42",
+                    width: "114",
+                    height: "76",
+                    rx: "13",
+                    fill: "#e1ede7",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.8",
+                }
+                text {
+                    x: "555",
+                    y: "70",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Ordered"
+                }
+                text {
+                    x: "555",
+                    y: "86",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Response"
+                }
+                text {
+                    x: "555",
+                    y: "104",
+                    text_anchor: "middle",
+                    fill: "#3f7c66",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    "Zero write wait"
+                }
+
+                // Fire-and-forget dashed arrow down to Background Writer
+                path {
+                    d: "M 394 124 V 166",
+                    stroke: "#7b7296",
+                    stroke_width: "2",
+                    stroke_dasharray: "4 3",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 389 160 L 394 168 L 399 160",
+                    stroke: "#7b7296",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+                rect { x: "402", y: "138", width: "114", height: "18", rx: "9", fill: "#eae6f2" }
+                text {
+                    x: "459",
+                    y: "150",
+                    text_anchor: "middle",
+                    fill: "#5b5276",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.2",
+                    font_weight: "700",
+                    "async fire & forget"
+                }
+
+                // Bottom Background Lane
+                rect {
+                    x: "12",
+                    y: "170",
+                    width: "616",
+                    height: "84",
+                    rx: "16",
+                    fill: "rgba(234, 230, 242, 0.45)",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                    stroke_dasharray: "6 4",
+                }
+                rect {
+                    x: "26",
+                    y: "160",
+                    width: "232",
+                    height: "20",
+                    rx: "10",
+                    fill: "#eae6f2",
+                    stroke: "rgba(123, 114, 150, 0.3)",
+                }
+                text {
+                    x: "142",
+                    y: "173.5",
+                    text_anchor: "middle",
+                    fill: "#5b5276",
+                    font_family: "var(--font-mono)",
+                    font_size: "9",
+                    font_weight: "700",
+                    "BACKGROUND · ASYNC WRITE-BACK"
+                }
+
+                rect {
+                    x: "32",
+                    y: "190",
+                    width: "164",
+                    height: "48",
+                    rx: "11",
+                    fill: "#faf8f3",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "114",
+                    y: "211",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "Bounded Batch Queue"
+                }
+                text {
+                    x: "114",
+                    y: "227",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.3",
+                    "Coalesced pipelined writes"
+                }
+
+                path {
+                    d: "M 196 214 H 230",
+                    stroke: "#7b7296",
+                    stroke_width: "1.8",
+                    stroke_dasharray: "4 3",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 225 209 L 232 214 L 225 219",
+                    stroke: "#7b7296",
+                    stroke_width: "1.8",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+
+                rect {
+                    x: "234",
+                    y: "190",
+                    width: "174",
+                    height: "48",
+                    rx: "11",
+                    fill: "#f2e8cd",
+                    stroke: "#b99c55",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "321",
+                    y: "211",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "Memory Watermark Gate"
+                }
+                text {
+                    x: "321",
+                    y: "227",
+                    text_anchor: "middle",
+                    fill: "#7c6222",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.3",
+                    "Pauses under pressure"
+                }
+
+                path {
+                    d: "M 408 214 H 442",
+                    stroke: "#7b7296",
+                    stroke_width: "1.8",
+                    stroke_dasharray: "4 3",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 437 209 L 444 214 L 437 219",
+                    stroke: "#7b7296",
+                    stroke_width: "1.8",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+
+                rect {
+                    x: "446",
+                    y: "190",
+                    width: "164",
+                    height: "48",
+                    rx: "11",
+                    fill: "#faf8f3",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "528",
+                    y: "211",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "Redis Cache Store"
+                }
+                text {
+                    x: "528",
+                    y: "227",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.3",
+                    "HSET + jittered EXPIRE NX"
+                }
+
+                // Bottom caption
+                text {
+                    x: "320",
+                    y: "282",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-serif)",
+                    font_style: "italic",
+                    font_size: "11.5",
+                    "Cache failures fail open to the model · Background writes never block or fail a live request"
+                }
+            }
+        }
+    }
+}
+
+/// Handcrafted ruled-notebook SVG sketch of ONNX Runtime session pooling & non-blocking Tokio scheduling.
+#[component]
+fn OnnxPoolNotebookSketch() -> Element {
+    rsx! {
+        div { class: "nb-sheet",
+            div { class: "nb-sheet-head",
+                span { class: "nb-stamp", "ONNX Session Pool Sketch" }
+            }
+            svg {
+                class: "nb-sketch-svg",
+                view_box: "0 0 640 296",
+                fill: "none",
+                role: "img",
+                "aria-label": "Notebook sketch separating Tokio async I/O workers assembling flat Vec<f32> features and acquiring an admission semaphore from a dedicated CPU blocking pool of single-threaded ONNX Runtime sessions with per-request A/B branch routing",
+
+                // Left Zone: Async I/O Workers (Tokio)
+                rect {
+                    x: "12",
+                    y: "18",
+                    width: "234",
+                    height: "236",
+                    rx: "16",
+                    fill: "rgba(225, 237, 231, 0.42)",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.4",
+                    stroke_dasharray: "6 4",
+                }
+                rect {
+                    x: "26",
+                    y: "8",
+                    width: "174",
+                    height: "20",
+                    rx: "10",
+                    fill: "#e1ede7",
+                    stroke: "rgba(63, 124, 102, 0.3)",
+                }
+                text {
+                    x: "113",
+                    y: "21.5",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-mono)",
+                    font_size: "9",
+                    font_weight: "700",
+                    "ASYNC I/O WORKERS (TOKIO)"
+                }
+
+                rect {
+                    x: "30",
+                    y: "46",
+                    width: "198",
+                    height: "58",
+                    rx: "12",
+                    fill: "#faf8f3",
+                    stroke: "#32323d",
+                    stroke_width: "1.5",
+                }
+                text {
+                    x: "129",
+                    y: "69",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Feature Assembly"
+                }
+                text {
+                    x: "129",
+                    y: "88",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    "Flat Vec<f32> · zero DataFrames"
+                }
+
+                path {
+                    d: "M 129 104 V 130",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 124 125 L 129 132 L 134 125",
+                    stroke: "#3f7c66",
+                    stroke_width: "2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+
+                rect {
+                    x: "30",
+                    y: "134",
+                    width: "198",
+                    height: "56",
+                    rx: "12",
+                    fill: "#f2e8cd",
+                    stroke: "#b99c55",
+                    stroke_width: "1.5",
+                }
+                text {
+                    x: "129",
+                    y: "157",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Admission Semaphore"
+                }
+                text {
+                    x: "129",
+                    y: "175",
+                    text_anchor: "middle",
+                    fill: "#7c6222",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.5",
+                    "Bounded permits · fair queueing"
+                }
+
+                text {
+                    x: "129",
+                    y: "218",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.3",
+                    font_weight: "700",
+                    "Network & Redis I/O stay unblocked"
+                }
+                text {
+                    x: "129",
+                    y: "234",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-sans)",
+                    font_size: "9.5",
+                    "No Mutex<Session> on async threads"
+                }
+
+                // Bridge arrow: spawn_blocking
+                path {
+                    d: "M 228 162 H 316",
+                    stroke: "#d97c60",
+                    stroke_width: "2.2",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 310 157 L 318 162 L 310 167",
+                    stroke: "#d97c60",
+                    stroke_width: "2.2",
+                    stroke_linecap: "round",
+                    stroke_linejoin: "round",
+                }
+                rect {
+                    x: "236",
+                    y: "136",
+                    width: "90",
+                    height: "20",
+                    rx: "10",
+                    fill: "#f3e7e1",
+                    stroke: "#d97c60",
+                    stroke_width: "1",
+                }
+                text {
+                    x: "281",
+                    y: "149",
+                    text_anchor: "middle",
+                    fill: "#a95138",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.2",
+                    font_weight: "700",
+                    "spawn_blocking"
+                }
+
+                // Right Zone: Dedicated CPU Pool · ONNX Runtime
+                rect {
+                    x: "322",
+                    y: "18",
+                    width: "306",
+                    height: "236",
+                    rx: "16",
+                    fill: "rgba(234, 230, 242, 0.42)",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                    stroke_dasharray: "6 4",
+                }
+                rect {
+                    x: "336",
+                    y: "8",
+                    width: "244",
+                    height: "20",
+                    rx: "10",
+                    fill: "#eae6f2",
+                    stroke: "rgba(123, 114, 150, 0.3)",
+                }
+                text {
+                    x: "458",
+                    y: "21.5",
+                    text_anchor: "middle",
+                    fill: "#5b5276",
+                    font_family: "var(--font-mono)",
+                    font_size: "9",
+                    font_weight: "700",
+                    "DEDICATED CPU POOL · ONNX RUNTIME"
+                }
+
+                // Branch selector bar (generous side padding)
+                rect {
+                    x: "336",
+                    y: "40",
+                    width: "278",
+                    height: "28",
+                    rx: "10",
+                    fill: "#faf8f3",
+                    stroke: "rgba(50, 50, 61, 0.12)",
+                }
+                text {
+                    x: "475",
+                    y: "57.5",
+                    text_anchor: "middle",
+                    fill: "#5b5276",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.2",
+                    font_weight: "700",
+                    "A/B Branch Selector · [Model A | Model B]"
+                }
+
+                // 3 Pooled ONNX Sessions
+                rect {
+                    x: "340",
+                    y: "82",
+                    width: "128",
+                    height: "44",
+                    rx: "11",
+                    fill: "#faf8f3",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "404",
+                    y: "101",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "ONNX Session #1"
+                }
+                text {
+                    x: "404",
+                    y: "116",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.1",
+                    "1 intra · 1 inter thread"
+                }
+
+                rect {
+                    x: "340",
+                    y: "136",
+                    width: "128",
+                    height: "44",
+                    rx: "11",
+                    fill: "#faf8f3",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "404",
+                    y: "155",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "ONNX Session #2"
+                }
+                text {
+                    x: "404",
+                    y: "170",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.1",
+                    "1 intra · 1 inter thread"
+                }
+
+                rect {
+                    x: "340",
+                    y: "190",
+                    width: "128",
+                    height: "44",
+                    rx: "11",
+                    fill: "#faf8f3",
+                    stroke: "#7b7296",
+                    stroke_width: "1.4",
+                }
+                text {
+                    x: "404",
+                    y: "209",
+                    text_anchor: "middle",
+                    fill: "#32323d",
+                    font_family: "var(--font-display)",
+                    font_size: "10.5",
+                    font_weight: "700",
+                    "ONNX Session #N"
+                }
+                text {
+                    x: "404",
+                    y: "224",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.1",
+                    "Sized to CPU cores"
+                }
+
+                // Curves converging into Ranked Scores
+                path {
+                    d: "M 468 104 C 482 106, 488 128, 502 144",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.7",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 468 158 H 502",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.7",
+                    stroke_linecap: "round",
+                }
+                path {
+                    d: "M 468 212 C 482 210, 488 188, 502 172",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.7",
+                    stroke_linecap: "round",
+                }
+
+                rect {
+                    x: "504",
+                    y: "122",
+                    width: "108",
+                    height: "72",
+                    rx: "13",
+                    fill: "#e1ede7",
+                    stroke: "#3f7c66",
+                    stroke_width: "1.8",
+                }
+                text {
+                    x: "558",
+                    y: "150",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Ranked"
+                }
+                text {
+                    x: "558",
+                    y: "166",
+                    text_anchor: "middle",
+                    fill: "#2c6350",
+                    font_family: "var(--font-display)",
+                    font_size: "11",
+                    font_weight: "700",
+                    "Scores"
+                }
+                text {
+                    x: "558",
+                    y: "183",
+                    text_anchor: "middle",
+                    fill: "#3f7c66",
+                    font_family: "var(--font-mono)",
+                    font_size: "8.2",
+                    "Predictable tail"
+                }
+
+                // Bottom caption
+                text {
+                    x: "320",
+                    y: "282",
+                    text_anchor: "middle",
+                    fill: "#5e5d6b",
+                    font_family: "var(--font-serif)",
+                    font_style: "italic",
+                    font_size: "11.5",
+                    "Clean separation of feature assembly, concurrency admission, and CPU-pinned ONNX execution"
+                }
+            }
+        }
+    }
+}
+
 /// Interactive Article Reader with a moving sticky Left Reading Rail:
 /// highlights the active subsection, marks completed ones with sage checks,
 /// shows remaining sections left to read, and animates a continuous progress spine.
@@ -505,6 +1378,16 @@ fn ArticleReader(slug: &'static str, on_back: EventHandler<()>) -> Element {
                             ArticleBlock::HexagonalSketch => rsx! {
                                 div { key: "s-{idx}", class: "article-nb-wrap",
                                     HexagonalNotebookSketch {}
+                                }
+                            },
+                            ArticleBlock::AsyncCacheSketch => rsx! {
+                                div { key: "ac-{idx}", class: "article-nb-wrap",
+                                    AsyncCacheNotebookSketch {}
+                                }
+                            },
+                            ArticleBlock::OnnxPoolSketch => rsx! {
+                                div { key: "ox-{idx}", class: "article-nb-wrap",
+                                    OnnxPoolNotebookSketch {}
                                 }
                             },
                             ArticleBlock::Bullets(items) => rsx! {

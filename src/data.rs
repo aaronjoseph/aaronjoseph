@@ -107,6 +107,8 @@ pub enum ArticleBlock {
     Paragraph(&'static str),
     ArchitectureFlow(&'static str),
     HexagonalSketch,
+    AsyncCacheSketch,
+    OnnxPoolSketch,
     Bullets(&'static [(&'static str, &'static str)]),
     FieldNotes {
         stamp: &'static str,
@@ -1001,23 +1003,301 @@ pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
             ),
         ]),
     ],
+},
+BlogPost {
+    slug: "gpu-reranker-async-writeback-caching",
+    date: "Sep 2026",
+    year: "2026",
+    topic: "Performance & Reliability",
+    read_time: "5 min read",
+    title: "Taming GPU Reranker Tail-Latency Spikes with Async Write-Back Caching",
+    subtitle: "How overlapping cache reads with retrieval, content-hash freshness checks, bounded async write-back, and leaner logging eliminate multi-second GPU tail spikes without sacrificing freshness.",
+    tags: &[
+        "GPU Inference",
+        "Async Write-Back",
+        "Redis",
+        "XXH3",
+        "Tail Latency",
+        "Resilience",
+    ],
+    blocks: &[
+        ArticleBlock::Paragraph(
+            "Cross-encoder and relevance reranking models running on GPUs deliver a huge leap in search quality, but they behave very differently from CPU services under burst traffic. Even when median latency looks completely healthy, a sudden wave of high-fan-out queries can saturate GPU queues and trigger dramatic multi-second tail-latency spikes.",
+        ),
+        ArticleBlock::Paragraph(
+            "Throw verbose per-request payload logging and synchronous cache writes on top of that, and the slow path starts compounding itself. Below is the caching and resilience pattern we used to cut GPU reranker tail latency by an order of magnitude while keeping results fresh and responses non-blocking.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Architecture Field Notes",
+            comparisons: &[
+                NotebookComparison {
+                    label: "Cache Lookup Scheduling",
+                    before: "Sequential wait after recall",
+                    after: "Early read overlapping recall",
+                    delta: "Hidden lookup latency",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Freshness Invalidation",
+                    before: "Blind TTL or full re-score",
+                    after: "Override → XXH3 content hash",
+                    delta: "Misses-only GPU scoring",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Cache Persistence Path",
+                    before: "Inline blocking Redis writes",
+                    after: "Bounded async batch writer",
+                    delta: "Zero write wait on response",
+                    tone: MetricTone::Accent,
+                },
+                NotebookComparison {
+                    label: "Cache Memory Safety",
+                    before: "Unbounded write bursts",
+                    after: "Memory watermark circuit breaker",
+                    delta: "Prevents eviction storms",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Hot-Path Observability",
+                    before: "Verbose payload dumps on INFO",
+                    after: "Lean metrics + debug-guarded logs",
+                    delta: "Removes serialization drag",
+                    tone: MetricTone::Accent,
+                },
+            ],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Golden Rule · The Cache Must Never Be a New Failure Mode",
+                body: "Every cache read fails open directly to the GPU model, and every cache write happens asynchronously off the critical path. If the cache store slows down, fills up, or drops connections, user requests still return cleanly with zero error amplification.",
+                link: None,
+            }],
+            sticky_notes: &[],
+        },
+        ArticleBlock::Heading("1. Overlap Cache Reads with Retrieval"),
+        ArticleBlock::Paragraph(
+            "A naive cache wrapper sits right in front of the GPU client: wait for retrieval to finish, build the full candidate list, check Redis, and then score misses. That adds an extra serial network round-trip to every single request — even when the cache is cold.",
+        ),
+        ArticleBlock::Paragraph(
+            "Instead, kick off the cache lookup as soon as the normalized query is available so it executes concurrently alongside candidate retrieval and metadata hydration. By the time candidates are ready for reranking, the cached relevance map is already sitting in memory waiting to be joined.",
+        ),
+        ArticleBlock::AsyncCacheSketch,
+        ArticleBlock::Heading("2. Score Only Stale or Missing Items with Content Hashing"),
+        ArticleBlock::Paragraph(
+            "Catalog items change over time — titles, attributes, and specs get updated — so blindly serving cached relevance scores until a long TTL expires risks serving stale rankings. Conversely, setting tiny TTLs destroys hit rates and sends redundant traffic back to the GPU.",
+        ),
+        ArticleBlock::Paragraph(
+            "We solved this by storing a compact 64-bit content hash (XXH3) alongside each cached score and evaluating every candidate through a deterministic lookup ladder:",
+        ),
+        ArticleBlock::Bullets(&[
+            (
+                "Override First",
+                "Check curated or manual relevance overrides before touching either the cache or the GPU so pinned business rules always take precedence.",
+            ),
+            (
+                "XXH3 Freshness Match",
+                "Compare the candidate's current text/attribute hash against the cached hash. Exact matches bypass the GPU completely; changed items are automatically treated as misses.",
+            ),
+            (
+                "Misses-Only GPU Batch",
+                "Send only uncached or hash-stale candidates to the GPU reranker, dramatically shrinking batch sizes and relieving GPU queue pressure during traffic bursts.",
+            ),
+            (
+                "Order-Preserving Merge",
+                "Stitch cached hits and freshly scored GPU misses back into the exact original candidate order so downstream ranking stages remain 100% deterministic.",
+            ),
+        ]),
+        ArticleBlock::Heading("3. Push Writes Off the Critical Path with Backpressure"),
+        ArticleBlock::Paragraph(
+            "Once the GPU finishes scoring the misses, the user should never have to wait for Redis to persist those new entries. Hand the freshly computed `(item, hash, score)` tuples to a bounded in-memory channel and return the response immediately.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Write-Back Safety Notes",
+            comparisons: &[],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Why Jittered EXPIRE NX Matters",
+                body: "Setting an identical TTL across thousands of keys written during a traffic surge creates synchronized expiration cliffs days later, causing a sudden thundering herd back onto the GPU. Combining HSET with jittered whole-day EXPIRE NX spreads expirations evenly across time without resetting active TTLs on every write.",
+                link: None,
+            }],
+            sticky_notes: &[
+                StickyNote {
+                    tone: StickyTone::Yellow,
+                    title: "Bounded Background Flushing",
+                    items: &[
+                        "Coalesce queued updates into pipelined HSET batches on a short flush cadence",
+                        "Drop newest writes cleanly if the bounded channel fills up — never let memory grow unbounded",
+                        "Gate reads and writes with independent runtime switches for safe dark launches",
+                    ],
+                },
+                StickyNote {
+                    tone: StickyTone::Pink,
+                    title: "Memory Watermark Circuit Breaker",
+                    items: &[
+                        "Periodically sample Redis memory usage against maxmemory",
+                        "Automatically pause background writes above a high-water threshold",
+                        "Resume writes only once memory cools back below a lower hysteresis watermark",
+                    ],
+                },
+            ],
+        },
+        ArticleBlock::Heading("4. Trim Logging Overhead & Ship Safely"),
+        ArticleBlock::Paragraph(
+            "One of the most surprising contributors to tail latency was not the model itself, but hot-path logging. Serializing large candidate lists and full model request/response payloads at INFO level burns CPU, bloats log pipelines, and adds jitter right when concurrency peaks.",
+        ),
+        ArticleBlock::Paragraph(
+            "Moving verbose payload logs behind debug guards — while keeping lightweight structured counters for hit ratio, miss batch size, and fallback rate — immediately removed hidden serialization drag. Combined with independent read/write feature gates, we could warm the cache silently in write-only mode, verify hit rates and memory headroom, and then enable cache reads gradually with zero risk to live search quality.",
+        ),
+    ],
+},
+BlogPost {
+    slug: "low-latency-ltr-onnx-runtime",
+    date: "Aug 2026",
+    year: "2026",
+    topic: "Search & Rust Systems",
+    read_time: "5 min read",
+    title: "Low-Latency Learning to Rank with ONNX Runtime",
+    subtitle: "Moving gradient-boosted Learning-to-Rank inference off Python runtimes into a CPU-pinned ONNX session pool with flat feature tensors, non-blocking Tokio scheduling, and multi-branch A/B support.",
+    tags: &[
+        "Learning to Rank",
+        "ONNX Runtime",
+        "Rust",
+        "Tokio",
+        "Concurrency",
+        "A/B Testing",
+    ],
+    blocks: &[
+        ArticleBlock::Paragraph(
+            "Training a gradient-boosted Learning-to-Rank (LTR) model in Python is comfortable and fast, especially with modern columnar engines. Serving that same model inside a high-concurrency search path, however, often exposes subtle runtime bottlenecks: GIL contention, per-request DataFrame construction overhead, and unpredictable garbage-collection pauses.",
+        ),
+        ArticleBlock::Paragraph(
+            "Exporting the trained tree ensemble to ONNX Runtime unlocks a massive speedup — roughly 3× faster inference with a fraction of the memory footprint — but only if you wire the runtime carefully into an async server. Here are the serving patterns that turned ONNX LTR into a rock-solid, low-jitter ranking stage.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Architecture Field Notes",
+            comparisons: &[
+                NotebookComparison {
+                    label: "Inference Runtime",
+                    before: "Python booster + DataFrames",
+                    after: "Native ONNX Runtime (ort)",
+                    delta: "~3× faster scoring",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Feature Packing",
+                    before: "Columnar DataFrame per request",
+                    after: "Flat contiguous Vec<f32> buffer",
+                    delta: "Zero FFI & schema churn",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Async Concurrency",
+                    before: "Single Mutex<Session> lock",
+                    after: "Session pool + spawn_blocking",
+                    delta: "No async I/O starvation",
+                    tone: MetricTone::Accent,
+                },
+                NotebookComparison {
+                    label: "Thread Topology",
+                    before: "Default multi-thread per session",
+                    after: "1 intra · 1 inter thread / session",
+                    delta: "Zero CPU oversubscription",
+                    tone: MetricTone::Signal,
+                },
+                NotebookComparison {
+                    label: "Experiment Rollouts",
+                    before: "Separate model deployments",
+                    after: "In-process A/B branch registry",
+                    delta: "Zero-hop model switching",
+                    tone: MetricTone::Accent,
+                },
+            ],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::GreenCheck,
+                title: "Key Insight · Small Online Batches Favor Concurrency Over Intra-Op Parallelism",
+                body: "Online search ranking scores compact candidate cohorts per query under high RPS. Running one thread per ONNX session across a pool of sessions consistently beats letting a single session fan out across many cores — avoiding thread-pool contention and smoothing tail latency.",
+                link: None,
+            }],
+            sticky_notes: &[],
+        },
+        ArticleBlock::Heading("1. Why a Single Mutex Breaks Async Servers"),
+        ArticleBlock::Paragraph(
+            "The first working prototype of ONNX in an async Rust server usually wraps a single Session inside a mutex and calls run() directly inside the async request handler. Under light local tests, it looks blazingly fast. Under real production concurrency, tail latency collapses.",
+        ),
+        ArticleBlock::Paragraph(
+            "Two things go wrong simultaneously: concurrent queries serialize behind the single lock, and synchronous CPU-bound tree traversal blocks Tokio's async worker threads — starving unrelated Redis reads, HTTP calls, and health checks sharing the same runtime.",
+        ),
+        ArticleBlock::OnnxPoolSketch,
+        ArticleBlock::Heading("2. Session Pooling, Semaphore Admission & Thread Pinning"),
+        ArticleBlock::Paragraph(
+            "To keep network I/O responsive while squeezing predictable throughput out of every CPU core, separate feature preparation on async threads from model execution on dedicated blocking threads:",
+        ),
+        ArticleBlock::Bullets(&[
+            (
+                "Per-Branch Session Pool",
+                "Pre-warm a small pool of ONNX sessions sized to available CPU cores for each active model variant so concurrent requests score in parallel without lock contention.",
+            ),
+            (
+                "Async Admission Semaphore",
+                "Acquire a bounded permit asynchronously before checking out a session. Under bursts, waiting tasks suspend cheaply on the async runtime instead of spawning unbounded blocking threads.",
+            ),
+            (
+                "tokio::task::spawn_blocking",
+                "Hand the owned flat tensor buffer and checked-out session to spawn_blocking for Session::run, returning the session to the pool cleanly even if execution fails.",
+            ),
+            (
+                "1 Intra / 1 Inter Thread",
+                "Pin each ONNX session to 1 intra-op and 1 inter-op thread. Letting N concurrent sessions each spin up M internal worker threads causes severe context-switch thrashing on Kubernetes pods.",
+            ),
+        ]),
+        ArticleBlock::Heading("3. Flat Typed Feature Matrices Over Per-Request DataFrames"),
+        ArticleBlock::Paragraph(
+            "Even with a fast inference engine, building a DataFrame object for a few dozen or hundred candidates on every query can easily cost more CPU time than the model evaluation itself. Schema validation, dictionary hashing, and scattered heap allocations add up quickly.",
+        ),
+        ArticleBlock::Paragraph(
+            "Instead, model the LTR stage as four clean, testable interfaces: an orchestrator, a feature provider, a deterministic feature encoder, and a model executor. The encoder writes every candidate's numerical and encoded categorical signals directly into a single pre-allocated row-major Vec<f32> sized to candidates × features, passing a zero-copy tensor view straight into ONNX Runtime.",
+        ),
+        ArticleBlock::FieldNotes {
+            stamp: "Resilience & Parity Notes",
+            comparisons: &[],
+            callouts: &[NotebookCallout {
+                style: CalloutStyle::PurpleDashed,
+                title: "Multi-Branch A/B Experiments in One Binary",
+                body: "Because each ONNX model artifact is compact and self-contained, a single service instance can load control and treatment ranker branches side by side at startup — routing each request by experiment flag with zero extra network hops and isolated pools per branch.",
+                link: None,
+            }],
+            sticky_notes: &[
+                StickyNote {
+                    tone: StickyTone::Yellow,
+                    title: "Graceful Feature Fallbacks",
+                    items: &[
+                        "Keep strict per-request timeouts on external feature stores",
+                        "Fall back cleanly to neutral default values on missing features or timeouts",
+                        "Preserve baseline retrieval ordering if the ranker is bypassed",
+                    ],
+                },
+                StickyNote {
+                    tone: StickyTone::Pink,
+                    title: "Export & Parity Verification",
+                    items: &[
+                        "Replay real candidate feature sets through both Python and ONNX models",
+                        "Verify floating-point score tolerance AND exact top-K rank order parity",
+                        "Lock feature ordering with compile-time constants to prevent silent drift",
+                    ],
+                },
+            ],
+        },
+        ArticleBlock::Heading("4. Proving Rank Parity Before Cutover"),
+        ArticleBlock::Paragraph(
+            "Tree-model exports can harbor subtle edge cases: missing-value (NaN) branch directions, float32 vs. float64 split boundaries, and categorical encoding mismatches. Checking only aggregate NDCG offline is rarely enough to catch single-query surprises.",
+        ),
+        ArticleBlock::Paragraph(
+            "Before routing live traffic to ONNX, we replayed representative query cohorts through both the legacy Python ranker and the Rust/ONNX path, asserting tight score tolerances and top-K rank-order agreement across edge cases like missing features and tied scores. Once parity held cleanly, flipping traffic over delivered immediate latency and CPU relief with zero relevance regressions.",
+        ),
+    ],
 }];
 
 pub const PLANNED_BLOG_TOPICS: &[PlannedTopic] = &[
-    PlannedTopic {
-        date_label: "Draft",
-        year: "Upcoming",
-        topic: "Search & Rust Systems",
-        title: "Low-Latency Learning to Rank with ONNX Runtime",
-        subtitle: "Moving Python ranker inference to ONNX Runtime with session pooling and non-blocking execution under high concurrency.",
-    },
-    PlannedTopic {
-        date_label: "Draft",
-        year: "Upcoming",
-        topic: "Performance & Reliability",
-        title: "Taming GPU Reranker Tail-Latency Spikes with Async Write-Back Caching",
-        subtitle: "Pushing cache reads off the critical path, trimming logging overhead, and flushing updates asynchronously without blocking responses.",
-    },
     PlannedTopic {
         date_label: "Draft",
         year: "Upcoming",
