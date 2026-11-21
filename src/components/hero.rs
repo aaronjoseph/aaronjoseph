@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 
 use crate::components::company_logo::CompanyLogo;
-use crate::components::systems::TechEvolutionStrip;
+use crate::components::systems::RichTitle;
 use crate::data::{MetricTone, TELEMETRY_PROJECTS};
 
 #[component]
@@ -192,10 +192,9 @@ pub fn Hero(
                                                 span { class: "stream-badge", "{ws.index}" }
                                                 span { class: "stream-pipe", "{ws.pipeline}" }
                                             }
-                                            if !ws.tech_steps.is_empty() {
-                                                TechEvolutionStrip { steps: ws.tech_steps }
+                                            h3 { class: "stream-title",
+                                                RichTitle { title: ws.title }
                                             }
-                                            h3 { class: "stream-title", "{ws.title}" }
                                             p { class: "stream-why", "{ws.advantage}" }
                                             div { class: "t-gains",
                                                 for (label, tone) in ws.gains {

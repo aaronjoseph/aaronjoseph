@@ -2,66 +2,206 @@ use dioxus::prelude::*;
 
 use crate::components::company_logo::CompanyLogo;
 use crate::data::{
-    CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, StickyTone, TechKind,
+    CalloutStyle, DEEP_DIVE_PROJECTS, MetricTone, StickyTone,
 };
 
-#[component]
-pub fn TechEvolutionStrip(steps: &'static [TechKind]) -> Element {
-    if steps.is_empty() {
-        return rsx! {};
-    }
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum FrameworkKind {
+    Flask,
+    FastApi,
+    Rust,
+    Gcp,
+}
 
-    rsx! {
-        div { class: "tech-evo-strip", aria_label: "Technology progression",
-            for (i, step) in steps.iter().enumerate() {
-                if i > 0 {
-                    span { class: "tech-evo-arrow", "→" }
+#[component]
+fn FrameworkLogo(kind: FrameworkKind) -> Element {
+    match kind {
+        FrameworkKind::Flask => rsx! {
+            // Official Flask curved powder-horn logo
+            svg {
+                class: "fw-logo-svg",
+                view_box: "0 0 24 24",
+                fill: "none",
+                "aria-hidden": "true",
+                path {
+                    d: "M16.4 2.4 C16.8 2.1 17.3 2.1 17.7 2.4 L21.4 5.1 C21.8 5.4 21.8 6.0 21.5 6.4 L20.4 7.8 C20.1 8.1 19.6 8.2 19.2 8.0 C18.6 11.4 16.8 15.0 13.8 17.6 C10.7 20.3 6.6 21.6 2.8 21.3 C2.2 21.2 2.0 20.5 2.5 20.1 C5.6 17.9 8.4 15.2 10.5 12.1 C12.4 9.2 13.7 6.5 14.4 4.3 C14.1 3.9 14.2 3.4 14.5 3.1 L16.4 2.4 Z",
+                    fill: "#2c2a35",
                 }
-                match step {
-                    TechKind::Flask => rsx! {
-                        span { class: "tech-pill tp-flask",
-                            span { class: "tp-dot" }
-                            "Flask"
+                path {
+                    d: "M16.9 6.6 C16.0 9.8 14.2 13.2 11.4 15.8 C9.6 17.4 7.5 18.6 5.5 19.2",
+                    stroke: "#ffffff",
+                    stroke_width: "1.35",
+                    stroke_linecap: "round",
+                    opacity: "0.9",
+                }
+                path {
+                    d: "M15.4 3.8 L19.8 7.0",
+                    stroke: "#ffffff",
+                    stroke_width: "1.15",
+                    stroke_linecap: "round",
+                }
+            }
+        },
+        FrameworkKind::FastApi => rsx! {
+            // Official FastAPI #009688 teal circle + white lightning bolt
+            svg {
+                class: "fw-logo-svg",
+                view_box: "0 0 24 24",
+                fill: "none",
+                "aria-hidden": "true",
+                circle { cx: "12", cy: "12", r: "10.8", fill: "#009688" }
+                path {
+                    d: "M12.9 4.5 L6.7 13.4 H11.5 L10.7 19.5 L17.3 10.6 H12.4 Z",
+                    fill: "#ffffff",
+                }
+            }
+        },
+        FrameworkKind::Rust => rsx! {
+            // Official Rust toothed gear + 5 rim holes + bold serif 'R'
+            svg {
+                class: "fw-logo-svg",
+                view_box: "0 0 24 24",
+                fill: "none",
+                "aria-hidden": "true",
+                g { fill: "#ce422b",
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(0 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(30 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(60 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(90 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(120 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(150 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(180 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(210 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(240 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(270 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(300 12 12)" }
+                    rect { x: "10.85", y: "0.9", width: "2.3", height: "3.2", rx: "0.6", transform: "rotate(330 12 12)" }
+                    circle { cx: "12", cy: "12", r: "9.4" }
+                }
+                circle { cx: "12", cy: "12", r: "6.7", fill: "#ffffff" }
+                circle { cx: "12", cy: "3.9", r: "0.72", fill: "#ffffff" }
+                circle { cx: "19.7", cy: "9.5", r: "0.72", fill: "#ffffff" }
+                circle { cx: "16.8", cy: "18.6", r: "0.72", fill: "#ffffff" }
+                circle { cx: "7.2", cy: "18.6", r: "0.72", fill: "#ffffff" }
+                circle { cx: "4.3", cy: "9.5", r: "0.72", fill: "#ffffff" }
+                text {
+                    x: "12.2",
+                    y: "16.2",
+                    text_anchor: "middle",
+                    fill: "#ce422b",
+                    font_family: "Georgia, 'Times New Roman', serif",
+                    font_weight: "900",
+                    font_size: "12.4",
+                    "R"
+                }
+            }
+        },
+        FrameworkKind::Gcp => rsx! {
+            // Official 4-color Google Cloud mark
+            svg {
+                class: "fw-logo-svg",
+                view_box: "0 0 24 24",
+                fill: "none",
+                "aria-hidden": "true",
+                path {
+                    d: "M15.4 8.2 L17.3 6.3 C15.8 4.9 13.8 4.1 11.6 4.1 C7.6 4.1 4.4 6.9 3.8 10.9 L6.6 11.3 C7.1 8.7 9.2 6.9 11.6 6.9 C13.1 6.9 14.4 7.4 15.4 8.2 Z",
+                    fill: "#ea4335",
+                }
+                path {
+                    d: "M19.8 10.1 C19.4 8.5 18.5 7.2 17.3 6.3 L15.4 8.2 C16.3 8.9 16.9 10.0 17.1 11.2 H17.5 C19.0 11.2 20.2 12.4 20.2 13.9 C20.2 15.4 19.0 16.6 17.5 16.6 H12.0 V19.4 H17.5 C20.5 19.4 23.0 17.0 23.0 13.9 C23.0 11.6 21.6 10.4 19.8 10.1 Z",
+                    fill: "#4285f4",
+                }
+                path {
+                    d: "M6.7 19.4 H12.0 V16.6 H6.7 C6.2 16.6 5.7 16.4 5.3 16.1 L3.3 18.1 C4.3 18.9 5.5 19.4 6.7 19.4 Z",
+                    fill: "#34a853",
+                }
+                path {
+                    d: "M6.7 10.5 C3.8 10.5 1.4 12.5 1.4 15.0 C1.4 16.3 2.1 17.4 3.3 18.1 L5.3 16.1 C4.6 15.7 4.2 15.0 4.2 14.3 C4.2 13.1 5.3 12.1 6.7 12.1 C7.1 12.1 7.5 12.2 7.8 12.4 L9.5 10.6 C8.7 10.5 7.7 10.5 6.7 10.5 Z",
+                    fill: "#fbbc05",
+                }
+            }
+        },
+    }
+}
+
+enum TitleSegment<'a> {
+    Text(&'a str),
+    Arrow,
+    Framework(FrameworkKind, &'a str),
+}
+
+fn parse_title_segments(mut input: &str) -> Vec<TitleSegment<'_>> {
+    const PATTERNS: &[(&str, Option<FrameworkKind>)] = &[
+        ("Rust (Axum)", Some(FrameworkKind::Rust)),
+        ("GKE ARM C4A", Some(FrameworkKind::Gcp)),
+        ("FastAPI", Some(FrameworkKind::FastApi)),
+        ("Flask", Some(FrameworkKind::Flask)),
+        ("→", None),
+    ];
+
+    let mut out = Vec::new();
+    while !input.is_empty() {
+        let mut best: Option<(usize, &str, Option<FrameworkKind>)> = None;
+        for &(pat, kind) in PATTERNS {
+            if let Some(pos) = input.find(pat) {
+                let replace = match best {
+                    None => true,
+                    Some((best_pos, best_pat, _)) => {
+                        pos < best_pos || (pos == best_pos && pat.len() > best_pat.len())
+                    }
+                };
+                if replace {
+                    best = Some((pos, pat, kind));
+                }
+            }
+        }
+
+        match best {
+            Some((pos, pat, kind)) => {
+                if pos > 0 {
+                    out.push(TitleSegment::Text(&input[..pos]));
+                }
+                match kind {
+                    Some(fw) => out.push(TitleSegment::Framework(fw, pat)),
+                    None => out.push(TitleSegment::Arrow),
+                }
+                input = &input[pos + pat.len()..];
+            }
+            None => {
+                out.push(TitleSegment::Text(input));
+                break;
+            }
+        }
+    }
+    out
+}
+
+/// Renders a project/workstream heading with inline official framework logos & brand colors.
+#[component]
+pub fn RichTitle(title: &'static str) -> Element {
+    let segments = parse_title_segments(title);
+    rsx! {
+        for (idx, seg) in segments.into_iter().enumerate() {
+            match seg {
+                TitleSegment::Text(t) => rsx! {
+                    span { key: "t-{idx}", "{t}" }
+                },
+                TitleSegment::Arrow => rsx! {
+                    span { key: "a-{idx}", class: "rt-arrow", "→" }
+                },
+                TitleSegment::Framework(kind, label) => {
+                    let cls = match kind {
+                        FrameworkKind::Flask => "rt-token rt-flask",
+                        FrameworkKind::FastApi => "rt-token rt-fastapi",
+                        FrameworkKind::Rust => "rt-token rt-rust",
+                        FrameworkKind::Gcp => "rt-token rt-gke",
+                    };
+                    rsx! {
+                        span { key: "f-{idx}", class: "{cls}",
+                            FrameworkLogo { kind }
+                            span { "{label}" }
                         }
-                    },
-                    TechKind::FastApi => rsx! {
-                        span { class: "tech-pill tp-fastapi",
-                            svg {
-                                width: "12",
-                                height: "12",
-                                view_box: "0 0 24 24",
-                                fill: "currentColor",
-                                "aria-hidden": "true",
-                                path { d: "M13 2 3 14h7l-1 8 10-12h-7l1-8z" }
-                            }
-                            "FastAPI"
-                        }
-                    },
-                    TechKind::RustAxum => rsx! {
-                        span { class: "tech-pill tp-rust",
-                            // Recognizable Rust cog/gear emblem
-                            svg {
-                                width: "14",
-                                height: "14",
-                                view_box: "0 0 24 24",
-                                fill: "none",
-                                stroke: "currentColor",
-                                stroke_width: "2",
-                                stroke_linecap: "round",
-                                stroke_linejoin: "round",
-                                "aria-hidden": "true",
-                                circle { cx: "12", cy: "12", r: "4.2" }
-                                circle { cx: "12", cy: "12", r: "8.2", stroke_dasharray: "2.4 2.4" }
-                                path { d: "M12 1.8v2.4M12 19.8v2.4M1.8 12h2.4M19.8 12h2.4M4.8 4.8l1.7 1.7M17.5 17.5l1.7 1.7M19.2 4.8l-1.7 1.7M6.5 17.5l-1.7 1.7" }
-                            }
-                            "Rust (Axum)"
-                        }
-                    },
-                    TechKind::GkeArm => rsx! {
-                        span { class: "tech-pill tp-arm",
-                            "GKE ARM C4A"
-                        }
-                    },
+                    }
                 }
             }
         }
@@ -147,10 +287,9 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                             span { class: "dd-sep", "·" }
                                             span { "{project.period}" }
                                         }
-                                        if !project.tech_steps.is_empty() {
-                                            TechEvolutionStrip { steps: project.tech_steps }
+                                        h3 { class: "dd-title",
+                                            RichTitle { title: project.title }
                                         }
-                                        h3 { class: "dd-title", "{project.title}" }
                                         p { class: "dd-oneliner", "{project.one_liner}" }
                                         div { class: "t-gains",
                                             for (label, tone) in project.headline_badges {
@@ -209,10 +348,9 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                 }
                                 span { "· {proj.category} · {proj.period}" }
                             }
-                            if !proj.tech_steps.is_empty() {
-                                TechEvolutionStrip { steps: proj.tech_steps }
+                            h2 { class: "drawer-title",
+                                RichTitle { title: proj.title }
                             }
-                            h2 { class: "drawer-title", "{proj.title}" }
                             p { class: "drawer-sub", "{proj.one_liner}" }
                         }
                         button {

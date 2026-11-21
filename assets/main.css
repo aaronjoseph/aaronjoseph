@@ -1084,62 +1084,42 @@ section h2 {
 }
 
 /* Colored Tech Progression Badges (Flask -> FastAPI -> Rust with Gear Logo) */
-.tech-evo-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 4px 0 8px;
-}
-
-.tech-evo-arrow {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  color: var(--text-3);
-  font-weight: 600;
-}
-
-.tech-pill {
+/* Inline Official Framework Logos & Brand Colors inside Project Headings */
+.rt-token {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 999px;
-  line-height: 1.3;
+  gap: 0.24em;
+  white-space: nowrap;
+  vertical-align: baseline;
 }
 
-.tp-flask {
-  background: #eceae4;
-  color: #3a3742;
-  border: 1px solid rgba(58, 55, 66, 0.16);
+.fw-logo-svg {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 0.96em;
+  height: 0.96em;
+  transform: translateY(0.05em);
 }
 
-.tp-flask .tp-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #5c5766;
+.rt-flask {
+  color: #2c2a35;
 }
 
-.tp-fastapi {
-  background: #dbf3ee;
-  color: #0b6e5f;
-  border: 1px solid rgba(11, 110, 95, 0.22);
+.rt-fastapi {
+  color: #00796b;
 }
 
-.tp-rust {
-  background: #fce4da;
-  color: #b53f1e;
-  border: 1px solid rgba(181, 63, 30, 0.26);
+.rt-rust {
+  color: #c2401f;
 }
 
-.tp-arm {
-  background: #e9eef8;
-  color: #32548a;
-  border: 1px solid rgba(50, 84, 138, 0.22);
+.rt-gke {
+  color: #2355a6;
+}
+
+.rt-arrow {
+  color: var(--text-3);
+  font-weight: 500;
 }
 
 /* Handcrafted Ruled-Paper Engineering Notebook Sheet (Inside Side Drawer) */

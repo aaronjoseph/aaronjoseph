@@ -5,18 +5,9 @@ pub enum MetricTone {
     Signal,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq)]
-pub enum TechKind {
-    Flask,
-    FastApi,
-    RustAxum,
-    GkeArm,
-}
-
 pub struct TelemetryWorkstream {
     pub index: &'static str,
     pub title: &'static str,
-    pub tech_steps: &'static [TechKind],
     pub pipeline: &'static str,
     pub advantage: &'static str,
     pub gains: &'static [(&'static str, MetricTone)],
@@ -75,7 +66,6 @@ pub struct DeepDiveProject {
     pub period: &'static str,
     pub category: &'static str,
     pub title: &'static str,
-    pub tech_steps: &'static [TechKind],
     pub one_liner: &'static str,
     pub headline_badges: &'static [(&'static str, MetricTone)],
     pub flow: &'static str,
@@ -159,7 +149,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "01",
                 title: "Flask → FastAPI → Rust (Axum)",
-                tech_steps: &[TechKind::Flask, TechKind::FastApi, TechKind::RustAxum],
                 pipeline: "Monolith + Bulkheads · ARM C4A GKE",
                 advantage: "Moved x86 n1-standard-16 → ARM c4a-standard-16 (−30% latency), consolidated microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized to c4a-highcpu-8.",
                 gains: &[
@@ -173,7 +162,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "02",
                 title: "LTR Inference → ONNX",
-                tech_steps: &[],
                 pipeline: "Python Ranker → ONNX Runtime",
                 advantage: "Eliminated Python inference bottlenecks in the ranking stage for predictable, single-digit-millisecond scoring under peak load.",
                 gains: &[
@@ -184,7 +172,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "03",
                 title: "ESCI Async Write-Back Caching",
-                tech_steps: &[],
                 pipeline: "GPU ESCI · Reduced Logging Overhead",
                 advantage: "Eliminated GPU-hosted ESCI tail-latency spikes that were stalling Search requests through async write-back caching and leaner logging.",
                 gains: &[
@@ -203,7 +190,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "01",
                 title: "LLM-as-a-Judge & API Comparator",
-                tech_steps: &[],
                 pipeline: "Regression Evals · Endpoint Smoke Tests",
                 advantage: "Replaced slow manual release checks with automated LLM-as-a-judge regression suites and self-service performance testing before formal perf runs.",
                 gains: &[
@@ -214,7 +200,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "02",
                 title: "Agentic Tracing & Model Dashboards",
-                tech_steps: &[],
                 pipeline: "Google Cloud Trace · Structured Logs",
                 advantage: "Established org-wide request-level tracing across agentic AI inputs & outputs with monitoring dashboards comparing fine-tuned Gemma vs. Gemini.",
                 gains: &[
@@ -225,7 +210,6 @@ pub const TELEMETRY_PROJECTS: &[TelemetryProject] = &[
             TelemetryWorkstream {
                 index: "03",
                 title: "Chainlit → Unified Rust Dioxus Suite",
-                tech_steps: &[],
                 pipeline: "Dioxus WASM · Single-Endpoint Suite",
                 advantage: "Evolved a plain chat-only Chainlit UI into an all-in-one Rust/Dioxus suite — Chat Comparator, Perf Testing, Regression Evals, and team utilities under a single endpoint.",
                 gains: &[
@@ -246,12 +230,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "Flask → FastAPI → Rust (Axum) & GKE ARM C4A",
-        tech_steps: &[
-            TechKind::Flask,
-            TechKind::FastApi,
-            TechKind::RustAxum,
-            TechKind::GkeArm,
-        ],
         one_liner: "Migrated GKE from x86 n1-standard-16 to ARM C4A, consolidated search microservices into a hexagonal Rust monolith with per-service bulkheads, and right-sized idle node pools.",
         headline_badges: &[
             ("−30% ARM C4A latency", MetricTone::Signal),
@@ -381,7 +359,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Search System",
         title: "ONNX LTR Inference & GPU ESCI Caching",
-        tech_steps: &[],
         one_liner: "Compiled Python LTR scoring to single-digit-ms ONNX Runtime and resolved 5-second GPU ESCI latency spikes via async write-back caching.",
         headline_badges: &[
             ("2 ms P50 / 4 ms P95 LTR", MetricTone::Signal),
@@ -450,7 +427,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "May 2025 – Present",
         category: "Agentic AI",
         title: "Observability, LLM-as-a-Judge & Unified Dioxus Suite",
-        tech_steps: &[],
         one_liner: "Built Cloud Trace agentic diagnostics, automated LLM-as-a-judge evals, and evolved a plain chat-only Chainlit UI into a full Rust/Dioxus suite (Chat Comparator, Perf Test, Regression & utilities) under one endpoint.",
         headline_badges: &[
             ("1–2 days → <1 hr eval", MetricTone::Signal),
@@ -521,7 +497,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Search & Ranking",
         title: "FastAPI Migration, 15-Min LTR Retraining & Polars",
-        tech_steps: &[TechKind::Flask, TechKind::FastApi],
         one_liner: "Cut LTR retraining from 24 hours to under 15 minutes across 5 business units, moved Flask to async FastAPI, and shipped related-keywords search.",
         headline_badges: &[
             ("24 hrs → <15 min LTR", MetricTone::Signal),
@@ -585,7 +560,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Apr 2023 – Apr 2025",
         category: "Experimentation",
         title: "In-House Cookie A/B Testing & Cyber Load Readiness",
-        tech_steps: &[],
         one_liner: "Replaced third-party experimentation vendors with an in-house cookie-based A/B engine and hardened search resilience for biannual cyber events.",
         headline_badges: &[
             ("$50K/yr saved", MetricTone::Signal),
@@ -636,7 +610,6 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
         period: "Dec 2020 – Apr 2023",
         category: "Cloud & MLOps",
         title: "GCP Terraform MLOps Automation",
-        tech_steps: &[],
         one_liner: "Standardized dev/stage/prod GCP ML infrastructure with reusable Terraform workflows for consistent, repeatable deployments.",
         headline_badges: &[
             ("−50% manual setup", MetricTone::Signal),
