@@ -279,13 +279,11 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     div { class: "dd-row-main",
                                         div { class: "dd-meta",
                                             span { class: "co-inline",
-                                                CompanyLogo { company_id: project.company_id, size: 22 }
+                                                CompanyLogo { company_id: project.company_id, size: 20 }
                                                 span { class: "dd-company", "{project.company}" }
                                             }
                                             span { class: "dd-sep", "·" }
                                             span { "{project.category}" }
-                                            span { class: "dd-sep", "·" }
-                                            span { "{project.period}" }
                                         }
                                         h3 { class: "dd-title",
                                             RichTitle { title: project.title }
@@ -305,18 +303,21 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                             }
                                         }
                                     }
-                                    span { class: "dd-open-cue", aria_hidden: "true",
-                                        span { "Deep dive" }
-                                        svg {
-                                            width: "15",
-                                            height: "15",
-                                            view_box: "0 0 24 24",
-                                            fill: "none",
-                                            stroke: "currentColor",
-                                            stroke_width: "2.2",
-                                            stroke_linecap: "round",
-                                            stroke_linejoin: "round",
-                                            path { d: "M5 12h14m-6-6 6 6-6 6" }
+                                    div { class: "dd-card-foot",
+                                        span { class: "dd-period", "{project.period}" }
+                                        span { class: "dd-open-cue", aria_hidden: "true",
+                                            span { "Deep dive" }
+                                            svg {
+                                                width: "13",
+                                                height: "13",
+                                                view_box: "0 0 24 24",
+                                                fill: "none",
+                                                stroke: "currentColor",
+                                                stroke_width: "2.2",
+                                                stroke_linecap: "round",
+                                                stroke_linejoin: "round",
+                                                path { d: "M5 12h14m-6-6 6 6-6 6" }
+                                            }
                                         }
                                     }
                                 }
