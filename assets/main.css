@@ -1687,6 +1687,84 @@ section h2 {
   box-shadow: 0 6px 16px rgba(240, 139, 109, 0.30);
 }
 
+.filter-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.company-filter-bar {
+  margin-bottom: 0;
+}
+
+.tech-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+
+.tech-filter-label {
+  font-family: var(--font-mono);
+  font-size: 0.67rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.tech-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: var(--khaki);
+  border: 1px solid rgba(44, 42, 53, 0.09);
+  color: var(--text-2);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 5px 11px;
+  min-height: 31px;
+  border-radius: 999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, opacity 0.16s ease, box-shadow 0.16s ease;
+}
+
+.tech-filter-pill .fw-logo-svg {
+  width: 13px;
+  height: 13px;
+  transform: none;
+}
+
+.tech-filter-pill:hover {
+  background: var(--blush-soft);
+  border-color: rgba(240, 139, 109, 0.42);
+  color: var(--ink);
+  opacity: 1;
+}
+
+.tech-filter-pill.active {
+  background: var(--blush-soft);
+  border-color: var(--orange);
+  color: var(--ink);
+  font-weight: 600;
+  box-shadow: 0 3px 10px rgba(240, 139, 109, 0.18);
+  opacity: 1;
+}
+
+.tech-filter-pill.muted {
+  opacity: 0.42;
+}
+
+.tech-filter-pill.muted:hover {
+  opacity: 0.85;
+}
+
 .stack-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2877,15 +2955,17 @@ footer {
     padding: 11px 12px;
   }
   /* Horizontal swipeable filter strip so pills never crowd into jagged clumps */
-  .filter-bar {
+  .filter-bar,
+  .tech-filter-bar {
     flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 6px;
-    gap: 10px;
+    gap: 8px;
     scrollbar-width: none;
   }
-  .filter-bar::-webkit-scrollbar {
+  .filter-bar::-webkit-scrollbar,
+  .tech-filter-bar::-webkit-scrollbar {
     display: none;
   }
   .dd-row {
