@@ -9,8 +9,8 @@
   <meta property="og:title" content="Aaron Joseph Mathew — Senior AI & Search Systems Engineer" />
   <meta property="og:description" content="Production search, ranking, LLM evaluation, and Rust/Python ML systems built for high throughput and low latency." />
   <meta property="og:type" content="website" />
-  <meta name="theme-color" content="#f5f1e3" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='18' fill='%23f4dc62'/%3E%3Crect x='2.5' y='2.5' width='59' height='59' rx='15.5' stroke='%23231f1b' stroke-width='3'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%23231f1b' font-family='system-ui,-apple-system,sans-serif' font-weight='800' font-size='19' letter-spacing='-0.6'%3EAJM%3C/text%3E%3Ccircle cx='50' cy='14' r='4.2' fill='%233b8a6c'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#faf7f2" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64' fill='none'%3E%3Crect width='64' height='64' rx='18' fill='%23f7cec5'/%3E%3Ctext x='50%25' y='55%25' dominant-baseline='middle' text-anchor='middle' fill='%232c2a35' font-family='Georgia,serif' font-weight='700' font-size='20' letter-spacing='-0.5'%3EAJM%3C/text%3E%3Ccircle cx='50' cy='14' r='4.2' fill='%23f08b6d'/%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,8 +20,8 @@
       margin: 0;
       padding: 0;
       min-height: 100%;
-      background-color: #f5f1e3;
-      color: #231f1b;
+      background-color: #faf7f2;
+      color: #2c2a35;
     }
     .aj-splash {
       position: fixed;
@@ -30,19 +30,16 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 22px;
-      background-color: #f5f1e3;
+      gap: 20px;
+      background-color: #faf7f2;
       background-image:
-        radial-gradient(circle at 22% 28%, rgba(242, 181, 164, 0.35), transparent 36%),
-        radial-gradient(circle at 78% 26%, rgba(198, 216, 135, 0.35), transparent 34%),
-        radial-gradient(circle at 72% 78%, rgba(142, 130, 180, 0.25), transparent 38%),
-        radial-gradient(rgba(35, 31, 27, 0.08) 1px, transparent 1px);
-      background-size: 100% 100%, 100% 100%, 100% 100%, 24px 24px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        radial-gradient(ellipse 65% 45% at 25% 25%, rgba(247, 206, 197, 0.52), transparent 65%),
+        radial-gradient(ellipse 60% 45% at 78% 75%, rgba(236, 228, 214, 0.72), transparent 65%);
+      font-family: system-ui, -apple-system, sans-serif;
       z-index: 9999;
       opacity: 1;
       visibility: visible;
-      transition: opacity 0.28s ease, visibility 0.28s ease;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
     .aj-splash.aj-hidden {
       opacity: 0;
@@ -51,48 +48,39 @@
     }
     .aj-logo-wrap {
       position: relative;
-      width: 88px;
-      height: 88px;
+      width: 86px;
+      height: 86px;
       display: grid;
       place-items: center;
-      animation: aj-bob 1.7s ease-in-out infinite;
-    }
-    .aj-logo-shadow {
-      position: absolute;
-      inset: 0;
-      border-radius: 22px;
-      background: #231f1b;
-      transform: translate(5px, 5px);
+      animation: aj-float 2s ease-in-out infinite;
     }
     .aj-logo-svg {
-      position: relative;
-      width: 88px;
-      height: 88px;
-      border-radius: 22px;
+      width: 86px;
+      height: 86px;
+      border-radius: 24px;
+      box-shadow: 0 18px 42px rgba(240, 139, 109, 0.22), 0 4px 12px rgba(44, 42, 53, 0.06);
     }
     .aj-dots {
       display: flex;
       gap: 8px;
     }
     .aj-dots span {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       border-radius: 50%;
-      border: 1.5px solid #231f1b;
-      animation: aj-bounce 1.2s ease-in-out infinite;
+      animation: aj-bounce 1.25s ease-in-out infinite;
     }
-    .aj-dots span:nth-child(1) { background: #f2b5a4; animation-delay: 0s; }
-    .aj-dots span:nth-child(2) { background: #c6d887; animation-delay: 0.14s; }
-    .aj-dots span:nth-child(3) { background: #f4dc62; animation-delay: 0.28s; }
-    .aj-dots span:nth-child(4) { background: #3b8a6c; animation-delay: 0.42s; }
-    .aj-dots span:nth-child(5) { background: #8e82b4; animation-delay: 0.56s; }
-    @keyframes aj-bob {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50% { transform: translateY(-6px) rotate(2deg); }
+    .aj-dots span:nth-child(1) { background: #f7cec5; animation-delay: 0s; }
+    .aj-dots span:nth-child(2) { background: #f08b6d; animation-delay: 0.16s; }
+    .aj-dots span:nth-child(3) { background: #e8dfd0; animation-delay: 0.32s; }
+    .aj-dots span:nth-child(4) { background: #877796; animation-delay: 0.48s; }
+    @keyframes aj-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
     @keyframes aj-bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-7px); }
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.65; }
+      40% { transform: translateY(-6px); opacity: 1; }
     }
     @media (prefers-reduced-motion: reduce) {
       .aj-logo-wrap, .aj-dots span {
@@ -104,16 +92,15 @@
 <body>
   <div id="aj-splash" class="aj-splash" role="status" aria-label="Loading Aaron Joseph Mathew">
     <div class="aj-logo-wrap">
-      <div class="aj-logo-shadow" aria-hidden="true"></div>
       <svg class="aj-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-        <rect width="64" height="64" rx="16" fill="#f4dc62" />
-        <rect x="2" y="2" width="60" height="60" rx="14" stroke="#231f1b" stroke-width="2.6" />
-        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#231f1b" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="19" letter-spacing="-0.6">AJM</text>
-        <circle cx="50" cy="13" r="4" fill="#3b8a6c" stroke="#231f1b" stroke-width="1.4" />
+        <rect width="64" height="64" rx="18" fill="#ffffff" />
+        <rect x="4" y="4" width="56" height="56" rx="14" fill="#fae1da" />
+        <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#2c2a35" font-family="Georgia, serif" font-weight="700" font-size="19" letter-spacing="-0.5">AJM</text>
+        <circle cx="50" cy="14" r="4" fill="#f08b6d" />
       </svg>
     </div>
     <div class="aj-dots" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
     </div>
   </div>
   <div id="main"></div>

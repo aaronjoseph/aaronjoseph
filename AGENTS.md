@@ -51,13 +51,17 @@ This repository serves two roles:
 
 ## 3. Design System
 
-- **Aesthetic:** *Playful Spring Cream Editorial* — rich butter-cream canvas (`#f5f1e3`) and warm vanilla cream surfaces (`#fbf8ee`) with crisp espresso ink (`#231f1b`) borders, tactile offset shadows, floating pill navigation, tilted Spring sticker stats, folder-tabbed workstream cards, and wavy coral-peach accents.
-- **Theme:** Spring Cream Light-only (no dark mode toggle, no harsh sterile white backgrounds outside the printable résumé sheet).
-- **SPRING Palette:**
-  - Cream Canvas: `#f5f1e3` · Vanilla Card: `#fbf8ee` · Sage Mist: `#e9edd7` · Taupe: `#baa898`
-  - Coral Peach: `#f2b5a4` · Pistachio Lime: `#c6d887` · Buttercup Yellow: `#f4dc62`
-  - Botanical Emerald: `#3b8a6c` · Periwinkle Lavender: `#8e82b4` · Espresso Ink: `#231f1b`
+- **Aesthetic:** *Smooth Multi-Layer Cream & Sunset Blush Editorial* (inspired by `aliabdaal.com`) — three smooth visual layers with soft diffused shadows instead of heavy borders:
+  1. **Base Layer:** Warm Cream canvas (`#faf7f2`) with organic pastel swooshes
+  2. **Pastel Band Layer:** Light Khaki (`#f1eae0`) & Blush Peach (`#f7cec5` / `#fcebe6`) containers and highlights
+  3. **Elevated Layer:** Crisp Floating White (`#ffffff`) cards with generous `20px–28px` radii
+- **Theme:** Light-only (no dark mode toggle).
+- **Palette:**
+  - Base Cream: `#faf7f2` · Light Khaki: `#f1eae0` · Floating Card: `#ffffff`
+  - Blush Peach: `#f7cec5` · Light Orange CTA: `#f08b6d` · Dusk Lavender: `#877796`
+  - Botanical Sage: `#2e7d63` · Warm Charcoal Ink: `#2c2a35`
 - **Typography:** `Fraunces` with `'SOFT' 100, 'WONK' 1` (Recoleta-style soft warm display headings inspired by `aliabdaal.com`), `DM Sans` (clean airy body & hero intro copy), `Newsreader` (literary editorial serif for blog reading inspired by `eugeneyan.com`), `IBM Plex Mono` (timestamps, metrics, chips).
+- **Mobile Polish:** Full-width spacious buttons on mobile (`min-height: 46px`), horizontal swipeable filter pills, full-width segmented mode switches, and an uncrowded mobile navbar.
 - **Print Support:** `assets/main.css` includes `@media print` rules so clicking **Print / Save PDF** in the Résumé view strips the navbar/toolbar and renders a clean white ATS-friendly or styled document.
 
 ---

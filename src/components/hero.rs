@@ -42,8 +42,8 @@ pub fn Hero(
                                 "aria-hidden": "true",
                                 path {
                                     d: "M3 9.5C34 2.5 64 13 96 7.5C128 2 162 12.5 196 7C230 1.5 264 12 317 6",
-                                    stroke: "#f2b5a4",
-                                    stroke_width: "5",
+                                    stroke: "#f08b6d",
+                                    stroke_width: "4.5",
                                     stroke_linecap: "round",
                                 }
                             }
