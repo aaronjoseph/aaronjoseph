@@ -1707,6 +1707,10 @@ section h2 {
   box-shadow: 0 1px 4px rgba(44, 42, 53, 0.10);
 }
 
+.co-logo-circle {
+  border-radius: 50%;
+}
+
 .filter-pill:hover {
   background: var(--khaki);
   color: var(--ink);

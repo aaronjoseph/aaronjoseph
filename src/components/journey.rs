@@ -89,7 +89,7 @@ pub fn JourneySection() -> Element {
                                                     }
                                                     h3 { class: "role-title", "{role.title}" }
                                                     div { class: "role-company co-inline",
-                                                        CompanyLogo { company_id: role.id, size: 19 }
+                                                        CompanyLogo { company_id: role.id, size: 22 }
                                                         span { "{role.company}" }
                                                     }
                                                 }

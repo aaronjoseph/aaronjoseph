@@ -22,7 +22,7 @@ pub fn Hero(
                         div { class: "status-pill",
                             span { class: "pulse-dot", aria_hidden: "true" }
                             span { "Currently at" }
-                            CompanyLogo { company_id: "bestbuy", size: 18 }
+                            CompanyLogo { company_id: "bestbuy", size: 20 }
                             span { "Best Buy · Bengaluru, India" }
                         }
                         span { class: "spring-palette-dots", aria_hidden: "true",

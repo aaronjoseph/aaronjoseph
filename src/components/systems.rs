@@ -111,7 +111,7 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     r#type: "button",
                                     onclick: move |_| company_filter.set(cid),
                                     if cid != "all" {
-                                        CompanyLogo { company_id: cid, size: 16 }
+                                        CompanyLogo { company_id: cid, size: 18 }
                                     }
                                     span { "{label} ({count})" }
                                 }
@@ -139,7 +139,7 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                                     div { class: "dd-row-main",
                                         div { class: "dd-meta",
                                             span { class: "co-inline",
-                                                CompanyLogo { company_id: project.company_id, size: 20 }
+                                                CompanyLogo { company_id: project.company_id, size: 22 }
                                                 span { class: "dd-company", "{project.company}" }
                                             }
                                             span { class: "dd-sep", "·" }
@@ -204,7 +204,7 @@ pub fn SystemsSection(selected_project: Signal<Option<&'static str>>) -> Element
                         div {
                             div { class: "drawer-kicker",
                                 span { class: "co-inline",
-                                    CompanyLogo { company_id: proj.company_id, size: 20 }
+                                    CompanyLogo { company_id: proj.company_id, size: 22 }
                                     span { class: "dd-company", "{proj.company}" }
                                 }
                                 span { "· {proj.category} · {proj.period}" }
