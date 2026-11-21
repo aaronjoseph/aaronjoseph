@@ -43,7 +43,7 @@ Currently at **Best Buy** (Bengaluru) working on **AskBlue** and **Search 2.0**,
 - **[FundsIndia](https://www.fundsindia.com/)** — *Data Analyst* _(May 2018 – Jun 2019 · Bengaluru)_
   Call center analytics (−10% drop-offs, +15% retention) and mutual fund conversion-funnel dashboard (+15% conversion).
 - **[MuSigma](https://www.mu-sigma.com/)** — *Trainee Decision Scientist* _(Jul 2017 – Apr 2018 · Bengaluru)_
-  Competitive pricing dashboards for Pfizer (~$1.2M/yr estimated revenue) and automated executive financial pipelines. _(Ask me about the 3-year bond over coffee.)_
+  Competitive pricing dashboards for Pfizer (~$1.2M/yr estimated revenue) and automated executive financial pipelines.
 
 ---
 

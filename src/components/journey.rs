@@ -39,9 +39,6 @@ pub fn JourneySection() -> Element {
                         p {
                             "Today at Best Buy, I combine ML engineering with systems programming — moving critical search and UI paths to Rust (Axum & Dioxus), compiling rankers to ONNX, and making agentic AI observable and testable by default."
                         }
-                        div { class: "coffee-note",
-                            "\"Started my DS career at MuSigma — don't ask me how I circumvented the 3-year bond, or maybe do ask, over coffee.\""
-                        }
                     }
 
                     div {

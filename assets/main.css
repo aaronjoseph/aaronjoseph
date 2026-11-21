@@ -1029,14 +1029,8 @@ section h2 {
   color: var(--text-2);
 }
 
-.coffee-note {
-  padding: 12px 14px;
-  border-radius: 11px;
-  background: var(--bg);
-  border-left: 3px solid var(--accent);
-  font-size: 0.85rem;
-  color: var(--text-2);
-  font-style: italic;
+.about-panel p:last-child {
+  margin-bottom: 0;
 }
 
 .timeline-controls {
