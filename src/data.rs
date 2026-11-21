@@ -834,7 +834,7 @@ pub const DEEP_DIVE_PROJECTS: &[DeepDiveProject] = &[
 /// Add entries here (newest first) to publish blog posts on the dedicated Writing page.
 pub const BLOG_POSTS: &[BlogPost] = &[BlogPost {
     slug: "fastapi-to-rust-semantic-search",
-    date: "Nov 2026",
+    date: "Oct 2026",
     year: "2026",
     topic: "Search & Rust Systems",
     read_time: "6 min read",
